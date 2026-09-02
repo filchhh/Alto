@@ -1,21 +1,26 @@
-𝖋𝖎𝖑𝖈𝖍𝖍𝖍, [30.08.2026 18:46]
 <!DOCTYPE html>
 <html lang="ru">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Великий Фолиант Аурхейма</title>
     
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/page-flip/dist/js/page-flip.browser.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/page-flip@2.0.7/dist/js/page-flip.browser.min.js"></script>
     <link href="https://fonts.googleapis.com/css2?family=Caveat:wght@400;700&family=Neucha&display=swap" rel="stylesheet">
     
     <style>
+        * { box-sizing: border-box; }
+        
         body {
             margin: 0; padding: 0; background-color: #050505; color: #2e1503;
             display: flex; justify-content: center; align-items: center; 
             height: 100vh; overflow: hidden;
             background-image: url('https://www.transparenttextures.com/patterns/wood-pattern.png');
+            touch-action: none;
+            -webkit-touch-callout: none;
+            -webkit-user-select: none;
+            user-select: none;
         }
 
         #start-screen {
@@ -30,6 +35,7 @@
             padding: 15px 30px; font-size: 24px; font-family: 'Caveat', cursive;
             cursor: pointer; border-radius: 5px; box-shadow: 0 0 20px rgba(212, 175, 55, 0.4);
             transition: 0.3s; margin-top: 20px;
+            touch-action: manipulation;
         }
 
         #start-btn:hover { background: #3e2723; transform: scale(1.05); }
@@ -37,16 +43,109 @@
         #book-wrapper { 
             display: none; width: 100%; height: 100%; 
             position: relative;
+            overflow: hidden;
         }
 
+        /* === CSS СВЕЧА (вместо внешнего GIF, который часто блокируется) === */
         .candle-container {
             position: absolute; left: 2%; top: 50%; transform: translateY(-50%);
             z-index: 10; pointer-events: none;
             filter: drop-shadow(0 0 25px rgba(255, 140, 0, 0.8));
         }
         
+        .candle {
+            position: relative;
+            width: 60px;
+            height: 180px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        .wax {
+            width: 44px;
+            height: 130px;
+            background: linear-gradient(to right, #d4c4a8, #f5f0e1, #c9b896);
+            border-radius: 3px;
+            box-shadow: inset -6px 0 12px rgba(0,0,0,0.15), 0 0 25px rgba(255,140,0,0.35);
+            position: relative;
+        }
+        .wax::before {
+            content: '';
+            position: absolute;
+            top: -6px; left: 2px; right: 2px;
+            height: 12px;
+            background: linear-gradient(to right, #e6d5b8, #fff8ee, #e6d5b8);
+            border-radius: 50%;
+        }
+        .wick {
+            width: 4px;
+            height: 10px;
+            background: #2a2a2a;
+            margin-bottom: -3px;
+            z-index: 2;
+            border-radius: 1px;
+        }
+        .flame-wrap {
+            position: relative;
+            width: 24px;
+            height: 36px;
+            margin-bottom: -6px;
+            z-index: 3;
+        }
+        .flame-core {
+            position: absolute;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 14px;
+            height: 28px;
+            background: radial-gradient(ellipse at center bottom, #fff 0%, #ffeb3b 35%, #ff9800 100%);
+            border-radius: 50% 50% 50% 50% / 60% 60% 40% 40%;
+            filter: blur(0.5px);
+            animation: flicker 0.12s infinite alternate;
+        }
+        .flame-aura {
+            position: absolute;
+            bottom: -2px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 24px;
+            height: 36px;
+            background: radial-gradient(ellipse at center bottom, rgba(255,200,0,0.9) 0%, rgba(255,100,0,0.5) 50%, transparent 100%);
+            border-radius: 50% 50% 50% 50% / 60% 60% 40% 40%;
+            filter: blur(3px);
+            animation: flicker 0.18s infinite alternate-reverse;
+        }
+        .candle-glow {
+            position: absolute;
+            top: -30px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 120px;
+            height: 120px;
+            background: radial-gradient(circle, rgba(255,160,0,0.45) 0%, rgba(255,80,0,0.15) 40%, transparent 70%);
+            border-radius: 50%;
+            animation: pulse 2.5s infinite ease-in-out;
+            pointer-events: none;
+        }
+        
+        @keyframes flicker {
+            0% { transform: translateX(-50%) scale(1) rotate(-2deg); opacity: 0.95; }
+            100% { transform: translateX(-50%) scale(1.08) rotate(2deg); opacity: 1; }
+        }
+        @keyframes pulse {
+            0%, 100% { opacity: 0.6; transform: translateX(-50%) scale(1); }
+            50% { opacity: 1; transform: translateX(-50%) scale(1.15); }
+        }
+        
         @media (max-width: 768px) {
-            .candle-container { left: -15px; top: 10%; transform: scale(0.5); opacity: 0.7; }
+            .candle-container { left: -5px; top: 8%; transform: scale(0.45); opacity: 0.85; }
+        }
+
+        /* === СТРАНИЦЫ КНИГИ === */
+        #book {
+            width: 100%;
+            height: 100%;
         }
 
         .page {
@@ -56,7 +155,8 @@
                 radial-gradient(circle at center, transparent 40%, rgba(93, 64, 55, 0.6) 100%);
             box-shadow: inset 0 0 40px rgba(78, 52, 46, 0.9), 0 0 15px rgba(0,0,0,0.9);
             padding: 20px; overflow: hidden; border: 1px solid #5d4037;
-            border-radius: 2px 8px 8px 2px; box-sizing: border-box; position: relative;
+            box-sizing: border-box;
+            /* УБРАНЫ position: relative и border-radius, которые ломали 3D-трансформации page-flip */
         }
 
         .page::after {
@@ -68,11 +168,18 @@
         .page:nth-child(even)::after { top: auto; bottom: 15%; left: 8%; transform: rotate(-45deg); opacity: 0.1; }
 
         .page-content { 
-            height: 100%; overflow-y: auto; overflow-x: hidden; 
-            padding-right: 5px; box-sizing: border-box; word-wrap: break-word; 
+            height: 100%; 
+            padding-right: 5px; 
+            word-wrap: break-word; 
+            overflow: hidden; /* Убран overflow-y: auto — он конфликтовал с touch-событиями библиотеки */
         }
-        .page-content::-webkit-scrollbar { width: 3px; }
-        .page-content::-webkit-scrollbar-thumb { background: rgba(93, 64, 55, 0.5); border-radius: 2px; }
+        
+        /* Скролл только на десктопе */
+        @media (min-width: 769px) {
+            .page-content { overflow-y: auto; }
+            .page-content::-webkit-scrollbar { width: 3px; }
+            .page-content::-webkit-scrollbar-thumb { background: rgba(93, 64, 55, 0.5); border-radius: 2px; }
+        }
 
         h1, h2, h3 { 
             font-family: 'Caveat', cursive; color: #2e1503; 
@@ -82,9 +189,7 @@
         h1 { font-size: 30px; margin-top: 25%; }
         h2 { font-size: 26px; margin-top: 15px; }
         h3 { font-size: 20px; color: #4e342e; margin-top: 10px; }
-
-𝖋𝖎𝖑𝖈𝖍𝖍𝖍, [30.08.2026 18:46]
-p, li { 
+        p, li { 
             font-family: 'Neucha', cursive; font-size: 17px; 
             line-height: 1.25; text-align: left; margin-bottom: 8px; color: #1a0f08;
         }
@@ -97,7 +202,6 @@ p, li {
         .cover h1, .cover h2 { color: #d4af37; border-bottom: none; text-shadow: 2px 2px 4px #000;}
         .section-title { text-align: center; color: #5d4037; margin-top: 20px; font-weight: bold; font-family: 'Caveat', cursive; font-size: 24px;}
         
-        /* Стили для иллюстраций рас */
         .lore-img {
             width: 100%;
             border-radius: 4px;
@@ -108,8 +212,19 @@ p, li {
             display: block;
         }
 
-        /* Невидимый класс для системных ссылок */
         .sys-cite { display: none; }
+        
+        /* === МОБИЛЬНЫЕ СТИЛИ (компактнее, чтобы текст влезал без скролла) === */
+        @media (max-width: 768px) {
+            .page { padding: 10px; }
+            h1 { font-size: 22px; margin-top: 15%; }
+            h2 { font-size: 20px; margin-top: 10px; }
+            h3 { font-size: 17px; }
+            p, li { font-size: 14px; line-height: 1.2; margin-bottom: 5px; }
+            ul { padding-left: 12px; }
+            .section-title { font-size: 20px; margin-top: 10px; }
+            .lore-img { margin: 6px 0; }
+        }
     </style>
 </head>
 <body>
@@ -121,13 +236,22 @@ p, li {
     </div>
 
     <div id="book-wrapper">
+        <!-- CSS-свеча вместо внешнего GIF -->
         <div class="candle-container">
-            <img src="https://i.gifer.com/origin/79/793132e08e6c793ff062bb22a46e12f0_w200.gif" alt="Candle" style="width: 120px;">
+            <div class="candle">
+                <div class="candle-glow"></div>
+                <div class="flame-wrap">
+                    <div class="flame-aura"></div>
+                    <div class="flame-core"></div>
+                </div>
+                <div class="wick"></div>
+                <div class="wax"></div>
+            </div>
         </div>
 
         <div id="book">
             <!-- Обложка -->
-            <div class="page cover">
+            <div class="page cover" data-density="hard">
                 <div class="page-content">
                     <h1>Летопись Аурхейма</h1>
                     <h2>Расы, Локации и Бестиарий</h2>
@@ -154,9 +278,7 @@ p, li {
                 <div class="page-content">
                     <h2>2. Тёмные эльфы (Умбрарас)</h2>
                     <img src="IMG_20260830_171126.jpg" class="lore-img" alt="Тёмные эльфы"> <span class="sys-cite">[span_1](start_span)[span_1](end_span)</span>
-
-𝖋𝖎𝖑𝖈𝖍𝖍𝖍, [30.08.2026 18:46]
-<p><b>Стиль игры:</b> Скрытность, Убийцы (Ассасины), Дебаффы.</p>
+                    <p><b>Стиль игры:</b> Скрытность, Убийцы (Ассасины), Дебаффы.</p>
                     <p><b>Доступные стихии:</b> Лёд (Основная), Тьма (Девиантная).</p>
                     <p><b>Полный запрет:</b> Огонь, Свет, Жизнь, Воздух, Земля, Вода.</p>
                     <p><b>Механика:</b> Магия Тьмы накладывает эффекты кровотечения и слепоты, а Лёд снижает скорость врагов. Тёмные эльфы бьют редко, но в спину и с огромным критическим уроном.</p>
@@ -188,10 +310,7 @@ p, li {
                     <p><b>Полный запрет:</b> Свет, Тьма, Смерть, Лёд, Огонь. (Эти элементы требуют слишком глубокой концентрации или искусственного преломления Эфира, что противоречит их инстинктам).</p>
                     <p><b>Механика:</b> Заклинания Зверолюдов работают как селф-баффы (усиления на себя). Например, заклинание «Поступь Ветра» не наносит урон Воздухом, а дает Игроку шанс 50% уклониться от следующей атаки и нанести два удара когтями/клинками за один ход.</p>
                     <p><b>Пассивный бонус — «Животный Инстинкт»:</b> Базовый шанс уклонения от любых физических и направленных магических атак увеличен на 15%. Если Зверолюд успешно уклоняется от удара, его следующая атака в этом же ходу гарантированно накладывает дебафф «Рваная рана» (Кровотечение, наносящее урон каждый ход).</p>
-                    <p><b>Активный навык — «Охотничий Раж»:</b> Навык снятия контроля и взрывного урона. Активация мгновенно снимает со Зверолюда любые эффекты контроля (Оглушение, Опутывание, Заморозка) и позволяет в этот же ход нанести серию из 3-х быстрых физических ударов.
-
-𝖋𝖎𝖑𝖈𝖍𝖍𝖍, [30.08.2026 18:46]
-Отличный скилл, чтобы вырваться из ловушки Эльфа или Тёмного мага и сразу же наказать обидчика.</p>
+                    <p><b>Активный навык — «Охотничий Раж»:</b> Навык снятия контроля и взрывного урона. Активация мгновенно снимает со Зверолюда любые эффекты контроля (Оглушение, Опутывание, Заморозка) и позволяет в этот же ход нанести серию из 3-х быстрых физических ударов. Отличный скилл, чтобы вырваться из ловушки Эльфа или Тёмного мага и сразу же наказать обидчика.</p>
                 </div>
             </div>
 
@@ -238,8 +357,7 @@ p, li {
                         <li><b>Рынок Утопленника:</b> Черный рынок, скрытый в затопленных пещерах под портом, где идет торговля нелегальными мана-кристаллами и ядами тёмных эльфов.</li>
                     </ul>
 
-𝖋𝖎𝖑𝖈𝖍𝖍𝖍, [30.08.2026 18:46]
-<h2>🌲 Лесной Домен Элдоран (Эльфы)</h2>
+                    <h2>🌲 Лесной Домен Элдоран (Эльфы)</h2>
                     <h3>3. Сильванар — Сердце Леса</h3>
                     <p><b>Суть локации:</b> Столица эльфов, которая была не построена, а выращена с помощью вековой магии Земли и Воды из гигантских Железных Деревьев.</p>
                     <p><b>Архитектура и атмосфера:</b> Отсутствие углов, только плавные природные линии. Мягкий зеленый свет днем и биолюминесценция ночью. Густой, влажный воздух с ароматами древности, хвои и меда.</p>
@@ -281,9 +399,7 @@ p, li {
                     <h3>6. Вулканическая Цитадель Кар-Орот</h3>
                     <p><b>Суть локации:</b> Город-кузница, монументально выдолбленный внутри огромного спящего вулкана.</p>
                     <p><b>Архитектура и атмосфера:</b> Грубые, массивные здания и огромные двери из черного обсидиана и базальта. Невыносимая жара, сухой воздух с запахом серы, пота и раскаленного металла. Освещение обеспечивают естественные потоки магмы, они же служат печами для ковки. Постоянный гул мехов и звон молотов.</p>
-
-𝖋𝖎𝖑𝖈𝖍𝖍𝖍, [30.08.2026 18:46]
-<p><b>Общество и быт:</b> Военизированное общество кузнецов и воинов с тяжелой комплекцией. Все споры и вопросы лидерства решаются исключительно через поединки.</p>
+                    <p><b>Общество и быт:</b> Военизированное общество кузнецов и воинов с тяжелой комплекцией. Все споры и вопросы лидерства решаются исключительно через поединки.</p>
                     <p><b>Ключевые объекты и особенности:</b></p>
                     <ul>
                         <li><b>Арена Пепла:</b> Огромный кратер в центре города для испытаний нового оружия и боев на магии Огня и Молний, из-за чего под сводами пещеры постоянно собираются грозовые тучи.</li>
@@ -327,8 +443,7 @@ p, li {
                 </div>
             </div>
 
-𝖋𝖎𝖑𝖈𝖍𝖍𝖍, [30.08.2026 18:46]
-<div class="page">
+            <div class="page">
                 <div class="page-content">
                     <h3>🎐 Кольцо Золотого Ветра (Великий Базар)</h3>
                     <p>Торговое сердце города, раскинувшееся на многоуровневых террасах, обвивающих центральную часть Аэтерона.</p>
@@ -368,9 +483,7 @@ p, li {
             </div>
 
             <!-- РАЗДЕЛ 3: БЕСТИАРИЙ -->
-
-𝖋𝖎𝖑𝖈𝖍𝖍𝖍, [30.08.2026 18:46]
-<div class="page">
+            <div class="page">
                 <div class="page-content">
                     <div class="section-title">~ Книга Третья: Бестиарий ~</div>
                     <p>Мир Аурхейма теперь разделен на зоны активности разного уровня. Эфирные мутации породили ужасающих созданий. Ниже представлены ключевые биомы, рядовые противники (мобы) и владыки локаций (боссы).</p>
@@ -421,8 +534,7 @@ p, li {
                 </div>
             </div>
 
-𝖋𝖎𝖑𝖈𝖍𝖍𝖍, [30.08.2026 18:46]
-<div class="page">
+            <div class="page">
                 <div class="page-content">
                     <p><b>Механика боя (Никселия):</b></p>
                     <ul>
@@ -470,8 +582,7 @@ p, li {
                         <li><b>Гомункул-Отступник</b> (Ур. 18-24, Слож. 30): Брошенный эксперимент магов Академии. Антропоморфное существо, способное копировать базовые заклинания Игроков.</li>
                     </ul>
 
-𝖋𝖎𝖑𝖈𝖍𝖍𝖍, [30.08.2026 18:46]
-<h3>💀 БОСС: Амальгама, Сгусток Отчаяния</h3>
+                    <h3>💀 БОСС: Амальгама, Сгусток Отчаяния</h3>
                     <p>Огромная масса, состоящая из выброшенных зелий, костей мутантов и бракованных големов. Обитает в Главном Резервуаре канализации.</p>
                     <p><b>Уровень:</b> 25. <b>Сложность:</b> 40/100</p>
                     <p><b>Характеристики:</b> Медленный, но обладает высокой регенерацией. Уязвим к Огню.</p>
@@ -524,9 +635,7 @@ p, li {
                     <ul>
                         <li><b>Утопленный Мертвец</b> (Ур. 45-48, Слож. 50): Нежить, обросшая водорослями. Двигается медленно, но притягивает Игроков ржавыми цепями (хук).</li>
                         <li><b>Кошмарный Удильщик</b> (Ур. 52-56, Слож. 65): Амфибия. На суше неуклюжа, но в воде смертоносна. Использует девиантную магию Света на своей "удочке", чтобы гипнотизировать Игроков и тянуть их на глубину.</li>
-
-𝖋𝖎𝖑𝖈𝖍𝖍𝖍, [30.08.2026 18:46]
-<li><b>Шипастая Сирена</b> (Ур. 58-62, Слож. 70): Выглядит как прекрасная русалка издалека, вблизи — монстр с пастью пиявки. Издает крик, прерывающий чтение заклинаний магов (Сайленс).</li>
+                        <li><b>Шипастая Сирена</b> (Ур. 58-62, Слож. 70): Выглядит как прекрасная русалка издалека, вблизи — монстр с пастью пиявки. Издает крик, прерывающий чтение заклинаний магов (Сайленс).</li>
                         <li><b>Коралловый Краб-Крепость</b> (Ур. 60-65, Слож. 75): Гигантский краб с куском разрушенной башни на панцире. Выступает как мини-танк: блокирует проходы, имеет огромный показатель защиты.</li>
                     </ul>
                 </div>
@@ -543,7 +652,7 @@ p, li {
                         <li><b>Прилив Смерти:</b> Арена начинает затапливаться ядовитой водой. Игрокам необходимо забираться на всплывающие обломки кораблей, чтобы выжить.</li>
                     </ul>
 
-                    <h2>✨ Иллюзорные Топи (Ур. 65–85)</h2>
+                                    <h2>✨ Иллюзорные Топи (Ур. 65–85)</h2>
                     <p>Светящиеся болота, густой туман, поля гигантских одуванчиков. Эфир здесь насыщен девиантной магией Света и Иллюзий. Монстры часто выглядят безобидно.</p>
                     
                     <h3>Рядовые противники</h3>
@@ -576,9 +685,7 @@ p, li {
                 <div class="page-content">
                     <h2>🛤️ Случайные столкновения</h2>
                     <p>Эти монстры могут напасть на Странников во время банального перемещения между локациями на Имперских Трактах. Уровень этих мобов адаптируется (скейлится) под уровень группы.</p>
-
-𝖋𝖎𝖑𝖈𝖍𝖍𝖍, [30.08.2026 18:46]
-<ul>
+                    <ul>
                         <li><b>Эфирный Наркоман (Бандит)</b> (Уровень группы -2, Слож. 30): Люди или эльфы, подсевшие на употребление сырого Эфира. Они слабые, но атакуют толпой и после смерти взрываются нестабильной магией.</li>
                         <li><b>Дикий Грифон</b> (Уровень группы +3, Слож. 55): Нападает с воздуха. Если у Игрока мало здоровья, Грифон может схватить его когтями, поднять высоко в небо и бросить вниз.</li>
                         <li><b>Механический Патрульный</b> (Равен уровню группы, Слож. 60): Древний имперский голем, у которого сбились настройки "свой-чужой". Очень много брони. Восприимчив к заклинаниям Молнии (они его замыкают и станят).</li>
@@ -617,9 +724,7 @@ p, li {
                 <div class="page-content">
                     <h3>💀 БОСС: Фаргос, Владыка Лавин</h3>
                     <p>Древний йети-мутант, в груди которого застрял осколок сломанных Врат Пути, даровав ему разум и контроль над гравитацией снега. Обитает в гигантском ледяном кратере.</p>
-
-𝖋𝖎𝖑𝖈𝖍𝖍𝖍, [30.08.2026 18:46]
-<p><b>Уровень:</b> 60. <b>Сложность:</b> 80</p>
+                    <p><b>Уровень:</b> 60. <b>Сложность:</b> 80</p>
                     <p><b>Механика боя:</b></p>
                     <ul>
                         <li><b>Ледяная Броня:</b> Босс начинает бой с щитом, который поглощает 90% любого урона. Щит можно разбить только дробящим оружием (молоты, булавы) или взрывчаткой.</li>
@@ -665,9 +770,8 @@ p, li {
                 <div class="page-content">
                     <h2>📜 Запретный Полигон (Ур. 25–45)</h2>
                     <p>Разрушенные башни, парящие библиотеки, зараженные лаборатории. Когда-то это был испытательный полигон Академии Империи, но после серии неудачных экспериментов с Тьмой и Некромантией его изолировали. Теперь это рай для мародеров и любителей древних свитков.</p>
-
-𝖋𝖎𝖑𝖈𝖍𝖍𝖍, [30.08.2026 18:46]
-<h3>Рядовые противники</h3>
+                    
+                    <h3>Рядовые противники</h3>
                     <ul>
                         <li><b>Оживший Гримуар</b> (Ур. 25-28, Слож. 35): Летающая книга. Беспорядочно кастует заклинания Базовых Элементов 1-го уровня. Если ее не убить быстро, может скастовать самонаводящийся огненный шар.</li>
                         <li><b>Сгусток Чернил (Аномалия)</b> (Ур. 30-34, Слож. 40): Чёрная лужа, принимающая форму щупалец. Атакует Игроков, накладывая дебафф «Слепота» (сильно сужает радиус обзора) и снимает баффы на защиту.</li>
@@ -712,9 +816,7 @@ p, li {
                 <div class="page-content">
                     <h3>💀 БОСС: Мор'Гур, Древний Ужас Глубин</h3>
                     <p>Ктулхоподобный кракен, спящий на дне самой глубокой впадины. Чтобы бросить ему вызов, группе Игроков нужно активировать четыре подводных обелиска. Это Рейдовый Босс.</p>
-
-𝖋𝖎𝖑𝖈𝖍𝖍𝖍, [30.08.2026 18:46]
-<p><b>Уровень:</b> 100. <b>Сложность:</b> 100/100</p>
+                    <p><b>Уровень:</b> 100. <b>Сложность:</b> 100/100</p>
                     <p><b>Механика боя:</b></p>
                     <ul>
                         <li><b>Давление Бездны:</b> На протяжении всего боя Игроки получают периодический урон, который со временем усиливается. Бой нужно закончить до того, как у лекарей закончится мана (DPS-check фаза).</li>
@@ -737,7 +839,7 @@ p, li {
             </div>
 
             <!-- Задняя обложка -->
-            <div class="page cover">
+            <div class="page cover" data-density="hard">
                 <div class="page-content" style="display: flex; flex-direction: column; align-items: center; justify-content: center;">
                     <h1>Конец Летописи</h1>
                 </div>
@@ -746,8 +848,8 @@ p, li {
     </div>
 
     <!-- Аудиоэффекты -->
-    <audio id="audio-flip" src="https://upload.wikimedia.org/wikipedia/commons/f/f6/Page_turn.ogg"></audio>
-    <audio id="audio-ambient" src="https://upload.wikimedia.org/wikipedia/commons/4/41/Fire_01.ogg" loop></audio>
+    <audio id="audio-flip" src="https://upload.wikimedia.org/wikipedia/commons/f/f6/Page_turn.ogg" preload="auto"></audio>
+    <audio id="audio-ambient" src="https://upload.wikimedia.org/wikipedia/commons/4/41/Fire_01.ogg" loop preload="auto"></audio>
 
     <script>
         try { window.Telegram.WebApp.expand(); } catch (e) {}
@@ -756,14 +858,41 @@ p, li {
         const bookWrapper = document.getElementById('book-wrapper');
         const flipSound = document.getElementById('audio-flip');
         const ambientSound = document.getElementById('audio-ambient');
-        ambientSound.volume = 0.4;
+        ambientSound.volume = 0.3;
+
+        // Вспомогательная функция безопасного воспроизведения
+        function safePlay(audio) {
+            if (!audio) return;
+            audio.currentTime = 0;
+            const playPromise = audio.play();
+            if (playPromise !== undefined) {
+                playPromise.catch(function(err) {
+                    console.log('Audio play failed (likely needs user interaction first):', err);
+                });
+            }
+        }
 
         startBtn.addEventListener('click', () => {
             startScreen.style.display = 'none';
             bookWrapper.style.display = 'block';
-            ambientSound.play().catch(e => console.log("Audio failed:", e));
+            
+            // Запускаем фоновый звук
+            safePlay(ambientSound);
 
-            const pageFlip = new St.PageFlip(document.getElementById('book'), {
+            // ВАЖНО: даём браузеру время отрисовать DOM перед инициализацией PageFlip
+            // иначе размеры будут нулевыми и листание сломается
+            requestAnimationFrame(() => {
+                setTimeout(() => {
+                    initBook();
+                }, 100);
+            });
+        });
+
+        function initBook() {
+            const bookEl = document.getElementById('book');
+            const pages = document.querySelectorAll('.page');
+
+            const pageFlip = new St.PageFlip(bookEl, {
                 width: 320, 
                 height: 480, 
                 size: "stretch",
@@ -772,16 +901,34 @@ p, li {
                 minHeight: 400, 
                 maxHeight: 900,
                 showCover: true, 
-                usePortrait: true, // ВАЖНО: Фикс для смартфонов (строго одна страница на экране)
-                mobileScrollSupport: false
+                usePortrait: true,
+                mobileScrollSupport: false,
+                swipeDistance: 50,        // Увеличили порог свайпа для точности
+                drawShadow: true,
+                maxShadowOpacity: 0.5,    // Мягче тени
+                flippingTime: 800,        // Чуть быстрее анимация
+                autoSize: false,
+                startPage: 0
             });
 
-            pageFlip.loadFromHTML(document.querySelectorAll('.page'));
+            // Защита от разницы в названии метода между версиями библиотеки
+            if (pageFlip.loadFromHTML) {
+                pageFlip.loadFromHTML(pages);
+            } else if (pageFlip.loadFromHtml) {
+                pageFlip.loadFromHtml(pages);
+            } else {
+                console.error('PageFlip load method not found');
+                return;
+            }
+
             pageFlip.on('flip', () => {
-                flipSound.currentTime = 0;
-                flipSound.play().catch(err => console.log(err));
+                safePlay(flipSound);
             });
-        });
+
+            // Для отладки
+            console.log('Book initialized. Pages:', pageFlip.getPageCount ? pageFlip.getPageCount() : 'N/A');
+        }
     </script>
 </body>
 </html>
+
