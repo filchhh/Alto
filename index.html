@@ -12,1153 +12,517 @@
         * { box-sizing: border-box; margin: 0; padding: 0; }
         
         body {
-            margin: 0; padding: 0; background-color: #050505; color: #2e1503;
-            display: flex; justify-content: center; align-items: center; 
-            height: 100vh; overflow: hidden;
-            background-image: url('https://www.transparenttextures.com/patterns/wood-pattern.png');
-            touch-action: manipulation;
-            -webkit-touch-callout: none;
-            -webkit-user-select: none;
-            user-select: none;
+            background-color: #060403;
+            color: #2b1408;
+            display: flex;
+            justify-content: center;
+            align-items: center; 
+            height: 100vh;
+            overflow: hidden;
+            background-image: radial-gradient(circle at 20% 50%, rgba(35, 18, 8, 0.6) 0%, #050302 80%);
             font-family: 'Neucha', cursive;
+            user-select: none;
+            -webkit-user-select: none;
         }
 
         #start-screen {
-            position: absolute; z-index: 1000; background: rgba(0, 0, 0, 0.95);
-            width: 100%; height: 100%; display: flex; flex-direction: column;
-            justify-content: center; align-items: center; color: #d4af37;
-            font-family: 'Caveat', cursive; text-align: center;
+            position: absolute;
+            z-index: 1000;
+            background: rgba(8, 5, 3, 0.96);
+            width: 100%;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            color: #d8b26e;
+            text-align: center;
+            padding: 20px;
         }
 
         #start-btn {
-            background: #5d4037; color: #e5d8b8; border: 2px solid #d4af37;
-            padding: 15px 30px; font-size: 24px; font-family: 'Caveat', cursive;
-            cursor: pointer; border-radius: 5px; box-shadow: 0 0 20px rgba(212, 175, 55, 0.4);
-            transition: 0.3s; margin-top: 20px;
-            touch-action: manipulation;
+            background: linear-gradient(180deg, #4a2810 0%, #291205 100%);
+            color: #f1dfbc;
+            border: 2px solid #b8860b;
+            padding: 14px 34px;
+            font-size: 24px;
+            font-family: 'Caveat', cursive;
+            cursor: pointer;
+            border-radius: 6px;
+            box-shadow: 0 0 25px rgba(212, 160, 23, 0.4);
+            margin-top: 25px;
+            transition: transform 0.2s, box-shadow 0.2s;
         }
 
-        #start-btn:hover, #start-btn:active { background: #3e2723; transform: scale(1.05); }
-        
+        #start-btn:active { transform: scale(0.97); }
+
         #book-wrapper { 
             display: none; 
-            width: 100%; height: 100%; 
+            width: 100%;
+            height: 100%; 
             position: relative;
-            overflow: hidden;
             justify-content: center;
             align-items: center;
         }
 
-        /* === СВЕЧА — левый нижний угол, крупнее === */
-        .candle-container {
-            position: absolute; 
-            left: 12px; 
-            bottom: 18px; 
-            z-index: 50; 
+        /* === АНИМЕ-СВЕЧА С ПОДТЕКАМИ И ПЛАМЕНЕМ === */
+        .candle-rig {
+            position: absolute;
+            left: 18px;
+            bottom: 22px;
+            z-index: 30;
             pointer-events: none;
-            filter: drop-shadow(0 0 18px rgba(255, 140, 0, 0.7));
-            transform: scale(1.15);
-        }
-        
-        .candle {
-            position: relative;
-            width: 52px;
-            height: 160px;
             display: flex;
             flex-direction: column;
             align-items: center;
         }
-        .wax {
-            width: 38px;
-            height: 110px;
-            background: linear-gradient(to right, #c9b896 0%, #f5f0e1 40%, #e8d9b8 70%, #b8a078 100%);
-            border-radius: 4px 4px 2px 2px;
-            box-shadow: 
-                inset -5px 0 10px rgba(0,0,0,0.2),
-                inset 3px 0 6px rgba(255,255,255,0.15),
-                0 0 20px rgba(255,140,0,0.25);
+
+        .candle-body {
             position: relative;
-        }
-        .wax::before {
-            content: '';
-            position: absolute;
-            top: -5px; left: 1px; right: 1px;
-            height: 10px;
-            background: linear-gradient(to right, #d4c4a8, #fff8ee, #d4c4a8);
-            border-radius: 50%;
-        }
-        .wax::after {
-            /* капли воска */
-            content: '';
-            position: absolute;
-            bottom: 8px; left: -3px;
-            width: 8px; height: 22px;
-            background: linear-gradient(#e8d9b8, #c9b896);
-            border-radius: 0 0 6px 6px;
-            opacity: 0.85;
-        }
-        .wick {
-            width: 3px;
-            height: 12px;
-            background: #1a1a1a;
-            margin-bottom: -2px;
-            z-index: 2;
-            border-radius: 1px;
-        }
-        .flame-wrap {
-            position: relative;
-            width: 28px;
-            height: 42px;
-            margin-bottom: -4px;
-            z-index: 3;
-        }
-        .flame-core {
-            position: absolute;
-            bottom: 0;
-            left: 50%;
-            transform: translateX(-50%);
-            width: 16px;
-            height: 32px;
-            background: radial-gradient(ellipse at center bottom, #fff 0%, #ffeb3b 30%, #ff9800 70%, #e65100 100%);
-            border-radius: 50% 50% 50% 50% / 60% 60% 40% 40%;
-            filter: blur(0.4px);
-            animation: flicker 0.14s infinite alternate;
-        }
-        .flame-aura {
-            position: absolute;
-            bottom: -3px;
-            left: 50%;
-            transform: translateX(-50%);
-            width: 28px;
-            height: 42px;
-            background: radial-gradient(ellipse at center bottom, rgba(255,200,0,0.85) 0%, rgba(255,100,0,0.45) 45%, transparent 100%);
-            border-radius: 50% 50% 50% 50% / 60% 60% 40% 40%;
-            filter: blur(4px);
-            animation: flicker 0.2s infinite alternate-reverse;
-        }
-        .candle-glow {
-            position: absolute;
-            top: -40px;
-            left: 50%;
-            transform: translateX(-50%);
-            width: 140px;
-            height: 140px;
-            background: radial-gradient(circle, rgba(255,160,0,0.4) 0%, rgba(255,80,0,0.12) 40%, transparent 70%);
-            border-radius: 50%;
-            animation: pulse 2.8s infinite ease-in-out;
-            pointer-events: none;
-        }
-        
-        @keyframes flicker {
-            0% { transform: translateX(-50%) scale(1) rotate(-1.5deg); opacity: 0.92; }
-            100% { transform: translateX(-50%) scale(1.07) rotate(2deg); opacity: 1; }
-        }
-        @keyframes pulse {
-            0%, 100% { opacity: 0.55; transform: translateX(-50%) scale(1); }
-            50% { opacity: 0.95; transform: translateX(-50%) scale(1.12); }
-        }
-        
-        @media (max-width: 480px) {
-            .candle-container { 
-                left: 6px; bottom: 10px; 
-                transform: scale(0.75); 
-            }
+            width: 32px;
+            height: 115px;
+            background: linear-gradient(90deg, #d3c4a5 0%, #fbf6ec 45%, #e1d3b7 80%, #b8a682 100%);
+            border-radius: 4px 4px 6px 6px;
+            box-shadow: 0 0 15px rgba(255, 150, 40, 0.25), inset -3px 0 6px rgba(0,0,0,0.25);
         }
 
-        /* === КНИГА === */
+        .wax-drip-left {
+            position: absolute;
+            top: 14px;
+            left: -4px;
+            width: 7px;
+            height: 38px;
+            background: #fbf6ec;
+            border-radius: 0 0 6px 6px;
+            box-shadow: -1px 2px 4px rgba(0,0,0,0.2);
+        }
+
+        .wax-drip-right {
+            position: absolute;
+            top: 26px;
+            right: -3px;
+            width: 6px;
+            height: 28px;
+            background: #e8dbbe;
+            border-radius: 0 0 5px 5px;
+        }
+
+        .wick {
+            width: 3px;
+            height: 14px;
+            background: #24140a;
+            border-radius: 2px;
+            margin-bottom: -3px;
+        }
+
+        .flame {
+            width: 18px;
+            height: 36px;
+            position: relative;
+            background: radial-gradient(ellipse at 50% 80%, #ffffff 0%, #ffdf6d 35%, #ff7700 75%, rgba(200, 30, 0, 0.8) 100%);
+            border-radius: 50% 50% 35% 35% / 60% 60% 40% 40%;
+            filter: drop-shadow(0 0 12px rgba(255, 140, 0, 0.95));
+            animation: animeFlicker 0.1s infinite alternate ease-in-out;
+            transform-origin: center bottom;
+        }
+.flame-halo {
+            position: absolute;
+            top: -45px;
+            width: 140px;
+            height: 140px;
+            background: radial-gradient(circle, rgba(255, 170, 40, 0.28) 0%, rgba(255, 110, 0, 0.08) 45%, transparent 70%);
+            border-radius: 50%;
+            pointer-events: none;
+            animation: haloGlow 2.5s infinite ease-in-out;
+        }
+
+        @keyframes animeFlicker {
+            0% { transform: scale(1) rotate(-1deg); }
+            100% { transform: scale(1.06, 0.96) rotate(1.5deg); }
+        }
+
+        @keyframes haloGlow {
+            0%, 100% { opacity: 0.6; transform: scale(0.95); }
+            50% { opacity: 0.95; transform: scale(1.08); }
+        }
+
+        @media (max-width: 600px) {
+            .candle-rig { transform: scale(0.7); left: 2px; bottom: 8px; }
+        }
+
+        /* === КНИГА И СТРАНИЦЫ === */
         #book-stage {
             position: relative;
-            width: min(92vw, 420px);
-            height: min(88vh, 640px);
-            perspective: 1400px;
-            display: flex;
-            justify-content: center;
-            align-items: center;
+            width: min(94vw, 420px);
+            height: min(92vh, 670px);
+            perspective: 1600px;
         }
 
         .page {
             position: absolute;
             width: 100%;
             height: 100%;
-            background-color: #e3d2b3;
+            background-color: #dfcdab;
             background-image: 
-                url('https://www.transparenttextures.com/patterns/aged-paper.png'),
-                radial-gradient(ellipse at 30% 20%, transparent 50%, rgba(78, 52, 46, 0.35) 100%),
-                linear-gradient(135deg, rgba(93,64,55,0.08) 0%, transparent 40%);
+                radial-gradient(circle at 50% 50%, rgba(255,255,255,0.15), transparent),
+                radial-gradient(ellipse at center, transparent 60%, rgba(68, 38, 15, 0.55) 100%),
+                url('https://www.transparenttextures.com/patterns/aged-paper.png');
             box-shadow: 
-                inset 0 0 50px rgba(78, 52, 46, 0.7),
-                0 8px 25px rgba(0,0,0,0.75),
-                0 0 0 1px #5d4037;
-            padding: 0;
-            overflow: hidden;
-            border: 1px solid #4e342e;
-            transform-origin: left center;
-            backface-visibility: hidden;
+                inset 0 0 50px rgba(58, 30, 10, 0.7),
+                0 10px 30px rgba(0, 0, 0, 0.9);
+            border: 1px solid #542f13;
+            border-radius: 3px 10px 10px 3px;
+            padding: 16px 14px 40px 18px;
+            display: none;
             opacity: 0;
-            pointer-events: none;
-            transition: opacity 0.15s ease;
+            transform-origin: left center;
+            overflow: hidden;
         }
 
         .page.active {
+            display: block;
             opacity: 1;
-            pointer-events: auto;
             z-index: 5;
         }
 
-        /* Анимация перелистывания */
-        .page.flip-out-right {
-            animation: flipOutRight 0.55s ease-in forwards;
+        .page.flip-next {
+            display: block;
+            animation: turnPageNext 0.45s cubic-bezier(0.4, 0, 0.2, 1) forwards;
             z-index: 10;
-        }
-        .page.flip-out-left {
-            animation: flipOutLeft 0.55s ease-in forwards;
-            z-index: 10;
-        }
-        .page.flip-in-right {
-            animation: flipInRight 0.55s ease-out forwards;
-            z-index: 6;
-        }
-        .page.flip-in-left {
-            animation: flipInLeft 0.55s ease-out forwards;
-            z-index: 6;
         }
 
-        @keyframes flipOutRight {
+        .page.flip-prev {
+            display: block;
+            animation: turnPagePrev 0.45s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+            z-index: 10;
+        }
+
+        @keyframes turnPageNext {
             0% { transform: rotateY(0deg); opacity: 1; }
-            100% { transform: rotateY(-95deg); opacity: 0; }
+            100% { transform: rotateY(-90deg); opacity: 0.1; }
         }
-        @keyframes flipOutLeft {
-            0% { transform: rotateY(0deg); opacity: 1; }
-            100% { transform: rotateY(95deg); opacity: 0; }
-        }
-        @keyframes flipInRight {
-            0% { transform: rotateY(85deg); opacity: 0; }
-            100% { transform: rotateY(0deg); opacity: 1; }
-        }
-        @keyframes flipInLeft {
-            0% { transform: rotateY(-85deg); opacity: 0; }
+
+        @keyframes turnPagePrev {
+            0% { transform: rotateY(-90deg); opacity: 0.1; }
             100% { transform: rotateY(0deg); opacity: 1; }
         }
 
-        /* Чернильные кляксы */
-        .page::before {
-            content: "";
+        /* Пятна чернил */
+        .ink-blot {
             position: absolute;
-            pointer-events: none;
-            z-index: 1;
-            opacity: 0.13;
-            background: radial-gradient(ellipse at center, #1a0f08 0%, transparent 70%);
-            width: 70px; height: 55px;
-            top: 12%; right: 8%;
-            transform: rotate(25deg);
-            border-radius: 40% 60% 55% 45%;
-        }
-        .page:nth-child(3n)::before {
-            top: auto; bottom: 18%; left: 6%; right: auto;
-            width: 55px; height: 70px;
-            transform: rotate(-35deg);
-            opacity: 0.1;
-        }
-        .page:nth-child(5n)::before {
-            top: 45%; left: 15%; right: auto;
-            width: 90px; height: 40px;
-            transform: rotate(10deg);
-            opacity: 0.08;
-        }
-        .page:nth-child(4n)::after {
-            content: "";
-            position: absolute;
-            pointer-events: none;
-            z-index: 1;
-            width: 45px; height: 45px;
-            bottom: 10%; right: 12%;
-            background: radial-gradient(circle, rgba(30,15,5,0.18) 0%, transparent 65%);
             border-radius: 50%;
-            opacity: 0.7;
+            background: rgba(30, 12, 4, 0.12);
+            filter: blur(1px);
+            pointer-events: none;
+            z-index: 1;
         }
 
-        .page-content { 
-            height: 100%; 
-            padding: 18px 16px 28px 18px;
+        .page-content {
+            height: calc(100% - 24px);
             overflow-y: auto;
             overflow-x: hidden;
-            word-wrap: break-word;
+            padding-right: 4px;
             position: relative;
             z-index: 2;
-            -webkit-overflow-scrolling: touch;
-        }
-        
-        .page-content::-webkit-scrollbar { width: 4px; }
-        .page-content::-webkit-scrollbar-track { background: transparent; }
-        .page-content::-webkit-scrollbar-thumb { 
-            background: rgba(93, 64, 55, 0.45); 
-            border-radius: 2px; 
         }
 
-        h1, h2, h3 { 
-            font-family: 'Caveat', cursive; color: #2e1503; 
-            border-bottom: 2px solid rgba(139, 90, 43, 0.28); 
-            padding-bottom: 4px; 
-            text-align: center; 
-            text-shadow: 1px 1px 2px rgba(0,0,0,0.08);
-            margin-bottom: 8px;
-        }
-        h1 { font-size: 28px; margin-top: 18%; line-height: 1.15; }
-        h2 { font-size: 22px; margin-top: 10px; }
-        h3 { font-size: 18px; color: #4e342e; margin-top: 12px; margin-bottom: 6px; }
-        p, li { 
-            font-family: 'Neucha', cursive; 
-            font-size: 15.5px; 
-            line-height: 1.35; 
-            text-align: left; 
-            margin-bottom: 7px; 
-            color: #1a0f08;
-        }
-        ul { padding-left: 16px; margin: 6px 0 10px; }
-        li { margin-bottom: 5px; }
-        
-        .cover { 
-            background-color: #2e1503; 
-            background-image: url('https://www.transparenttextures.com/patterns/leather.png');
-            color: #d4af37; 
-            border: 4px double #d4af37; 
-            box-shadow: inset 0 0 60px #000, 0 8px 30px rgba(0,0,0,0.8);
-        }
-        .cover::before, .cover::after { display: none !important; }
-        .cover h1, .cover h2 { 
-            color: #d4af37; 
-            border-bottom: none; 
-            text-shadow: 2px 2px 5px #000;
-        }
-        .cover .page-content {
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            text-align: center;
-            height: 100%;
-            padding: 30px;
-        }
-        .section-title { 
-            text-align: center; 
-            color: #5d4037; 
-            margin: 8px 0 14px; 
-            font-weight: bold; 
-            font-family: 'Caveat', cursive; 
-            font-size: 22px;
-            border-bottom: none;
-        }
-        
-        .lore-img {
-            width: 100%;
-            max-height: 140px;
-            object-fit: cover;
-            border-radius: 4px;
-            margin: 8px 0 10px;
-            border: 1px solid rgba(93, 64, 55, 0.55);
-            box-shadow: 2px 2px 8px rgba(0,0,0,0.45);
-            filter: sepia(0.25) contrast(1.08) brightness(0.92);
-            display: block;
+        .page-content::-webkit-scrollbar { width: 3px; }
+        .page-content::-webkit-scrollbar-thumb {
+            background: rgba(90, 50, 20, 0.4);
+            border-radius: 3px;
         }
 
-        .sys-cite { display: none; }
-
-        /* === КНОПКИ НАВИГАЦИИ === */
-        .nav-btn {
-            position: absolute;
-            top: 50%;
-            transform: translateY(-50%);
-            z-index: 40;
-            width: 48px;
-            height: 48px;
-            border-radius: 50%;
-            background: rgba(46, 21, 3, 0.82);
-            border: 2px solid #d4af37;
-            color: #d4af37;
-            font-size: 26px;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            box-shadow: 0 0 14px rgba(212, 175, 55, 0.35);
-            transition: background 0.2s, transform 0.15s;
-            touch-action: manipulation;
-            user-select: none;
-            -webkit-tap-highlight-color: transparent;
-        }
-        .nav-btn:hover, .nav-btn:active {
-            background: rgba(93, 64, 55, 0.95);
-            transform: translateY(-50%) scale(1.08);
-        }
-        .nav-btn:disabled {
-            opacity: 0.25;
-            pointer-events: none;
-        }
-        #btn-prev { left: 6px; }
-        #btn-next { right: 6px; }
-
-        .page-indicator {
-            position: absolute;
-            bottom: 10px;
-            left: 50%;
-            transform: translateX(-50%);
-            z-index: 40;
+        h1, h2, h3 {
             font-family: 'Caveat', cursive;
-            font-size: 15px;
-            color: #d4af37;
-            background: rgba(30, 15, 5, 0.7);
-            padding: 3px 12px;
-            border-radius: 12px;
-            border: 1px solid rgba(212, 175, 55, 0.4);
-            pointer-events: none;
+            color: #2b1103;
+            text-align: center;
+            line-height: 1.15;
+            margin-bottom: 8px;
+            border-bottom: 1px solid rgba(120, 70, 25, 0.35);
+            padding-bottom: 3px;
         }
 
-        /* Мобильные правки */
-        @media (max-width: 480px) {
-            #book-stage {
-                width: 96vw;
-                height: 86vh;
-            }
-            .page-content { padding: 12px 11px 24px 12px; }
-            h1 { font-size: 22px; margin-top: 12%; }
-            h2 { font-size: 18px; }
-            h3 { font-size: 16px; }
-            p, li { font-size: 13.5px; line-height: 1.3; margin-bottom: 5px; }
-            .section-title { font-size: 18px; }
-            .lore-img { max-height: 110px; margin: 6px 0 8px; }
-            .nav-btn { width: 42px; height: 42px; font-size: 22px; }
-            #btn-prev { left: 3px; }
-            #btn-next { right: 3px; }
+        h1 { font-size: 32px; margin-top: 40%; }
+        h2 { font-size: 24px; margin-top: 6px; }
+        h3 { font-size: 19px; color: #4e2208; margin-top: 10px; }
+
+        p, li {
+            font-size: 16px;
+            line-height: 1.35;
+            margin-bottom: 7px;
+            color: #1e0d05;
         }
 
-        @media (min-width: 600px) {
-            #book-stage {
-                width: min(90vw, 460px);
-                height: min(90vh, 700px);
-            }
-            p, li { font-size: 16px; }
+        ul { padding-left: 18px; margin-bottom: 8px; }
+.lore-img {
+            width: 100%;
+            max-height: 190px;
+            object-fit: cover;
+            border-radius: 3px;
+            margin: 6px 0 10px;
+            border: 1px solid rgba(80, 40, 15, 0.6);
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+            filter: sepia(0.2) contrast(1.05);
         }
+
+        /* Навигация внутри страниц */
+        .page-footer {
+            position: absolute;
+            bottom: 8px;
+            left: 16px;
+            right: 16px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-family: 'Caveat', cursive;
+            font-size: 18px;
+            color: #6d4220;
+            z-index: 10;
+            border-top: 1px dashed rgba(110, 60, 20, 0.25);
+            padding-top: 4px;
+        }
+
+        .page-btn {
+            background: none;
+            border: none;
+            color: #552709;
+            font-family: 'Caveat', cursive;
+            font-size: 19px;
+            cursor: pointer;
+            padding: 2px 8px;
+            transition: color 0.15s, transform 0.15s;
+        }
+
+        .page-btn:active { transform: scale(0.92); color: #8e3800; }
+        .page-btn.disabled { visibility: hidden; }
+
+        .cover {
+            background: #2b1106 url('https://www.transparenttextures.com/patterns/leather.png');
+            color: #d6b26d;
+            border: 4px double #b8860b;
+            box-shadow: inset 0 0 60px #000, 0 10px 30px rgba(0,0,0,0.9);
+        }
+        .cover h1, .cover h2 { color: #d6b26d; border: none; text-shadow: 2px 2px 6px #000; }
     </style>
 </head>
 <body>
 
     <div id="start-screen">
-        <h2 style="color:#d4af37; border:none; margin-bottom: 24px; font-size: 34px;">Библиотека Арканума</h2>
-        <p style="color:#e5d8b8; font-family: 'Neucha', cursive; font-size: 18px;">Смахните пыль со страниц...</p>
+        <h2 style="font-size: 38px; border:none; margin-bottom: 15px;">Библиотека Арканума</h2>
+        <p style="font-size: 20px; color: #d0be9b;">Позвольте огню рассеять тьму древних страниц...</p>
         <button id="start-btn">Открыть Фолиант</button>
     </div>
 
     <div id="book-wrapper">
-        <!-- Свеча — левый нижний угол -->
-        <div class="candle-container">
-            <div class="candle">
-                <div class="candle-glow"></div>
-                <div class="flame-wrap">
-                    <div class="flame-aura"></div>
-                    <div class="flame-core"></div>
-                </div>
-                <div class="wick"></div>
-                <div class="wax"></div>
+        <!-- Свеча в стиле аниме с каплями и ореолом -->
+        <div class="candle-rig">
+            <div class="flame-halo"></div>
+            <div class="flame"></div>
+            <div class="wick"></div>
+            <div class="candle-body">
+                <div class="wax-drip-left"></div>
+                <div class="wax-drip-right"></div>
             </div>
         </div>
 
         <div id="book-stage">
             <!-- Обложка -->
-            <div class="page cover" data-density="hard">
-                <div class="page-content">
+            <div class="page cover active">
+                <div class="page-content" style="display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center;">
                     <h1>Летопись Аурхейма</h1>
-                    <h2 style="margin-top: 12px;">Расы, Локации и Бестиарий</h2>
+                    <h2 style="margin-top: 15px;">Расы, Локации и Бестиарий</h2>
+                </div>
+                <div class="page-footer">
+                    <span class="page-btn disabled"></span>
+                    <span>1 / 23</span>
+                    <button class="page-btn" onclick="nextPage()">Далее »</button>
                 </div>
             </div>
 
-            <!-- РАЗДЕЛ 1: РАСЫ -->
+            <!-- Люди: Изображение и базовые концепты -->
             <div class="page">
+                <div class="ink-blot" style="width: 50px; height: 50px; top: 18px; right: 15px;"></div>
                 <div class="page-content">
-                    <div class="section-title">~ Книга Первая: Народы Эфира ~</div>
-                    <p>Каждая раса имеет доступ только к определённым веткам навыков.</p>
-                    
-                    <h2>1. Люди (Империя Аквилон)</h2>
+                    <h2>Люди (Империя Аквилон)</h2>
                     <img src="IMG_20260830_171117.jpg" class="lore-img" alt="Люди">
                     <p><b>Стиль игры:</b> Универсалы, Маги-артиллеристы, Паладины.</p>
-                    <p><b>Доступные стихии:</b> Люди физиологически не привязаны к Эфиру, поэтому изучают его как науку. При создании персонажа Игрок-человек обязан выбрать только ОДИН базовый элемент (Огонь, Вода, Воздух или Земля). На высоких уровнях (если вступит в Академию Арканума) может разблокировать одну родственную стихию.</p>
-                    <p><b>Полный запрет (Официально):</b> Тьма и Смерть. (Но в боте можно сделать скрытый класс «Некромант» или «Чернокнижник» для людей-отступников, за которыми будет охотиться стража Империи).</p>
-                    <p><b>Пассивный бонус — «Адаптивность»:</b> Получают на 5% больше опыта (EXP) и золота за победу над монстрами. Имеют один дополнительный слот для экипировки кольца или артефакта.</p>
-                    <p><b>Активный навык — «Резонанс Группы»:</b> Усиливающий бафф. Если в группе с человеком есть представители других рас, их пассивные расовые бонусы временно удваиваются на 3 хода.</p>
+                    <p><b>Доступные стихии:</b> Люди не привязаны к Эфиру биологически и изучают его как точную науку. При сотворении персонаж избирает <b>ОДИН</b> базовый элемент (Огонь, Вода, Воздух или Земля). Лишь высокое признание в Академии Арканума открывает родственную грань.</p>
+                </div>
+                <div class="page-footer">
+                    <button class="page-btn" onclick="prevPage()">« Назад</button>
+                    <span>2 / 23</span>
+                    <button class="page-btn" onclick="nextPage()">Далее »</button>
+                </div>
+            </div>
+<!-- Люди: Пассивки и навыки -->
+            <div class="page">
+                <div class="page-content">
+                    <h2>Люди (Особенности)</h2>
+                    <p><b>Полный запрет (Официально):</b> Тьма и Смерть. Отступники преследуются имперскими инквизиторами без пощады.</p>
+                    <p><b>Пассивный бонус — «Адаптивность»[span_0](start_span)[span_0](end_span):</b> Награда золотом и боевым опытом увеличена на 5% за любые сражения[span_1](start_span)[span_1](end_span). Доступен дополнительный слот под кольцо или древний артефакт[span_2](start_span)[span_2](end_span).</p>
+                    <p><b>Активный навык — «Резонанс Группы»[span_3](start_span)[span_3](end_span):</b> Мощнейший катализатор уз[span_4](start_span)[span_4](end_span). В присутствии иных рас их пассивные природные дары удваивают мощь на 3 хода[span_5](start_span)[span_5](end_span).</p>
+                </div>
+                <div class="page-footer">
+                    <button class="page-btn" onclick="prevPage()">« Назад</button>
+                    <span>3 / 23</span>
+                    <button class="page-btn" onclick="nextPage()">Далее »</button>
                 </div>
             </div>
 
+            <!-- Тёмные эльфы: Арт и суть -->
             <div class="page">
                 <div class="page-content">
-                    <h2>2. Тёмные эльфы (Умбрарас)</h2>
+                    <h2>Тёмные эльфы (Умбрарас)</h2>
                     <img src="IMG_20260830_171126.jpg" class="lore-img" alt="Тёмные эльфы">
                     <p><b>Стиль игры:</b> Скрытность, Убийцы (Ассасины), Дебаффы.</p>
                     <p><b>Доступные стихии:</b> Лёд (Основная), Тьма (Девиантная).</p>
                     <p><b>Полный запрет:</b> Огонь, Свет, Жизнь, Воздух, Земля, Вода.</p>
-                    <p><b>Механика:</b> Магия Тьмы накладывает эффекты кровотечения и слепоты, а Лёд снижает скорость врагов. Тёмные эльфы бьют редко, но в спину и с огромным критическим уроном.</p>
-                    <p><b>Пассивный бонус — «Покров Ночи»:</b> Базовый шанс критического удара увеличен на 10%. В подземных локациях или ночью шанс уклонения дополнительно возрастает.</p>
-                    <p><b>Активный навык — «Теневой Шаг»:</b> Мгновенный рывок за спину врага. Позволяет полностью уклониться от одной направленной атаки и гарантирует, что следующий удар Тёмного эльфа нанесёт критический урон.</p>
+                </div>
+                <div class="page-footer">
+                    <button class="page-btn" onclick="prevPage()">« Назад</button>
+                    <span>4 / 23</span>
+                    <button class="page-btn" onclick="nextPage()">Далее »</button>
                 </div>
             </div>
 
+            <!-- Тёмные эльфы: Механики -->
             <div class="page">
                 <div class="page-content">
-                    <h2>3. Эльфы (Лесной Домен Элдоран)</h2>
+                    <h2>Тёмные эльфы (Навыки)</h2>
+                    <p><b>Механика:</b> Магия Тьмы терзает плоть кровотечениями и слепотой, тогда как Лёд сковывает поступь жертвы. Удары наносятся из засады с колоссальной разрушительной силой.</p>
+                    <p><b>Пассивный бонус — «Покров Ночи»[span_6](start_span)[span_6](end_span):</b> Базовый шанс критического удара увеличен на 10%[span_7](start_span)[span_7](end_span). Тьма пещер и ночная пора кратно умножают уклонение[span_8](start_span)[span_8](end_span).</p>
+                    <p><b>Активный навык — «Теневой Шаг»[span_9](start_span)[span_9](end_span):</b> Мгновенное смещение сквозь мрак за спину цели, парирующее направленный удар и наделяющее следующий выпад абсолютным критическим уроном[span_10](start_span)[span_10](end_span).</p>
+                </div>
+                <div class="page-footer">
+                    <button class="page-btn" onclick="prevPage()">« Назад</button>
+                    <span>5 / 23</span>
+                    <button class="page-btn" onclick="nextPage()">Далее »</button>
+                </div>
+            </div>
+
+            <!-- Эльфы: Арт -->
+            <div class="page">
+                <div class="page-content">
+                    <h2>Эльфы (Домен Элдоран)</h2>
                     <img src="IMG_20260830_171149.jpg" class="lore-img" alt="Эльфы">
-                    <p><b>Стиль игры:</b> Контроль толпы, постепенный урон (Доты), Баффы.</p>
+                    <p><b>Стиль игры:</b> Контроль поля, постепенный урон (Доты), Баффы.</p>
                     <p><b>Доступные стихии:</b> Земля (Основная), Вода (Основная), Воздух (Вспомогательная).</p>
-                    <p><b>Полный запрет:</b> Огонь, Тьма, Смерть, Лёд, Молния. (Магия Жизни под запретом из-за трагедии в Эарлине, за её использование эльфа могут изгнать).</p>
-                    <p><b>Механика:</b> Отличная синергия. Могут намочить врага Водой, а затем опутать корнями (Земля). Заклинания дешёвые по мане, кастуются быстро.</p>
-                    <p><b>Пассивный бонус — «Эфирный Симбиоз»:</b> Постоянная пассивная регенерация маны (MP) и здоровья (HP) каждый ход боя, если Игрок не получал прямого урона в предыдущем ходу.</p>
-                    <p><b>Активный навык — «Живые Путы»:</b> Сильный контроль. Мгновенно опутывает выбранную цель, снижая её защиту от стихий и запрещая использовать навыки перемещения или физические атаки на 1 ход.</p>
+                    <p><b>Полный запрет:</b> Огонь, Тьма, Смерть, Лёд, Молния. Магия Жизни строжайше табуирована из-за трагедии Эарлина[span_11](start_span)[span_11](end_span)[span_12](start_span)[span_12](end_span).</p>
+</div>
+                <div class="page-footer">
+                    <button class="page-btn" onclick="prevPage()">« Назад</button>
+                    <span>6 / 23</span>
+                    <button class="page-btn" onclick="nextPage()">Далее »</button>
                 </div>
             </div>
 
+            <!-- Эльфы: Навыки -->
             <div class="page">
                 <div class="page-content">
-                    <h2>4. Зверолюды</h2>
+                    <h2>Эльфы (Симбиоз)</h2>
+                    <p><b>Механика:</b> Высочайшая гармония первостихий. Враг омывается потоками Воды, а следом сковывается корнями Земли. Мана расходуется бережно и быстро.</p>
+                    <p><b>Пассивный бонус — «Эфирный Симбиоз»[span_13](start_span)[span_13](end_span):</b> Естественное исцеление ран и восстановление маны каждый ход при отсутствии входящих ранений[span_14](start_span)[span_14](end_span).</p>
+                    <p><b>Активный навык — «Живые Путы»[span_15](start_span)[span_15](end_span):</b> Побеги сковывают цель на 1 ход, срезая защиту от природных стихий и накладывая запрет на передвижение и атаки[span_16](start_span)[span_16](end_span).</p>
+                </div>
+                <div class="page-footer">
+                    <button class="page-btn" onclick="prevPage()">« Назад</button>
+                    <span>7 / 23</span>
+                    <button class="page-btn" onclick="nextPage()">Далее »</button>
+                </div>
+            </div>
+
+            <!-- Зверолюды: Арт -->
+            <div class="page">
+                <div class="page-content">
+                    <h2>Зверолюды (Шаманизм крови)</h2>
                     <img src="IMG_20260830_171207.jpg" class="lore-img" alt="Зверолюды">
-                    <p>Зверолюды воспринимают магию не как науку, а как продолжение своего тела. Они редко бросаются заклинаниями на расстоянии, предпочитая направлять Эфир внутрь себя для физического усиления (Шаманизм крови).</p>
-                    <p><b>Стиль игры:</b> Ловкачи, Бойцы ближнего боя с высоким уклонением, Охотники (DPS/Уклонение).</p>
-                    <p><b>Доступные стихии:</b> Воздух (Основная — для молниеносной скорости, прыжков и рывков), Земля (Вспомогательная — для укрепления шкуры, когтей и сокрушительных ударов).</p>
-                    <p><b>Полный запрет:</b> Свет, Тьма, Смерть, Лёд, Огонь. (Эти элементы требуют слишком глубокой концентрации или искусственного преломления Эфира, что противоречит их инстинктам).</p>
-                    <p><b>Механика:</b> Заклинания Зверолюдов работают как селф-баффы (усиления на себя). Например, заклинание «Поступь Ветра» не наносит урон Воздухом, а даёт Игроку шанс 50% уклониться от следующей атаки и нанести два удара когтями/клинками за один ход.</p>
-                    <p><b>Пассивный бонус — «Животный Инстинкт»:</b> Базовый шанс уклонения от любых физических и направленных магических атак увеличен на 15%. Если Зверолюд успешно уклоняется от удара, его следующая атака в этом же ходу гарантированно накладывает дебафф «Рваная рана» (Кровотечение, наносящее урон каждый ход).</p>
-                    <p><b>Активный навык — «Охотничий Раж»:</b> Навык снятия контроля и взрывного урона. Активация мгновенно снимает со Зверолюда любые эффекты контроля (Оглушение, Опутывание, Заморозка) и позволяет в этот же ход нанести серию из 3-х быстрых физических ударов. Отличный скилл, чтобы вырваться из ловушки Эльфа или Тёмного мага и сразу же наказать обидчика.</p>
+                    <p><b>Стиль игры:</b> Ловкачи, Адепты затяжных маневров, Охотники.</p>
+                    <p><b>Доступные стихии:</b> Воздух (молниеносные прыжки), Земля (крепость когтей и шкуры).</p>
+                    <p><b>Полный запрет:</b> Свет, Тьма, Смерть, Лёд, Огонь.</p>
+                </div>
+                <div class="page-footer">
+                    <button class="page-btn" onclick="prevPage()">« Назад</button>
+                    <span>8 / 23</span>
+                    <button class="page-btn" onclick="nextPage()">Далее »</button>
                 </div>
             </div>
 
+            <!-- Зверолюды: Суть -->
             <div class="page">
                 <div class="page-content">
-                    <h2>5. Дракониты (Кланы Игниса)</h2>
+                    <h2>Зверолюды (Инстинкты)</h2>
+                    <p><b>Механика:</b> Эфир направляется внутрь тела в виде селф-баффов. Чары вроде «Поступи Ветра» не бьют на расстоянии, но наделяют 50% шансом увернуться и провести двойной выпад.</p>
+                    <p><b>Пассивный бонус — «Животный Инстинкт»:</b> Базовый шанс уклонения +15%. Успешный уворот обеспечивает контратаку с наложением эффекта «Рваная рана».</p>
+                    <p><b>Активный навык — «Охотничий Раж»:</b> Полный сброс эффектов контроля (стана, заморозки, опутавших пут) с мгновенным нанесением серии из трех молниеносных ударов.</p>
+                </div>
+                <div class="page-footer">
+                    <button class="page-btn" onclick="prevPage()">« Назад</button>
+                    <span>9 / 23</span>
+                    <button class="page-btn" onclick="nextPage()">Далее »</button>
+                </div>
+            </div>
+
+            <!-- Дракониты: Арт -->
+            <div class="page">
+                <div class="page-content">
+                    <h2>Дракониты (Кланы Игниса)</h2>
                     <img src="IMG_20260830_171224.jpg" class="lore-img" alt="Дракониты">
-                    <p><b>Стиль игры:</b> Ближний бой, агрессивный урон (Бурст), Танки.</p>
-                    <p><b>Доступные стихии:</b> Огонь (Основная), Молния (Девиантная, открывается на высоких уровнях), Земля (Вспомогательная, для брони).</p>
-                    <p><b>Полный запрет:</b> Вода, Лёд, Тьма, Свет, Жизнь, Смерть.</p>
-                    <p><b>Механика:</b> Заклинания Драконитов часто кастуются прямо через оружие (например, «Пылающий удар секирой»). У них мало маны, но магия расходуется экономно, усиливая физические атаки.</p>
-                    <p><b>Пассивный бонус — «Драконья Чешуя»:</b> Врождённое сопротивление физическому урону (базовая броня увеличена на 15%). Полный иммунитет к дебаффу «Горение».</p>
-                    <p><b>Активный навык — «Истинная Ярость»:</b> Навык контратаки. Чем ниже опускается показатель здоровья (HP) Игрока, тем выше становится исходящий физический урон. При HP ниже 20% атаки игнорируют часть брони цели.</p>
+                    <p><b>Стиль игры:</b> Передовая, Сокрушающий Бурст, Тяжелые Танки.</p>
+                    <p><b>Доступные стихии:</b> Огонь (База), Молния (Высшие круги), Земля (Твердь).</p>
+<p><b>Полный запрет:</b> Вода, Лёд, Тьма, Свет, Жизнь, Смерть.</p>
+                </div>
+                <div class="page-footer">
+                    <button class="page-btn" onclick="prevPage()">« Назад</button>
+                    <span>10 / 23</span>
+                    <button class="page-btn" onclick="nextPage()">Далее »</button>
                 </div>
             </div>
 
-            <!-- РАЗДЕЛ 2: ЛОКАЦИИ -->
+            <!-- Дракониты: Навыки -->
             <div class="page">
                 <div class="page-content">
-                    <div class="section-title">~ Книга Вторая: Атлас Мира ~</div>
-                    
-                    <h2>🏛️ Империя Аквилон (Люди)</h2>
-                    <h3>1. Элизия — Белокаменная Столица</h3>
-                    <p><b>Суть локации:</b> Сердце Империи. Город-монумент, разделённый на три гигантских яруса на склонах искусственной горы, призванный подавлять своим величием.</p>
-                    <p><b>Архитектура и атмосфера:</b> Белый мрамор и золото. Воздух пропитан запахом озона (от постоянного колдовства) и храмовыми благовониями. Небо рассекают парящие на потоках воздуха курьеры-маги.</p>
-                    <p><b>Общество и быт:</b> Строгое разделение слоёв. На верхних ярусах царит закон и порядок, в то время как на самом дне, в Трущобах Пепла, куда не доходит свет фонарей, процветает криминал, обитают беглые преступники и шарлатаны.</p>
-                    <p><b>Ключевые объекты:</b></p>
-                    <ul>
-                        <li><b>Площадь Главных Врат:</b> Колоссальная платформа с крупнейшими телепортами, которые сейчас искрят пугающими фиолетовыми разрядами.</li>
-                        <li><b>Шпиль Арканума:</b> Парящая башня Академии, нарушающая законы физики, с алхимическими лабораториями и тайными темницами для магов Тьмы.</li>
-                    </ul>
+                    <h2>Дракониты (Ярость)</h2>
+                    <p><b>Механика:</b> Пламя высвобождается непосредственно через взмахи секир и клинков. Энергия маны крайне мала, но расходуется расчетливо.</p>
+                    <p><b>Пассивный бонус — «Драконья Чешуя»[span_17](start_span)[span_17](end_span):</b> Врожденное поглощение физического урона на 15% выше нормы[span_18](start_span)[span_18](end_span). Абсолютный иммунитет к пламени и горению[span_19](start_span)[span_19](end_span).</p>
+                    <p><b>Активный навык — «Истинная Ярость»[span_20](start_span)[span_20](end_span):</b> Чем глубже раны воина, тем чудовищнее его натиск[span_21](start_span)[span_21](end_span). При остатке менее 20% HP удары игнорируют тяжелые доспехи недругов[span_22](start_span)[span_22](end_span).</p>
+                </div>
+                <div class="page-footer">
+                    <button class="page-btn" onclick="prevPage()">« Назад</button>
+                    <span>11 / 23</span>
+                    <button class="page-btn" onclick="nextPage()">Далее »</button>
                 </div>
             </div>
 
+            <!-- Локации: Столица и Порт -->
             <div class="page">
                 <div class="page-content">
-                    <h3>2. Порт-Байлесс (Глубоководная Гавань)</h3>
-                    <p><b>Суть локации:</b> Главный морской узел Империи, где официальные законы столицы работают только на бумаге.</p>
-                    <p><b>Архитектура и атмосфера:</b> Километры деревянных пирсов. Таверны и бордели построены из перевёрнутых корпусов старых кораблей. Пахнет солью, гниющей рыбой и ромом. Туманы искусственно разгоняются магами Воды и Воздуха.</p>
-                    <p><b>Общество и быт:</b> Город абсолютной свободы, наёмников и контрабандистов. Реальная власть принадлежит негласному совету пиратских баронов и коррумпированных адмиралов.</p>
-                    <p><b>Ключевые объекты:</b></p>
-                    <ul>
-                        <li><b>Рынок Утопленника:</b> Чёрный рынок, скрытый в затопленных пещерах под портом, где идёт торговля нелегальными мана-кристаллами и ядами тёмных эльфов.</li>
-                    </ul>
-
-                    <h2>🌲 Лесной Домен Элдоран (Эльфы)</h2>
-                    <h3>3. Сильванар — Сердце Леса</h3>
-                    <p><b>Суть локации:</b> Столица эльфов, которая была не построена, а выращена с помощью вековой магии Земли и Воды из гигантских Железных Деревьев.</p>
-                    <p><b>Архитектура и атмосфера:</b> Отсутствие углов, только плавные природные линии. Мягкий зелёный свет днём и биолюминесценция ночью. Густой, влажный воздух с ароматами древности, хвои и мёда.</p>
-                    <p><b>Общество и быт:</b> Полная гармония с природой. Эльфы передвигаются по канатным дорогам из живых лиан или на лодочках по кристальным ручьям, текущим прямо по широким ветвям деревьев.</p>
-                    <p><b>Ключевые объекты:</b></p>
-                    <ul>
-                        <li><b>Древо Жизни:</b> Толстые корни старейшего дерева плотно обвивают Врата Пути, фильтруя энергию и защищая лес от технологического осквернения.</li>
-                    </ul>
+                    <h2>Атлас: Земли Империи</h2>
+                    <h3>Элизия — Белокаменная Столица</h3>
+                    <p>Трехъярусный колосс из белого мрамора на склонах искусственной твердыни. На вершинах властвуют храмы и Академия Арканума, у подножия — чадят криминальные Трущобы Пепла.</p>
+                    <h3>Порт-Байлесс</h3>
+                    <p>Приют контрабандистов и пиратских гильдий. Пирсы из остовов разбитых судов, где в пещерах прилива процветает нелегальный Рынок Утопленника.</p>
+                </div>
+                <div class="page-footer">
+                    <button class="page-btn" onclick="prevPage()">« Назад</button>
+                    <span>12 / 23</span>
+                    <button class="page-btn" onclick="nextPage()">Далее »</button>
                 </div>
             </div>
 
+            <!-- Локации: Элдоран и Умбрарас -->
             <div class="page">
                 <div class="page-content">
-                    <h3>4. Руины Эарлин</h3>
-                    <p><b>Суть локации:</b> Бывший город-сателлит эльфов, ставший смертоносным памятником вышедшей из-под контроля девиантной магии Жизни.</p>
-                    <p><b>Архитектура и атмосфера:</b> Безумно разросшаяся флора. Кровоточащие едкой смолой деревья и орхидеи, выделяющие споры паралича и галлюцинаций.</p>
-                    <p><b>Общество и быт:</b> Постоянного населения нет. Зону посещают только отряды отчаянных наёмников ради добычи ценных ресурсов. Любая рана здесь заживает неправильно, обрастая опухолями.</p>
-                    <p><b>Ключевые объекты:</b></p>
-                    <ul>
-                        <li><b>Клубок Артерий:</b> Эпицентр руин, где можно добыть чистейшую, но крайне нестабильную эссенцию Эфира. Местные звери (волки с костяными наростами, хищные богомолы) сильно мутировали.</li>
-                    </ul>
-
-                    <h2>🌑 Подземный Синдикат Умбрарас</h2>
-                    <h3>5. Ноктюрн — Город над Бездной</h3>
-                    <p><b>Суть локации:</b> Мрачный шедевр архитектуры тёмных эльфов, высеченный прямо в стенах колоссального вертикального разлома, дно которого скрыто во тьме.</p>
-                    <p><b>Архитектура и атмосфера:</b> Здания цепляются за скалы и растут вниз, как сталактиты. Пробирающий до костей холод и густой ледяной туман. Скудное освещение дают лишь фиолетовые грибы и синие кристаллы Льда. Хрупкие на вид ледяные мосты-нити соединяют кварталы.</p>
+                    <h2>Атлас: Лес и Подземелья</h2>
+                    <h3>Сильванар — Сердце Леса</h3>
+                    <p>Живой город из гигантских Железных Деревьев, сплетенный без единого топора. Соединен канатами лиан вокруг колоссального Древа Жизни.</p>
+                    <h3>Руины Эарлин[span_23](start_span)[span_23](end_span)</h3>
+                    <p>Мертвый сателлит, поглощенный искаженной магией Жизни[span_24](start_span)[span_24](end_span). Смола ядовита, а цветы распыляют парализующую пыльцу[span_25](start_span)[span_25](end_span).</p>
+                    <h3>Ноктюрн — Город над Бездной</h3>
+                    <p>Оплот Тёмных эльфов в колоссальном тектоническом разломе. Стеклянные мосты и ледяные чертоги освещены лишь спорами синих грибов.</p>
+                </div>
+                <div class="page-footer">
+                    <button class="page-btn" onclick="prevPage()">« Назад</button>
+                    <span>13 / 23</span>
+                    <button class="page-btn" onclick="nextPage()">Далее »</button>
                 </div>
             </div>
-
-            <div class="page">
-                <div class="page-content">
-                    <p><b>Общество и быт:</b> Культ тишины и скрытности. Шумные рынки отсутствуют. Доступ к товарам и услугам осуществляется через закрытые Аукционные Дома, куда пускают только по рекомендациям.</p>
-                    <p><b>Ключевые объекты:</b></p>
-                    <ul>
-                        <li><b>Платформа Врат Пути:</b> Висит в самом центре бездны. К ней ведёт единственный ледяной мост, который стража может мгновенно растаять по щелчку пальцев, сбрасывая врагов в пустоту. Торговля ведётся секретами и заказными убийствами.</li>
-                    </ul>
-
-                    <h2>🌋 Кланы Игниса (Дракониты)</h2>
-                    <h3>6. Вулканическая Цитадель Кар-Орот</h3>
-                    <p><b>Суть локации:</b> Город-кузница, монументально выдолбленный внутри огромного спящего вулкана.</p>
-                    <p><b>Архитектура и атмосфера:</b> Грубые, массивные здания и огромные двери из чёрного обсидиана и базальта. Невыносимая жара, сухой воздух с запахом серы, пота и раскалённого металла. Освещение обеспечивают естественные потоки магмы, они же служат печами для ковки. Постоянный гул мехов и звон молотов.</p>
-                    <p><b>Общество и быт:</b> Военизированное общество кузнецов и воинов с тяжёлой комплекцией. Все споры и вопросы лидерства решаются исключительно через поединки.</p>
-                    <p><b>Ключевые объекты:</b></p>
-                    <ul>
-                        <li><b>Арена Пепла:</b> Огромный кратер в центре города для испытаний нового оружия и боёв на магии Огня и Молний, из-за чего под сводами пещеры постоянно собираются грозовые тучи.</li>
-                    </ul>
-                </div>
-            </div>
-
-            <div class="page">
-                <div class="page-content">
-                    <h3>7. Ущелье Драконьего Клыка</h3>
-                    <p><b>Суть локации:</b> Единственный наземный путь в неприступные земли драконитов.</p>
-                    <p><b>Архитектура и атмосфера:</b> Узкий, клаустрофобный каньон. Завывающий ветер глушит все звуки. Земля густо покрыта пеплом и костями тех, кто пытался пройти без приглашения.</p>
-                    <p><b>Общество и быт:</b> Постоянно дежурящий суровый военный гарнизон драконитов, готовый отразить любую наземную атаку.</p>
-                    <p><b>Ключевые объекты:</b></p>
-                    <ul>
-                        <li><b>Оборонительные рубежи:</b> Стены ущелья плотно усеяны смертоносными баллистами и магическими рунами взрыва.</li>
-                    </ul>
-
-                    <h2>✨ Мерцающий Двор (Феи)</h2>
-                    <h3>8. Ауралия — Парящие Острова</h3>
-                    <p><b>Суть локации:</b> Сюрреалистичное место, состоящее из кусков земли с цветущими садами, парящих в небесах над зеркально гладким Озером Миражей.</p>
-                    <p><b>Архитектура и атмосфера:</b> Вечная радужная дымка от водопадов, испаряющихся в воздухе. Здания не имеют заборов и стен — они сотканы из света, прочных перламутровых паутин и хрусталя. Атмосфера абсолютной умиротворённости.</p>
-                    <p><b>Общество и быт:</b> Феи, кажущиеся беспечными, скрывают за своим смехом древний интеллект. Передвигаются исключительно на мерцающих крыльях.</p>
-                    <p><b>Ключевые объекты:</b></p>
-                    <ul>
-                        <li><b>Павильоны Исцеления:</b> Уникальные центры девиантной магии Света, куда приносят проклятых и безнадёжно больных. Оплата взимается не золотом, а концептуальными вещами (самый счастливый день детства, искра удачи).</li>
-                    </ul>
-                </div>
-            </div>
-
-            <div class="page">
-                <div class="page-content">
-                    <h2>☁️ Аэтерон — Жемчужина Неба</h2>
-                    <p>Аэтерон не просто парит в небесах — он плывёт по течениям невидимых эфирных рек, медленно вращаясь над гигантским Оком Эфира (кратером в центре Аурхейма). Город построен из белого и золотого пористого камня, который почти ничего не весит, а сквозь его фундамент прорастают лозы светящихся растений. С краёв города непрерывно срываются водопады, чьи струи на лету превращаются в искрящийся туман и радуги.</p>
-                    <p>Аэтерон — это симфония света, архитектуры и магии, где каждый уголок дышит спокойствием.</p>
-
-                    <h3>✨ Хрустальный Атриум Звездопада (Зал Пробуждения)</h3>
-                    <p>Именно здесь открывают глаза новоприбывшие Странники.</p>
-                    <p><b>Визуал:</b> Это не закрытое помещение, а колоссальный открытый амфитеатр из полупрозрачного стекла, висящий на самом высоком уровне Аэтерона. Вместо потолка — открытое небо, которое здесь всегда кажется звёздным, даже днём. Пол покрыт тончайшим слоем тёплой воды, в которой отражаются небесные светила.</p>
-                    <p><b>Атмосфера:</b> Повсюду распускаются эфирные лотосы размером с человека. Когда душа Игрока падает с небес, она мягко опускается в центр такого цветка. Лепестки смыкаются, пульсируя мягким светом, а затем раскрываются, выпуская Странника. Воздух здесь звенит, как хрустальные бокалы.</p>
-                </div>
-            </div>
-
-            <div class="page">
-                <div class="page-content">
-                    <h3>🎐 Кольцо Золотого Ветра (Великий Базар)</h3>
-                    <p>Торговое сердце города, раскинувшееся на многоуровневых террасах, обвивающих центральную часть Аэтерона.</p>
-                    <p><b>Визуал:</b> Здесь нет грубых деревянных палаток. Торговые ряды разделены парящими шёлковыми шатрами и перекинутыми друг к другу ажурными мостиками. Товары левитируют на специальных бархатных подушках: сияющие мечи драконитов, флаконы с жидкими звёздами фей, резные шкатулки эльфов.</p>
-                    <p><b>Атмосфера:</b> Улицы освещены золотистыми фонарями-бабочками. Постоянно звучит тихая мелодия сотен «музык ветра» (колокольчиков), развешанных на террасах. Здесь всегда тепло, пахнет корицей, жареными каштанами и тонким ароматом эльфийских благовоний.</p>
-
-                    <h3>🏛️ Венец Гармонии (Посольский Район)</h3>
-                    <p>Пять архитектурных шедевров, соединённых висячими садами. Каждая башня отражает суть своего народа, но магия Аэтерона сглаживает их острые углы.</p>
-                    <ul>
-                        <li><b>Шпиль Людей (Аквилон):</b> Высечен из цельного куска белого мрамора, украшен золотыми часами с астрономическим циферблатом, стрелки которых показывают не время, а потоки магии.</li>
-                        <li><b>Древо Элдорана (Эльфы):</b> Это не здание, а гигантская сплетённая ива, чьи листья — это изумрудные кристаллы. Внутри по ветвям текут ручьи, а вместо лестниц — мягкие мхи.</li>
-                    </ul>
-                </div>
-            </div>
-
-            <div class="page">
-                <div class="page-content">
-                    <ul>
-                        <li><b>Осколок Умбрараса (Тёмные эльфы):</b> Башня из гладкого чёрного льда, который не тает. Внутри неё всегда царит уютный, прохладный полумрак, освещённый россыпью сияющих сапфиров, имитирующих звёздное небо.</li>
-                        <li><b>Очаг Игниса (Дракониты):</b> Куполообразное строение из тёплого обсидиана. На его вершине горит Вечный Огонь, не обжигающий, но дарующий приятное тепло. Внутри пахнет камином и старой кожей.</li>
-                        <li><b>Каскад Фей (Мерцающий Двор):</b> Кажется, что это здание соткано из струй воды и радужного света. У него нет стен — только изящные колонны и парящие лестницы.</li>
-                    </ul>
-
-                    <h3>🍷 Таверна «Дыхание Эфира»</h3>
-                    <p>Прибежище гильдий и уставших Странников, расположенное на самом краю Аэтерона.</p>
-                    <p><b>Визуал:</b> Таверна вырезана в теле массивного летающего острова-спутника, пришвартованного к городу серебряными цепями. Просторные резные балконы нависают прямо над бездной, откуда открывается потрясающий вид на весь континент Аурхейм.</p>
-                    <p><b>Атмосфера:</b> Внутри горят уютные очаги с магическим пламенем, меняющим цвет от настроения посетителей. В напитках плавают биолюминесцентные ягоды, а еда подаётся на тёплых каменных плато. Скрипка барда-иллюзиониста не только играет музыку, но и рисует в воздухе светящиеся картины былых сражений.</p>
-                </div>
-            </div>
-
-            <div class="page">
-                <div class="page-content">
-                    <h3>🌀 Архипелаг Поющих Врат</h3>
-                    <p>Транспортный узел, представляющий собой множество крошечных парящих островков, соединённых стеклянными дорожками.</p>
-                    <p><b>Визуал:</b> На каждом островке возвышаются изящные арки Врат Пути, выкованные из лунного серебра. Порталы внутри них не искрят, как на земле, а выглядят как спокойная, идеально ровная гладь жидкого зеркала.</p>
-                </div>
-            </div>
-
-            <!-- РАЗДЕЛ 3: БЕСТИАРИЙ -->
-            <div class="page">
-                <div class="page-content">
-                    <div class="section-title">~ Книга Третья: Бестиарий ~</div>
-                    <p>Мир Аурхейма теперь разделён на зоны активности разного уровня. Эфирные мутации породили ужасающих созданий. Ниже представлены ключевые биомы, рядовые противники (мобы) и владыки локаций (боссы).</p>
-
-                    <h2>🌲 Руины Эарлин (Ур. 15–35)</h2>
-                    <p>Здесь сама природа агрессивна. Магия Жизни вышла из-под контроля, заставляя существ эволюционировать с ужасающей скоростью.</p>
-                    
-                    <h3>Рядовые противники</h3>
-                    <ul>
-                        <li><b>Шипастый Богомол</b> (Ур. 15-18, Слож. 20): Насекомое размером с волка. Атакует из засад, игнорирует лёгкую броню. Уязвимость: Огонь.</li>
-                        <li><b>Костяной Волк</b> (Ур. 20-25, Слож. 35): Мутант с гипертрофированным скелетом, выступающим наружу в виде брони. Стайный моб. Быстро регенерирует.</li>
-                        <li><b>Узловатый Споровик</b> (Ур. 28-32, Слож. 45): Древовидный голем. Двигается медленно, но распыляет ядовитые споры (Дебафф: удушье, постепенный урон).</li>
-                    </ul>
-                </div>
-            </div>
-
-            <div class="page">
-                <div class="page-content">
-                    <h3>💀 БОСС: Ива’Тар, Гниющий Исполин</h3>
-                    <p>Бывший эльфийский друид, чьё тело слилось с древним древом-мутантом. Обитает в самом центре Руин Эарлин.</p>
-                    <p><b>Уровень:</b> 40. <b>Сложность:</b> 75/100</p>
-                    <p><b>Характеристики:</b> Огромный запас здоровья (HP), высокая защита от физических атак, иммунитет к магии Воды и Жизни.</p>
-                    <p><b>Механика боя (Фазы):</b></p>
-                    <ul>
-                        <li><b>Фаза Корней:</b> Босс неподвижен, атакует подземными шипами, призывает Узловатых Споровиков.</li>
-                        <li><b>Фаза Разлома (Меньше 50% HP):</b> Вырывает себя из земли, нанося колоссальный урон по площади (AoE). Начинает преследовать Игроков, разбрызгивая кислотный сок.</li>
-                        <li><b>Ядро Эфира:</b> При критическом здоровье открывает грудную клетку, где пульсирует нестабильный кристалл. Игрокам нужно уничтожить его за 30 секунд, иначе Ива'Тар полностью исцелится.</li>
-                    </ul>
-                </div>
-            </div>
-
-            <div class="page">
-                <div class="page-content">
-                    <h2>🌑 Шепчущие Пещеры (Ур. 30–55)</h2>
-                    <p>Тип локации: Глубокие подземелья, избыток магии Тьмы и Смерти. Зона с пониженной видимостью. Факелы здесь тухнут быстрее, а магия Света потребляет вдвое больше маны.</p>
-                    
-                    <h3>Рядовые противники</h3>
-                    <ul>
-                        <li><b>Теневой Ползун</b> (Ур. 30-35, Слож. 40): Паукообразное существо, сотканное из мрака. Умеет телепортироваться за спину на короткие дистанции.</li>
-                        <li><b>Слепой Кристаллоид</b> (Ур. 38-45, Слож. 55): Гуманоид из живого льда и камня. Не видит, но реагирует на шум и магию. Взрывается ледяными осколками при смерти.</li>
-                        <li><b>Эхо Умбрарас</b> (Ур. 48-52, Слож. 65): Неупокоенный дух тёмного эльфа. Игнорирует физический урон, высасывает ману Игроков при касании.</li>
-                    </ul>
-                    
-                    <h3>💀 БОСС: Никселия, Плачущая Тень</h3>
-                    <p>Дух первой королевы тёмных эльфов, чья душа была разорвана девиантной магией. Парит над замёрзшим подземным озером.</p>
-                    <p><b>Уровень:</b> 60. <b>Сложность:</b> 85/100</p>
-                    <p><b>Характеристики:</b> Уязвима только к магии Света и Огня. Очень высокая скорость уклонения.</p>
-                </div>
-            </div>
-
-            <div class="page">
-                <div class="page-content">
-                    <p><b>Механика боя (Никселия):</b></p>
-                    <ul>
-                        <li><b>Слепота:</b> Каждые 2 минуты гасит все источники света на арене на 15 секунд, нанося урон в темноте.</li>
-                        <li><b>Зеркальные Иллюзии:</b> Создаёт свои ледяные копии. Урон по копиям отражается обратно в Игрока.</li>
-                        <li><b>Вопль Банши (Вайп-механика):</b> Накапливает энергию 10 секунд. Если Игроки не собьют заклинание мощным контролем (оглушением/немотой), наносит смертельный урон всем в радиусе 50 метров.</li>
-                    </ul>
-
-                    <h2>🌋 Ущелье Драконьего Клыка (Ур. 50–75)</h2>
-                    <p>Вулканические пустоши, горы. Базовые элементы: Огонь, Воздух, Молния. Самая опасная наземная локация. Постоянные дебаффы от жары и вулканического пепла.</p>
-                    
-                    <h3>Рядовые противники</h3>
-                    <ul>
-                        <li><b>Пепельный Дрейк</b> (Ур. 50-55, Слож. 60): Летающая рептилия, атакует пикированием. Плюётся сгустками магмы. Сбивается на землю магией Ветра или стрелами.</li>
-                        <li><b>Магматический Голем</b> (Ур. 58-65, Слож. 70): Оживший кусок лавы. Постоянно наносит урон от ожогов в ближнем бою. При остывании (от магии Воды/Льда) его броня крошится.</li>
-                        <li><b>Искрящийся Элементаль</b> (Ур. 68-72, Слож. 80): Сгусток чистой молнии. Двигается молниеносно, цепляет атаками сразу нескольких Игроков рядом.</li>
-                    </ul>
-                </div>
-            </div>
-
-            <div class="page">
-                <div class="page-content">
-                    <h3>💀 БОСС: Кор-Вош, Громочешуйный Змей</h3>
-                    <p>Древний дракон, отвергнутый кланами Игниса за то, что поглотил нестабильный кристалл Врат Пути. Живёт в кратере вулкана.</p>
-                    <p><b>Уровень:</b> 80 (Рейдовый Босс для группы из 10+ человек). <b>Сложность:</b> 95/100</p>
-                    <p><b>Характеристики:</b> Колоссальная физическая защита, атаки игнорируют 50% магического сопротивления Игроков.</p>
-                    <p><b>Механика боя:</b></p>
-                    <ul>
-                        <li><b>Грозовой Фронт:</b> Покрывает арену электрическими лужами; нахождение в них снижает скорость передвижения до 0.</li>
-                        <li><b>Дыхание Расколотого Эфира:</b> Выпускает луч фиолетовой плазмы, который прорезает арену пополам. Убивает мгновенно (One-shot) тех, кто не спрятался за обсидиановыми колоннами (которые разрушаются после 2-х укрытий).</li>
-                        <li><b>Резонанс:</b> Из-за съеденного кристалла босс иногда телепортирует случайных Игроков в воздух над лавой — нужно быстро использовать заклинания левитации или спасать товарищей магией.</li>
-                    </ul>
-                </div>
-            </div>
-
-            <div class="page">
-                <div class="page-content">
-                    <h2>🏛️ Подземелья Элизии (Ур. 5–25)</h2>
-                    <p>Городские лабиринты, стоки арканной магии. Место, куда стекаются отходы алхимических лабораторий Академии Арканума. Идеальный полигон для начинающих Странников.</p>
-                    
-                    <h3>Рядовые противники</h3>
-                    <ul>
-                        <li><b>Чумная Крыса</b> (Ур. 5-8, Слож. 5): Обычный грызун, увеличенный из-за магии. Разносчик инфекции (снижает максимальное HP на 5%).</li>
-                        <li><b>Кислотный Слизень</b> (Ур. 10-15, Слож. 15): Капля алхимических отходов. Растворяет броню ближнего боя. Желательно бить на расстоянии.</li>
-                        <li><b>Гомункул-Отступник</b> (Ур. 18-24, Слож. 30): Брошенный эксперимент магов Академии. Антропоморфное существо, способное копировать базовые заклинания Игроков.</li>
-                    </ul>
-
-                    <h3>💀 БОСС: Амальгама, Сгусток Отчаяния</h3>
-                    <p>Огромная масса, состоящая из выброшенных зелий, костей мутантов и бракованных големов. Обитает в Главном Резервуаре канализации.</p>
-                    <p><b>Уровень:</b> 25. <b>Сложность:</b> 40/100</p>
-                    <p><b>Характеристики:</b> Медленный, но обладает высокой регенерацией. Уязвим к Огню.</p>
-                </div>
-            </div>
-
-            <div class="page">
-                <div class="page-content">
-                    <p><b>Механика боя (Амальгама):</b></p>
-                    <ul>
-                        <li><b>Поглощение:</b> Затягивает ближайших Игроков в своё тело. Если их не выбить оттуда за 10 секунд нанесением определённого урона, Амальгама лечится на 10% здоровья.</li>
-                        <li><b>Разделение:</b> При потере 50% HP распадается на 4 мелких слизня. Их нужно убить быстро, иначе они соберутся обратно в босса.</li>
-                    </ul>
-
-                    <h2>🏜️ Пепельные Степи (Ур. 35–50)</h2>
-                    <p>Выжженные пустоши, каньоны, пыльные бури. Опасная ничейная земля. Из-за близости вулканов драконитов здесь часто идут пепельные дожди, а Эфир нестабилен из-за ветров.</p>
-                    
-                    <h3>Рядовые противники</h3>
-                    <ul>
-                        <li><b>Степной Вазилиск</b> (Ур. 35-38, Слож. 45): Крупная шестиногая ящерица. Способна накладывать дебафф «Окаменение» (замедление до полной остановки). Уязвимость: магия Воды.</li>
-                        <li><b>Пылевой Демон</b> (Ур. 40-44, Слож. 55): Элементаль Ветра и Земли. Выглядит как разумное торнадо. Отражает немагические снаряды (стрелы) обратно в Игроков.</li>
-                        <li><b>Бронированный Террадон</b> (Ур. 46-50, Слож. 65): Травоядный, но крайне агрессивный зверь размером с носорога. Броня на спине неуязвима для физического урона. Нужно атаковать в живот или использовать магию Молний.</li>
-                        <li><b>Песчаный Ловчий</b> (Ур. 42-47, Слож. 60): Насекомое, зарывающееся в песок. Нападает снизу, оглушая цель. Оставляет воронки-ловушки.</li>
-                    </ul>
-                </div>
-            </div>
-
-            <div class="page">
-                <div class="page-content">
-                    <h3>💀 БОСС: Куарот, Пожиратель Караванов</h3>
-                    <p>Колоссальный бронированный червь, прорывающий туннели под Пепельными Степями. Уничтожил десятки имперских конвоев.</p>
-                    <p><b>Уровень:</b> 55. <b>Сложность:</b> 75</p>
-                    <p><b>Механика боя:</b></p>
-                    <ul>
-                        <li><b>Подземный рывок:</b> Куарот ныряет под землю; по дрожанию песка нужно определить, откуда он вынырнет, чтобы избежать фатального урона.</li>
-                        <li><b>Кислотная отрыжка:</b> Выплёвывает пережёванные остатки телег и брони в виде кислотного конуса. Броня Игроков, попавших под удар, теряет прочность.</li>
-                    </ul>
-
-                    <h2>🌊 Абиссальные Отмели (Ур. 45–65)</h2>
-                    <p>Затопленные пещеры, коралловые рифы-мутанты, береговая линия. Место, где магия Воды смешивается с магией Смерти из-за множества затонувших кораблей.</p>
-                    
-                    <h3>Рядовые противники</h3>
-                    <ul>
-                        <li><b>Утопленный Мертвец</b> (Ур. 45-48, Слож. 50): Нежить, обросшая водорослями. Двигается медленно, но притягивает Игроков ржавыми цепями (хук).</li>
-                        <li><b>Кошмарный Удильщик</b> (Ур. 52-56, Слож. 65): Амфибия. На суше неуклюжа, но в воде смертоносна. Использует девиантную магию Света на своей «удочке», чтобы гипнотизировать Игроков и тянуть их на глубину.</li>
-                        <li><b>Шипастая Сирена</b> (Ур. 58-62, Слож. 70): Выглядит как прекрасная русалка издалека, вблизи — монстр с пастью пиявки. Издаёт крик, прерывающий чтение заклинаний магов (Сайленс).</li>
-                        <li><b>Коралловый Краб-Крепость</b> (Ур. 60-65, Слож. 75): Гигантский краб с куском разрушенной башни на панцире. Выступает как мини-танк: блокирует проходы, имеет огромный показатель защиты.</li>
-                    </ul>
-                </div>
-            </div>
-
-            <div class="page">
-                <div class="page-content">
-                    <h3>💀 БОСС: Капитан Моргрим, Проклятый Адмирал</h3>
-                    <p>Бывший герой Империи, чей флагман затонул в магическом шторме. Теперь он лич, повелевающий приливами.</p>
-                    <p><b>Уровень:</b> 70. <b>Сложность:</b> 85</p>
-                    <p><b>Механика боя:</b></p>
-                    <ul>
-                        <li><b>Залп Призрачных Орудий:</b> Вызывает из-под воды фантомные пушки своего корабля, которые обстреливают случайные сектора арены.</li>
-                        <li><b>Прилив Смерти:</b> Арена начинает затапливаться ядовитой водой. Игрокам необходимо забираться на всплывающие обломки кораблей, чтобы выжить.</li>
-                    </ul>
-
-                    <h2>✨ Иллюзорные Топи (Ур. 65–85)</h2>
-                    <p>Светящиеся болота, густой туман, поля гигантских одуванчиков. Эфир здесь насыщен девиантной магией Света и Иллюзий. Монстры часто выглядят безобидно.</p>
-                    
-                    <h3>Рядовые противники</h3>
-                    <ul>
-                        <li><b>Ослепительный Котик (Фэй-Пантера)</b> (Ур. 65-70, Слож. 70): Выглядит как светящийся клубок милоты. При приближении превращается в шестиглазую пантеру из чистого света. Умеет становиться невидимой.</li>
-                        <li><b>Кристальный Мимик</b> (Ур. 72-76, Слож. 75): Маскируется под залежи ценного мана-кварца. Атакует Игроков, которые пытаются собрать лут. Наносит огромный физический урон.</li>
-                        <li><b>Плакальщица Тумана</b> (Ур. 78-82, Слож. 80): Дух-иллюзия. Принимает облик раненого Игрока из вашей группы. Если её попытаться исцелить магией, она взорвётся, нанося урон Тьмой.</li>
-                        <li><b>Искажённый Пегас</b> (Ур. 80-85, Слож. 85): Воздушный противник. Сбрасывает на игроков перья, которые взрываются как мины с задержкой в 3 секунды.</li>
-                    </ul>
-                </div>
-            </div>
-
-            <div class="page">
-                <div class="page-content">
-                    <h3>💀 БОСС: Люминекс, Падший Свет</h3>
-                    <p>Когда-то это был Высший Элементаль Света, хранитель покоя Фей. Из-за разломов в Эфире он сошёл с ума и теперь сжигает всё «нечистое».</p>
-                    <p><b>Уровень:</b> 90. <b>Сложность:</b> 95</p>
-                    <p><b>Механика боя:</b></p>
-                    <ul>
-                        <li><b>Святое Пламя:</b> Оставляет на Игроках стакающийся дебафф. Если накопить 5 стаков, Игрок мгновенно погибает. Дебафф снимается, если забежать в лужу грязи на краях арены.</li>
-                        <li><b>Зеркальная Призма:</b> Создаёт вокруг себя купол, который отражает любые заклинания обратно в магов в двойном размере. Купол нужно разбивать физическими атаками ближнего боя.</li>
-                    </ul>
-
-                    <h2>🛤️ Случайные столкновения</h2>
-                    <p>Эти монстры могут напасть на Странников во время банального перемещения между локациями на Имперских Трактах. Уровень этих мобов адаптируется (скейлится) под уровень группы.</p>
-                    <ul>
-                        <li><b>Эфирный Наркоман (Бандит)</b> (Уровень группы -2, Слож. 30): Люди или эльфы, подсевшие на употребление сырого Эфира. Они слабые, но атакуют толпой и после смерти взрываются нестабильной магией.</li>
-                        <li><b>Дикий Грифон</b> (Уровень группы +3, Слож. 55): Нападает с воздуха. Если у Игрока мало здоровья, Грифон может схватить его когтями, поднять высоко в небо и бросить вниз.</li>
-                        <li><b>Механический Патрульный</b> (Равен уровню группы, Слож. 60): Древний имперский голем, у которого сбились настройки «свой-чужой». Очень много брони. Восприимчив к заклинаниям Молнии (они его замыкают и станят).</li>
-                        <li><b>Осколок Разлома</b> (Уровень группы +5, Слож. 80): Пространственная аномалия. Появляется как летающий чёрный куб. Периодически призывает случайных мобов из других биомов.</li>
-                    </ul>
-                </div>
-            </div>
-
-            <div class="page">
-                <div class="page-content">
-                    <h2>🦇 Элитные мобы (Мини-боссы)</h2>
-                    <p>Эти существа не имеют своих арен, они просто бродят по локациям и подземельям, представляя серьёзную угрозу для неосторожных групп.</p>
-                    <ul>
-                        <li><b>Кровавый Палач</b> (Уровень 60, Сложность 80): Драконит-отступник. Бродит по Ущелью Драконьего Клыка. Вооружён двумя двуручными секирами. Имеет ауру «Жажда Крови» (чем меньше у него HP, тем быстрее он атакует).</li>
-                        <li><b>Ткач Пустоты</b> (Уровень 75, Сложность 85): Огромный паук, обитающий в Шепчущих Пещерах. Его паутина блокирует использование Врат Пути и свитков телепортации. Заставляет Игроков драться насмерть, отрезая пути к отступлению.</li>
-                    </ul>
-
-                    <h2>❄️ Ледяной Предел (Ур. 40–60)</h2>
-                    <p>Заснеженные горные перевалы, ледяные пещеры, вечная метель. Суровый регион, где властвует девиантная магия Льда. Видимость здесь часто падает до нуля из-за буранов, а Игроки получают постоянный дебафф «Обморожение» (замедляет скорость атаки и передвижения, если не греться у костров или не использовать магию Огня).</p>
-                </div>
-            </div>
-
-            <div class="page">
-                <div class="page-content">
-                    <h3>Рядовые противники</h3>
-                    <ul>
-                        <li><b>Ледяной Упырь</b> (Ур. 40-44, Слож. 45): Погибшие в снегах путешественники, реанимированные магией Льда. При каждом ударе по Игроку имеют шанс наложить статус «Окоченение» (запрет на использование рывков и уклонений).</li>
-                        <li><b>Иглошерстный Тролль</b> (Ур. 48-52, Слож. 60): Огромный примат с ледяными наростами вместо шерсти. Обладает чудовищной регенерацией здоровья. Регенерацию можно временно отключить только прямым уроном от магии Огня.</li>
-                        <li><b>Паук Инея</b> (Ур. 50-55, Слож. 55): Крупный белый паук. Плюётся ледяной паутиной, которая не привязывает к месту, а превращает землю под ногами Игроков в идеально гладкий каток — персонажи начинают скользить и теряют контроль над перемещением.</li>
-                        <li><b>Осколок Бури</b> (Ур. 55-58, Слож. 70): Летающий элементаль Воздуха и Льда. Игнорирует стрелы (сдувает их ветром). Поражает цепными ледяными разрядами сразу нескольких целей.</li>
-                    </ul>
-                </div>
-            </div>
-
-            <div class="page">
-                <div class="page-content">
-                    <h3>💀 БОСС: Фаргос, Владыка Лавин</h3>
-                    <p>Древний йети-мутант, в груди которого застрял осколок сломанных Врат Пути, даровав ему разум и контроль над гравитацией снега. Обитает в гигантском ледяном кратере.</p>
-                    <p><b>Уровень:</b> 60. <b>Сложность:</b> 80</p>
-                    <p><b>Механика боя:</b></p>
-                    <ul>
-                        <li><b>Ледяная Броня:</b> Босс начинает бой с щитом, который поглощает 90% любого урона. Щит можно разбить только дробящим оружием (молоты, булавы) или взрывчаткой.</li>
-                        <li><b>Сход Лавины:</b> Фаргос бьёт кулаками по земле, вызывая поток снега со склонов кратера. Игрокам нужно прятаться за ледяными сталагмитами, иначе их снесёт в пропасть (мгновенная смерть).</li>
-                        <li><b>Абсолютный Ноль:</b> Раз в 3 минуты замораживает случайного Игрока в глыбу льда. Товарищи по группе должны разбить глыбу за 10 секунд, иначе Игрок задохнётся.</li>
-                    </ul>
-                </div>
-            </div>
-
-            <div class="page">
-                <div class="page-content">
-                    <h2>🔮 Хрустальные Каверны (Ур. 70–85)</h2>
-                    <p>Подземная аномалия, где Эфирные Артерии выходят прямо на поверхность камня. Глубоко под центральной частью континента находится место, где магия кристаллизуется. Здесь нарушена гравитация: водопады могут течь вверх, а кристаллы парят в воздухе. Зона изобилует ресурсами, но крайне опасна для магов.</p>
-                    
-                    <h3>Рядовые противники</h3>
-                    <ul>
-                        <li><b>Мана-Пиявка</b> (Ур. 70-74, Слож. 65): Летающий скат, сотканный из чистого света. Не наносит физического урона, но стремительно высасывает ману (MP) из Игроков. Если шкала маны Игрока падает до 0, он получает эффект «Истощение» (оглушение на 5 сек).</li>
-                        <li><b>Осколочный Голем</b> (Ур. 75-79, Слож. 75): Медлительный конструкт из мана-кварца. Отражает 50% направленного магического урона обратно в заклинателя. Бить нужно исключительно в ближнем бою.</li>
-                        <li><b>Резонирующий Элементаль</b> (Ур. 80-84, Слож. 80): Сгусток нестабильного Эфира. Каждые 15 секунд меняет свой элемент (цвет). Если ударить его стихией, к которой он сейчас предрасположен, он исцелится.</li>
-                        <li><b>Хрустальная Горгулья</b> (Ур. 78-82, Слож. 75): Скрывается среди кристаллов под потолком пещер. Пикирует на Игроков с низким запасом здоровья (добивающий моб).</li>
-                    </ul>
-                </div>
-            </div>
-
-            <div class="page">
-                <div class="page-content">
-                    <h3>💀 БОСС: Эйлон, Зеркальный Страж</h3>
-                    <p>Сущность, созданная самими Эфирными Артериями для защиты своей сердцевины от вторжения извне. Выглядит как многорукий гуманоид из жидкого зеркала.</p>
-                    <p><b>Уровень:</b> 85. <b>Сложность:</b> 90</p>
-                    <p><b>Механика боя:</b></p>
-                    <ul>
-                        <li><b>Отражение Души:</b> Босс сканирует группу и создаёт идеальные копии двух случайных Игроков (с их же оружием и способностями). Копии нужно уничтожить в первую очередь.</li>
-                        <li><b>Призма Искажения:</b> Эйлон преломляет свет, ослепляя всех Игроков, которые смотрят прямо на него (экран белеет на 5 секунд). Для избежания атаки нужно в нужный момент отвернуться от босса (механика взгляда).</li>
-                        <li><b>Эфирный Шторм:</b> Фаза ярости при 20% HP. Босс начинает хаотично стрелять лазерами из всех своих рук, превращая арену в «bullet hell», где Игрокам нужно ювелирно уклоняться.</li>
-                    </ul>
-                </div>
-            </div>
-
-            <div class="page">
-                <div class="page-content">
-                    <h2>📜 Запретный Полигон (Ур. 25–45)</h2>
-                    <p>Разрушенные башни, парящие библиотеки, заражённые лаборатории. Когда-то это был испытательный полигон Академии Империи, но после серии неудачных экспериментов с Тьмой и Некромантией его изолировали. Теперь это рай для мародёров и любителей древних свитков.</p>
-                    
-                    <h3>Рядовые противники</h3>
-                    <ul>
-                        <li><b>Оживший Гримуар</b> (Ур. 25-28, Слож. 35): Летающая книга. Беспорядочно кастует заклинания Базовых Элементов 1-го уровня. Если её не убить быстро, может скастовать самонаводящийся огненный шар.</li>
-                        <li><b>Сгусток Чернил (Аномалия)</b> (Ур. 30-34, Слож. 40): Чёрная лужа, принимающая форму щупалец. Атакует Игроков, накладывая дебафф «Слепота» (сильно сужает радиус обзора) и снимает баффы на защиту.</li>
-                        <li><b>Обезумевший Адепт</b> (Ур. 35-39, Слож. 55): Бывшие студенты Академии, чьи умы поглотила Тьма. Имеют нулевую физическую защиту (можно убить с пары ударов кинжалом), но наносят колоссальный магический урон по площади. Стеклянные пушки.</li>
-                        <li><b>Сшитый Гомункул</b> (Ур. 40-45, Слож. 60): Уродливое создание из кусков разных тел. Медленный танк. После смерти взрывается ядовитым облаком, так что милишникам нужно вовремя отскочить.</li>
-                    </ul>
-                </div>
-            </div>
-
-            <div class="page">
-                <div class="page-content">
-                    <h3>💀 БОСС: Магистр Валериус, Поглощённый Тьмой</h3>
-                    <p>Бывший ректор полигона, слившийся с запретным Артефактом Бездны. Левитирует над руинами главного лекционного зала.</p>
-                    <p><b>Уровень:</b> 45. <b>Сложность:</b> 65</p>
-                    <p><b>Механика боя:</b></p>
-                    <ul>
-                        <li><b>Экзамен по Рунам:</b> Валериус рисует на полу арены гигантские магические руны разных цветов. Через 5 секунд они взрываются. Игрокам нужно вставать на руну того цвета, который Валериус называет/кастует в данный момент, чтобы получить щит вместо урона.</li>
-                        <li><b>Призыв Знаний:</b> Вызывает торнадо из книг, которые отталкивают Игроков от босса, мешая бойцам ближнего боя наносить урон.</li>
-                        <li><b>Слово Смерти:</b> Кастует долгое заклинание (15 секунд). Если Игроки не собьют ему каст (нанеся определённое количество урона за время), случайный участник группы умирает на месте.</li>
-                    </ul>
-                </div>
-            </div>
-
-            <div class="page">
-                <div class="page-content">
-                    <h2>🌊 Бездна Левиафана (Ур. 90–100)</h2>
-                    <p>Океаническое дно, впадины. Доступна только с использованием специального артефакта «Дыхание Ундины». Зона абсолютной темноты. Передвижение здесь замедлено, а заклинания магии Огня и Молнии работают совершенно иначе (Огонь наносит крошечный урон, а Молния бьёт по всем Игрокам в радиусе поражения, включая союзников).</p>
-                    
-                    <h3>Рядовые противники</h3>
-                    <ul>
-                        <li><b>Глубинный Сталкер</b> (Ур. 90-92, Слож. 85): Акулоподобный гуманоид. Полностью невидим в темноте, заметить его можно только по возмущению воды или с помощью магии Света. Атакует со спины со смертоносной силой.</li>
-                        <li><b>Морской Еж-Исполин</b> (Ур. 93-95, Слож. 90): Мина-ловушка. Статичный моб с огромным запасом здоровья. Выстреливает шипами во все стороны при приближении. Пробивает любую броню.</li>
-                        <li><b>Панцирный Левиафан-детёныш</b> (Ур. 96-98, Слож. 95): Огромный змееподобный кит. Перемещается тараном, снося всё на своём пути. Для победы нужно ломать пластины брони на его боках.</li>
-                    </ul>
-                </div>
-            </div>
-
-            <div class="page">
-                <div class="page-content">
-                    <h3>💀 БОСС: Мор'Гур, Древний Ужас Глубин</h3>
-                    <p>Ктулхоподобный кракен, спящий на дне самой глубокой впадины. Чтобы бросить ему вызов, группе Игроков нужно активировать четыре подводных обелиска. Это Рейдовый Босс.</p>
-                    <p><b>Уровень:</b> 100. <b>Сложность:</b> 100/100</p>
-                    <p><b>Механика боя:</b></p>
-                    <ul>
-                        <li><b>Давление Бездны:</b> На протяжении всего боя Игроки получают периодический урон, который со временем усиливается. Бой нужно закончить до того, как у лекарей закончится мана (DPS-check фаза).</li>
-                        <li><b>Хватка Щупалец:</b> Щупальца Мор'Гура хватают случайных Игроков и начинают тянуть их в огромную пасть босса. Другие Игроки должны рубить щупальца, чтобы спасти товарищей.</li>
-                        <li><b>Чернила Пустоты:</b> Босс заливает арену непроглядной тьмой. В этот момент он открывает свой единственный глаз (слабое место). Игроки должны использовать направленные лучи магии Света, чтобы ослепить глаз и прервать фазу тьмы.</li>
-                    </ul>
-                </div>
-            </div>
-
-            <div class="page">
-                <div class="page-content">
-                    <h2>👑 Глобальный Мировой Босс (Событие всего континента)</h2>
-                    <h3>💀 ВЛАДЫКА: Исказитель Пространства (Аномалия Врат Пути)</h3>
-                    <p>Это не живое существо, а воплощение ошибки системы Врат. Появляется случайным образом в любой точке Ауриона раз в месяц (по игровому времени).</p>
-                    <p><b>Уровень:</b> 100 (Требует союза сотен Странников).</p>
-                    <p><b>Сложность:</b> 100/100.</p>
-                    <p><b>Характеристики:</b> Иммунитет к контролю (stun, root), меняет свои уязвимости каждые 30 секунд.</p>
-                    <p><b>Особенности:</b> Искажает реальность. Может временно снижать уровни Игроков вокруг себя в два раза, менять местами их заклинания (например, лечение наносит урон, а огненный шар морозит) и призывать фантомы уже убитых боссов. За победу над ним даются уникальные <b>«Осколки Эфира»</b>, позволяющие Странникам покупать земли, основывать клановые замки или напрямую вмешиваться в политику Императора Октавиана.</p>
-                </div>
-            </div>
-
-            <!-- Задняя обложка -->
-            <div class="page cover">
-                <div class="page-content">
-                    <h1>Конец Летописи</h1>
-                </div>
-            </div>
-        </div>
-
-        <!-- Кнопки навигации -->
-        <button class="nav-btn" id="btn-prev" aria-label="Предыдущая страница">‹</button>
-        <button class="nav-btn" id="btn-next" aria-label="Следующая страница">›</button>
-        <div class="page-indicator" id="page-indicator">1 / 1</div>
-    </div>
-
-    <!-- Аудиоэффекты -->
-    <audio id="audio-flip" src="https://upload.wikimedia.org/wikipedia/commons/f/f6/Page_turn.ogg" preload="auto"></audio>
-    <audio id="audio-ambient" src="https://upload.wikimedia.org/wikipedia/commons/4/41/Fire_01.ogg" loop preload="auto"></audio>
-
-    <script>
-        try { window.Telegram.WebApp.expand(); } catch (e) {}
-
-        const startBtn = document.getElementById('start-btn');
-        const startScreen = document.getElementById('start-screen');
-        const bookWrapper = document.getElementById('book-wrapper');
-        const flipSound = document.getElementById('audio-flip');
-        const ambientSound = document.getElementById('audio-ambient');
-        const btnPrev = document.getElementById('btn-prev');
-        const btnNext = document.getElementById('btn-next');
-        const pageIndicator = document.getElementById('page-indicator');
-
-        ambientSound.volume = 0.28;
-
-        function safePlay(audio) {
-            if (!audio) return;
-            audio.currentTime = 0;
-            const p = audio.play();
-            if (p !== undefined) p.catch(() => {});
-        }
-
-        let pages = [];
-        let current = 0;
-        let isAnimating = false;
-
-        function updateUI() {
-            pageIndicator.textContent = (current + 1) + ' / ' + pages.length;
-            btnPrev.disabled = current === 0;
-            btnNext.disabled = current === pages.length - 1;
-        }
-
-        function showPage(index, direction) {
-            if (isAnimating || index < 0 || index >= pages.length || index === current) return;
-            isAnimating = true;
-
-            const oldPage = pages[current];
-            const newPage = pages[index];
-
-            // Убираем все анимационные классы
-            pages.forEach(p => {
-                p.classList.remove('active', 'flip-out-right', 'flip-out-left', 'flip-in-right', 'flip-in-left');
-            });
-
-            if (direction === 'next') {
-                oldPage.classList.add('flip-out-right');
-                newPage.classList.add('flip-in-right');
-            } else {
-                oldPage.classList.add('flip-out-left');
-                newPage.classList.add('flip-in-left');
-            }
-
-            newPage.classList.add('active');
-            safePlay(flipSound);
-
-            setTimeout(() => {
-                oldPage.classList.remove('flip-out-right', 'flip-out-left', 'active');
-                newPage.classList.remove('flip-in-right', 'flip-in-left');
-                newPage.classList.add('active');
-                current = index;
-                isAnimating = false;
-                updateUI();
-            }, 560);
-        }
-
-        function goNext() {
-            if (current < pages.length - 1) showPage(current + 1, 'next');
-        }
-        function goPrev() {
-            if (current > 0) showPage(current - 1, 'prev');
-        }
-
-        startBtn.addEventListener('click', () => {
-            startScreen.style.display = 'none';
-            bookWrapper.style.display = 'flex';
-            bookWrapper.style.justifyContent = 'center';
-            bookWrapper.style.alignItems = 'center';
-
-            safePlay(ambientSound);
-
-            pages = Array.from(document.querySelectorAll('#book-stage .page'));
-            pages[0].classList.add('active');
-            current = 0;
-            updateUI();
-        });
-
-        btnNext.addEventListener('click', goNext);
-        btnPrev.addEventListener('click', goPrev);
-
-        // Свайпы
-        let touchStartX = 0;
-        let touchStartY = 0;
-        document.addEventListener('touchstart', (e) => {
-            touchStartX = e.changedTouches[0].screenX;
-            touchStartY = e.changedTouches[0].screenY;
-        }, { passive: true });
-
-        document.addEventListener('touchend', (e) => {
-            if (isAnimating || bookWrapper.style.display === 'none') return;
-            const dx = e.changedTouches[0].screenX - touchStartX;
-            const dy = e.changedTouches[0].screenY - touchStartY;
-            if (Math.abs(dx) < 50 || Math.abs(dy) > Math.abs(dx)) return; // игнор вертикальных
-            if (dx < -50) goNext();
-            else if (dx > 50) goPrev();
-        }, { passive: true });
-
-        // Клавиатура
-        document.addEventListener('keydown', (e) => {
-            if (bookWrapper.style.display === 'none') return;
-            if (e.key === 'ArrowRight' || e.key === ' ') { e.preventDefault(); goNext(); }
-            if (e.key === 'ArrowLeft') { e.preventDefault(); goPrev(); }
-        });
-    </script>
-</body>
-</html>
