@@ -707,9 +707,16 @@
     <!-- Аудиоэффекты -->
     <audio id="audio-flip" src="https://upload.wikimedia.org/wikipedia/commons/f/f6/Page_turn.ogg" preload="auto"></audio>
     <audio id="audio-ambient" src="https://upload.wikimedia.org/wikipedia/commons/4/41/Fire_01.ogg" loop preload="auto"></audio>
-
-    <script>
-        try { window.Telegram.WebApp.expand(); } catch (e) {}
+<script>
+        // Инициализация Telegram WebApp с защитой
+        try {
+            if (window.Telegram && window.Telegram.WebApp) {
+                window.Telegram.WebApp.ready();
+                window.Telegram.WebApp.expand();
+            }
+        } catch (e) {
+            console.warn("WebApp init error:", e);
+        }
 
         const startBtn = document.getElementById('start-btn');
         const startScreen = document.getElementById('start-screen');
@@ -717,16 +724,27 @@
         const flipSound = document.getElementById('audio-flip');
         const ambientSound = document.getElementById('audio-ambient');
 
-        ambientSound.volume = 0.25;
+        if (ambientSound) ambientSound.volume = 0.25;
 
-        let pages = [];
+        // Собираем страницы сразу при загрузке документа
+        const pages = Array.from(document.querySelectorAll('#book-stage .page'));
         let currentIndex = 0;
         let isFlipping = false;
 
         function playSound(audio) {
             if (!audio) return;
-            audio.currentTime = 0;
-            audio.play().catch(() => {});
+            try {
+                audio.currentTime = 0;
+                const promise = audio.play();
+                if (promise !== undefined) {
+                    promise.catch((err) => {
+                        // Подавляем ошибку автоплея, не ломая интерфейс
+                        console.log("Audio play blocked/failed:", err);
+                    });
+                }
+            } catch (err) {
+                console.log("Audio error:", err);
+            }
         }
 
         function turnTo(nextIdx, dir) {
@@ -748,16 +766,30 @@
             }, 420);
         }
 
-        function nextPage() { turnTo(currentIndex + 1, 'next'); }
-        function prevPage() { turnTo(currentIndex - 1, 'prev'); }
-startBtn.addEventListener('click', () => {
+        window.nextPage = function() { turnTo(currentIndex + 1, 'next'); };
+        window.prevPage = function() { turnTo(currentIndex - 1, 'prev'); };
+
+        function openBook(e) {
+            if (e) e.preventDefault();
+            
+            // 1. Сначала гарантированно переключаем экран
             startScreen.style.display = 'none';
             bookWrapper.style.display = 'flex';
-            playSound(ambientSound);
 
-            pages = Array.from(document.querySelectorAll('.page'));
+            // 2. Убеждаемся, что первая страница активна
+            pages.forEach((p, idx) => {
+                if (idx === 0) p.classList.add('active');
+                else p.classList.remove('active', 'flip-next', 'flip-prev');
+            });
             currentIndex = 0;
-        });
+
+            // 3. Пытаемся включить эмбиент после пользовательского клика
+            playSound(ambientSound);
+        }
+
+        // Слушатели на клик и тач для мобильных
+        startBtn.addEventListener('click', openBook);
+        startBtn.addEventListener('touchend', openBook);
 
         // Свайпы на мобильных экранах
         let touchX = 0;
@@ -773,10 +805,11 @@ startBtn.addEventListener('click', () => {
             const diffX = e.changedTouches[0].screenX - touchX;
             const diffY = e.changedTouches[0].screenY - touchY;
             if (Math.abs(diffX) > 45 && Math.abs(diffX) > Math.abs(diffY)) {
-                if (diffX < 0) nextPage();
-                else prevPage();
+                if (diffX < 0) window.nextPage();
+                else window.prevPage();
             }
         }, { passive: true });
     </script>
+   
 </body>
 </html>
