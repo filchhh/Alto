@@ -6,7 +6,6 @@
     <title>Великий Фолиант Аурхейма</title>
     
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
-    <!-- Подключаем аутентичные рукописные шрифты -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Bad+Script&family=Caveat:wght@600;700&family=Marck+Script&display=swap" rel="stylesheet">
@@ -59,6 +58,7 @@
             margin-top: 25px;
             transition: all 0.2s ease;
             outline: none;
+            -webkit-tap-highlight-color: transparent;
         }
 
         #start-btn:active { transform: scale(0.95); box-shadow: 0 0 12px rgba(212, 160, 23, 0.6); }
@@ -72,9 +72,7 @@
             align-items: center;
         }
 
-        /* ===================================================
-           === АНИМЕ-СВЕЧА С ЧАСТИЦАМИ И СОЧНЫМ ПЛАМЕНЕМ ===
-           =================================================== */
+        /* === АНИМЕ-СВЕЧА С ЧАСТИЦАМИ И СОЧНЫМ ПЛАМЕНЕМ === */
         .candle-rig {
             position: absolute;
             left: 20px;
@@ -96,7 +94,6 @@
             margin-bottom: -5px;
         }
 
-        /* Многослойное аниме-пламя */
         .flame-outer {
             position: absolute;
             bottom: 0;
@@ -139,7 +136,6 @@
             filter: blur(1px);
         }
 
-        /* Аниме-искры (эмберы) */
         .ember {
             position: absolute;
             background: #ffe682;
@@ -196,7 +192,6 @@
             box-shadow: 0 0 20px rgba(255, 140, 30, 0.3), inset -3px 0 5px rgba(0,0,0,0.25);
         }
 
-        /* Восковые подтеки с мягким градиентом */
         .wax-drip-left {
             position: absolute;
             top: 10px;
@@ -221,9 +216,7 @@
             .candle-rig { transform: scale(0.68); left: -4px; bottom: 8px; }
         }
 
-        /* ===================================================
-           === КНИГА, СТРАНИЦЫ И ВИНТАЖНЫЙ ПЕРГАМЕНТ ===
-           =================================================== */
+        /* === КНИГА И СТРАНИЦЫ === */
         #book-stage {
             position: relative;
             width: min(94vw, 440px);
@@ -236,13 +229,13 @@
             position: absolute;
             top: 0; left: 0;
             width: 100%;
-
-height: 100%;
+            height: 100%;
             background-color: #dfceaa;
             background-image: 
                 radial-gradient(circle at 50% 50%, rgba(255, 255, 255, 0.2), transparent),
                 radial-gradient(ellipse at center, transparent 55%, rgba(68, 38, 15, 0.45) 100%),
-                url('https://www.transparenttextures.com/patterns/aged-paper.png');
+
+url('https://www.transparenttextures.com/patterns/aged-paper.png');
             box-shadow: 
                 inset 0 0 50px rgba(60, 30, 10, 0.65),
                 0 12px 35px rgba(0, 0, 0, 0.85);
@@ -268,7 +261,7 @@ height: 100%;
             transform: rotateY(0deg) scale(1);
         }
 
-        /* Капли и кляксы чернил */
+        /* Капли и чернильные кляксы */
         .ink-blot {
             position: absolute;
             pointer-events: none;
@@ -276,34 +269,16 @@ height: 100%;
             opacity: 0.28;
             filter: drop-shadow(0 1px 1px rgba(0,0,0,0.15));
         }
-        .blot-top-right {
-            top: 14px;
-            right: 18px;
-            width: 32px;
-            height: 32px;
-        }
-        .blot-bottom-left {
-            bottom: 48px;
-            left: 12px;
-            width: 26px;
-            height: 26px;
-            opacity: 0.22;
-        }
-        .blot-splatter {
-            bottom: 75px;
-            right: 25px;
-            width: 22px;
-            height: 22px;
-            opacity: 0.25;
-        }
+        .blot-top-right { top: 14px; right: 18px; width: 32px; height: 32px; }
+        .blot-bottom-left { bottom: 48px; left: 12px; width: 26px; height: 26px; opacity: 0.22; }
+        .blot-splatter { bottom: 75px; right: 25px; width: 22px; height: 22px; opacity: 0.25; }
 
-        /* Контейнер текста — скроллится аккуратно, ничего не обрезается */
         .page-content {
             flex: 1;
             overflow-y: auto;
             overflow-x: hidden;
             padding-right: 6px;
-            padding-bottom: 58px; /* Запас чтобы футер не перекрывал низ текста */
+            padding-bottom: 58px;
             position: relative;
             z-index: 2;
             -webkit-overflow-scrolling: touch;
@@ -340,7 +315,6 @@ height: 100%;
 
         ul { padding-left: 20px; margin-bottom: 10px; }
 
-        /* Изображения с художественной рамкой */
         .lore-img {
             width: 100%;
             max-height: 190px;
@@ -353,10 +327,7 @@ height: 100%;
             display: block;
         }
 
-        /* ===================================================
-
-=== ФУТЕР И СТРЕЛКИ НАВИГАЦИИ ПО БОКАМ ВНИЗУ ===
-           =================================================== */
+        /* Навигация внизу страниц */
         .page-footer {
             position: absolute;
             bottom: 8px;
@@ -379,7 +350,9 @@ height: 100%;
             background: none;
             border: none;
             color: #4a1f05;
-            font-family: 'Caveat', cursive;
+
+𝖋𝖎𝖑𝖈𝖍𝖍𝖍, [10.09.2026 15:08]
+font-family: 'Caveat', cursive;
             font-size: 22px;
             font-weight: 700;
             cursor: pointer;
@@ -390,6 +363,7 @@ height: 100%;
             gap: 4px;
             border-radius: 6px;
             transition: all 0.15s ease;
+            -webkit-tap-highlight-color: transparent;
         }
 
         .page-btn:active {
@@ -409,7 +383,6 @@ height: 100%;
             opacity: 0.85;
         }
 
-        /* Обложка книги */
         .cover {
             background: #270f04 url('https://www.transparenttextures.com/patterns/leather.png');
             color: #deb66c;
@@ -432,15 +405,15 @@ height: 100%;
 </head>
 <body>
 
-    <!-- Экран начала / Приветствие -->
+    <!-- Стартовый экран -->
     <div id="start-screen">
         <h2 style="font-size: 40px; border:none; margin-bottom: 12px; font-family: 'Marck Script', cursive;">Библиотека Арканума</h2>
         <p style="font-size: 21px; color: #d6be95;">Позвольте огню рассеять тьму древних страниц...</p>
-        <button id="start-btn" type="button">Открыть Фолиант</button>
+        <button id="start-btn" type="button" onclick="openBook(event)">Открыть Фолиант</button>
     </div>
 
     <div id="book-wrapper">
-        <!-- Аниме-свеча со светящимся ореолом и искрами -->
+        <!-- Аниме-свеча -->
         <div class="candle-rig">
             <div class="flame-halo"></div>
             <div class="anime-flame-container">
@@ -460,16 +433,15 @@ height: 100%;
             </div>
         </div>
 
-        <!-- Книга -->
+        <!-- Книга и страницы -->
         <div id="book-stage">
             
-            <!-- SVG Шаблон чернильных капель -->
+            <!-- Векторные капли чернил -->
             <svg style="display: none;">
                 <defs>
                     <g id="ink-drop-svg">
                         <path fill="#221105" d="M15,2 C15,2 25,12 25,20 C25,26.6 19.6,32 13,32 C6.4,32 1,26.6 1,20 C1,12 11,2 15,2 Z" />
-
-<circle fill="#221105" cx="26" cy="7" r="2.5" />
+                        <circle fill="#221105" cx="26" cy="7" r="2.5" />
                         <circle fill="#221105" cx="4" cy="9" r="1.8" />
                     </g>
                     <g id="ink-splatter-svg">
@@ -483,7 +455,8 @@ height: 100%;
 
             <!-- Стр 1: Обложка -->
             <div class="page cover active">
-                <div class="page-content" style="display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center;">
+
+<div class="page-content" style="display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center;">
                     <h1 style="font-family: 'Marck Script', cursive; font-size: 42px;">Летопись Аурхейма</h1>
                     <h2 style="margin-top: 15px; font-size: 24px;">Расы, Локации и Бестиарий</h2>
                 </div>
@@ -526,7 +499,7 @@ height: 100%;
                 </div>
             </div>
 
-<!-- Стр 4: Тёмные эльфы: Арт -->
+            <!-- Стр 4: Тёмные эльфы: Арт -->
             <div class="page">
                 <svg class="ink-blot blot-top-right" viewBox="0 0 35 35"><use href="#ink-splatter-svg"/></svg>
                 <div class="page-content">
@@ -543,7 +516,7 @@ height: 100%;
                 </div>
             </div>
 
-            <!-- Стр 5: Тёмные эльфы: Механики -->
+<!-- Стр 5: Тёмные эльфы: Механики -->
             <div class="page">
                 <div class="page-content">
                     <h2>Тёмные эльфы (Навыки)</h2>
@@ -581,8 +554,7 @@ height: 100%;
                     <h2>Эльфы (Симбиоз)</h2>
                     <p><b>Механика:</b> Высочайшая гармония первостихий. Враг омывается потоками Воды, а следом сковывается корнями Земли. Мана расходуется бережно и быстро.</p>
                     <p><b>Пассивный бонус — «Эфирный Симбиоз»[span_13](start_span)[span_13](end_span):</b> Естественное исцеление ран и восстановление маны каждый ход при отсутствии входящих ранений[span_14](start_span)[span_14](end_span).</p>
-
-<p><b>Активный навык — «Живые Путы»[span_15](start_span)[span_15](end_span):</b> Побеги сковывают цель на 1 ход, срезая защиту от природных стихий и накладывая запрет на передвижение и атаки[span_16](start_span)[span_16](end_span).</p>
+                    <p><b>Активный навык — «Живые Путы»[span_15](start_span)[span_15](end_span):</b> Побеги сковывают цель на 1 ход, срезая защиту от природных стихий и накладывая запрет на передвижение и атаки[span_16](start_span)[span_16](end_span).</p>
                 </div>
                 <div class="page-footer">
                     <button class="page-btn btn-prev">❮ Назад</button>
@@ -596,7 +568,8 @@ height: 100%;
                 <svg class="ink-blot blot-top-right" viewBox="0 0 35 35"><use href="#ink-drop-svg"/></svg>
                 <div class="page-content">
                     <h2>Зверолюды (Шаманизм крови)</h2>
-                    <img src="IMG_20260830_171207.jpg" class="lore-img" alt="Зверолюды" onerror="this.style.display='none'">
+
+<img src="IMG_20260830_171207.jpg" class="lore-img" alt="Зверолюды" onerror="this.style.display='none'">
                     <p><b>Стиль игры:</b> Ловкачи, Адепты затяжных маневров, Охотники.</p>
                     <p><b>Доступные стихии:</b> Воздух (молниеносные прыжки), Земля (крепость когтей и шкуры).</p>
                     <p><b>Полный запрет:</b> Свет, Тьма, Смерть, Лёд, Огонь.</p>
@@ -644,8 +617,7 @@ height: 100%;
             <div class="page">
                 <div class="page-content">
                     <h2>Дракониты (Ярость)</h2>
-
-<p><b>Механика:</b> Пламя высвобождается непосредственно через взмахи секир и клинков. Энергия маны крайне мала, но расходуется расчетливо.</p>
+                    <p><b>Механика:</b> Пламя высвобождается непосредственно через взмахи секир и клинков. Энергия маны крайне мала, но расходуется расчетливо.</p>
                     <p><b>Пассивный бонус — «Драконья Чешуя»[span_17](start_span)[span_17](end_span):</b> Врожденное поглощение физического урона на 15% выше нормы[span_18](start_span)[span_18](end_span). Абсолютный иммунитет к пламени и горению[span_19](start_span)[span_19](end_span).</p>
                     <p><b>Активный навык — «Истинная Ярость»[span_20](start_span)[span_20](end_span):</b> Чем глубже раны воина, тем чудовищнее его натиск[span_21](start_span)[span_21](end_span). При остатке менее 20% HP удары игнорируют тяжелые доспехи недругов[span_22](start_span)[span_22](end_span).</p>
                 </div>
@@ -656,7 +628,7 @@ height: 100%;
                 </div>
             </div>
 
-            <!-- Стр 12: Локации: Элизия и Порт -->
+<!-- Стр 12: Локации: Элизия и Порт -->
             <div class="page">
                 <svg class="ink-blot blot-top-right" viewBox="0 0 35 35"><use href="#ink-drop-svg"/></svg>
                 <div class="page-content">
@@ -698,8 +670,7 @@ height: 100%;
                     <h2>Атлас: Огонь и Свет</h2>
                     <h3>Цитадель Кар-Орот</h3>
                     <p>Обсидиановая твердыня внутри спящего вулкана. Реки магмы питают наковальни, а Арена Пепла принимает дуэли чести Кланов.</p>
-
-<h3>Ущелье Драконьего Клыка[span_26](start_span)[span_26](end_span)</h3>
+                    <h3>Ущелье Драконьего Клыка[span_26](start_span)[span_26](end_span)</h3>
                     <p>Скалистый каньон, усеянный прахом смельчаков и защитными рунами взрыва[span_27](start_span)[span_27](end_span).</p>
                     <h3>Ауралия — Парящие Острова</h3>
                     <p>Хрустальные сады над Озером Миражей. В Павильонах Исцеления недуги лечат за концептуальную плату — осколки памяти или искры удачи.</p>
@@ -717,7 +688,8 @@ height: 100%;
                 <div class="page-content">
                     <h2>Аэтерон — Расколотое Небо</h2>
                     <p>Дрейфующая жемчужина над бездной Ока Эфира.</p>
-                    <ul>
+
+<ul>
                         <li><b>Хрустальный Атриум:</b> Стеклянный амфитеатр, где души Странников раскрываются в бутонах эфирных лотосов.</li>
                         <li><b>Кольцо Золотого Ветра:</b> Парящие шелковые шатры базара, звенящие сотнями ветряных колокольчиков.</li>
                         <li><b>Венец Гармонии:</b> Посольские шпили пяти великих народов.</li>
@@ -752,7 +724,7 @@ height: 100%;
                 </div>
             </div>
 
-<!-- Стр 17: Бестиарий: Клык и Канализация -->
+            <!-- Стр 17: Бестиарий: Клык и Канализация -->
             <div class="page">
                 <svg class="ink-blot blot-top-right" viewBox="0 0 35 35"><use href="#ink-drop-svg"/></svg>
                 <div class="page-content">
@@ -761,7 +733,8 @@ height: 100%;
                     <p>Пепельные Дрейки[span_46](start_span)[span_46](end_span), Магматические Големы[span_47](start_span)[span_47](end_span), Искрящиеся Элементали[span_48](start_span)[span_48](end_span).<br>
                     💀 <b>Босс: Кор-Вош (Ур. 80, Слож. 95)[span_49](start_span)[span_49](end_span):</b> Громочешуйный Змей[span_50](start_span)[span_50](end_span). Смертоносный плазменный луч разрезает колонны укрытий[span_51](start_span)[span_51](end_span).</p>
                     <h3>Подземелья Элизии (Ур. 5–25)[span_52](start_span)[span_52](end_span)</h3>
-                    <p>Чумные Крысы[span_53](start_span)[span_53](end_span), Кислотные Слизни[span_54](start_span)[span_54](end_span), Гомункулы-Отступники[span_55](start_span)[span_55](end_span).<br>
+
+<p>Чумные Крысы[span_53](start_span)[span_53](end_span), Кислотные Слизни[span_54](start_span)[span_54](end_span), Гомункулы-Отступники[span_55](start_span)[span_55](end_span).<br>
                     💀 <b>Босс: Амальгама (Ур. 25, Слож. 40)[span_56](start_span)[span_56](end_span):</b> Пожиратель зелий и костей, распадающийся на фрагменты[span_57](start_span)[span_57](end_span).</p>
                 </div>
                 <div class="page-footer">
@@ -796,8 +769,7 @@ height: 100%;
                     <h2>Бестиарий: Иллюзии и Дороги[span_71](start_span)[span_71](end_span)</h2>
                     <h3>Иллюзорные Топи (Ур. 65–85)[span_72](start_span)[span_72](end_span)</h3>
                     <p>Фэй-Пантеры[span_73](start_span)[span_73](end_span), Кристальные Мимики[span_74](start_span)[span_74](end_span), Плакальщицы Тумана[span_75](start_span)[span_75](end_span).<br>
-
-💀 <b>Босс: Люминекс (Ур. 90, Слож. 95)[span_76](start_span)[span_76](end_span):</b> Падший Свет с гибельным стаком Святого Пламени[span_77](start_span)[span_77](end_span).</p>
+                    💀 <b>Босс: Люминекс (Ур. 90, Слож. 95)[span_76](start_span)[span_76](end_span):</b> Падший Свет с гибельным стаком Святого Пламени[span_77](start_span)[span_77](end_span).</p>
                     <h3>Имперские Тракты и Элита[span_78](start_span)[span_78](end_span)</h3>
                     <p>Эфирные разбойники[span_79](start_span)[span_79](end_span), Грифоны[span_80](start_span)[span_80](end_span), Осколки Разлома[span_81](start_span)[span_81](end_span).<br>
                     🦇 <b>Мини-боссы[span_82](start_span)[span_82](end_span):</b> Кровавый Палач (Ур. 60)[span_83](start_span)[span_83](end_span) и Ткач Пустоты (Ур. 75, блокирующий телепортацию)[span_84](start_span)[span_84](end_span).</p>
@@ -809,7 +781,7 @@ height: 100%;
                 </div>
             </div>
 
-            <!-- Стр 20: Бестиарий: Лед и Каверны -->
+<!-- Стр 20: Бестиарий: Лед и Каверны -->
             <div class="page">
                 <svg class="ink-blot blot-top-right" viewBox="0 0 35 35"><use href="#ink-drop-svg"/></svg>
                 <div class="page-content">
@@ -839,8 +811,7 @@ height: 100%;
                     <h3>Бездна Левиафана (Ур. 90–100)[span_105](start_span)[span_105](end_span)</h3>
                     <p>Глубинные Сталкеры[span_106](start_span)[span_106](end_span), Ежи-Исполины[span_107](start_span)[span_107](end_span), Киты-Тараны[span_108](start_span)[span_108](end_span).<br>
                     💀 <b>Рейдовый Босс: Мор'Гур (Ур. 100, Слож. 100)[span_109](start_span)[span_109](end_span):</b> Древний Кракен[span_110](start_span)[span_110](end_span). Слепое око поражается направленным лучом Света[span_111](start_span)[span_111](end_span).</p>
-
-</div>
+                </div>
                 <div class="page-footer">
                     <button class="page-btn btn-prev">❮ Назад</button>
                     <span class="page-counter">21 / 23</span>
@@ -855,7 +826,8 @@ height: 100%;
                     <h2>Глобальный Владыка Аномалий[span_112](start_span)[span_112](end_span)</h2>
                     <h3>Исказитель Пространства (Ур. 100)[span_113](start_span)[span_113](end_span)</h3>
                     <p>Сбой первичных Врат Континента, восстающий раз в лунный месяц[span_114](start_span)[span_114](end_span). Иммунен к оковам, меняет уязвимости каждые полминуты[span_115](start_span)[span_115](end_span).</p>
-                    <p><b>Искажение реальности[span_116](start_span)[span_116](end_span):</b> Целебные чары обращаются ранами, огонь сковывает льдом, а погибшие владыки восстают призраками[span_117](start_span)[span_117](end_span).</p>
+
+<p><b>Искажение реальности[span_116](start_span)[span_116](end_span):</b> Целебные чары обращаются ранами, огонь сковывает льдом, а погибшие владыки восстают призраками[span_117](start_span)[span_117](end_span).</p>
                     <p><b>Дар победы[span_118](start_span)[span_118](end_span):</b> «Осколки Эфира», дарующие право закладки родовых замков и влияния на корону[span_119](start_span)[span_119](end_span).</p>
                 </div>
                 <div class="page-footer">
@@ -880,75 +852,76 @@ height: 100%;
         </div>
     </div>
 
-    <!-- Звуковое сопровождение -->
+    <!-- Аудиоэффекты -->
     <audio id="audio-flip" src="https://upload.wikimedia.org/wikipedia/commons/f/f6/Page_turn.ogg" preload="none"></audio>
     <audio id="audio-ambient" src="https://upload.wikimedia.org/wikipedia/commons/4/41/Fire_01.ogg" loop preload="none"></audio>
 
     <script>
-        document.addEventListener('DOMContentLoaded', () => {
-            // Telegram WebApp инициализация и полноэкранный режим
+        // Инициализация Telegram WebApp
+        try {
+            if (window.Telegram && window.Telegram.WebApp) {
+                window.Telegram.WebApp.ready();
+                window.Telegram.WebApp.expand();
+            }
+        } catch (e) {}
+
+        const startScreen = document.getElementById('start-screen');
+        const bookWrapper = document.getElementById('book-wrapper');
+        const bookStage = document.getElementById('book-stage');
+        const flipAudio = document.getElementById('audio-flip');
+        const ambientAudio = document.getElementById('audio-ambient');
+
+        try {
+            if (ambientAudio) ambientAudio.volume = 0.25;
+        } catch (e) {}
+
+        const pages = Array.from(document.querySelectorAll('#book-stage .page'));
+        let currentIndex = 0;
+
+        function triggerHaptic() {
             try {
-                if (window.Telegram && window.Telegram.WebApp) {
-                    window.Telegram.WebApp.ready();
-                    window.Telegram.WebApp.expand();
+                if (window.Telegram && window.Telegram.WebApp && window.Telegram.WebApp.HapticFeedback) {
+                    window.Telegram.WebApp.HapticFeedback.impactOccurred('light');
                 }
             } catch (e) {}
+        }
 
-            const startBtn = document.getElementById('start-btn');
-            const startScreen = document.getElementById('start-screen');
-            const bookWrapper = document.getElementById('book-wrapper');
-            const bookStage = document.getElementById('book-stage');
-            const flipAudio = document.getElementById('audio-flip');
-            const ambientAudio = document.getElementById('audio-ambient');
+        function playSound(audio) {
+            if (!audio) return;
+            try {
+                audio.currentTime = 0;
+                const p = audio.play();
+                if (p && typeof p.catch === 'function') {
+                    p.catch(() => {});
+                }
+            } catch (e) {}
+        }
 
-            if (ambientAudio) ambientAudio.volume = 0.25;
+        function updatePages(newIdx) {
+            if (newIdx < 0  newIdx >= pages.length  newIdx === currentIndex) return;
+            
+            pages[currentIndex].classList.remove('active');
+            pages[newIdx].classList.add('active');
+            currentIndex = newIdx;
+            
+            const content = pages[newIdx].querySelector('.page-content');
+            if (content) content.scrollTop = 0;
 
-            const pages = Array.from(document.querySelectorAll('#book-stage .page'));
-            let currentIndex = 0;
+            playSound(flipAudio);
+            triggerHaptic();
+        }
 
-// Виброотклик для Telegram
-            function triggerHaptic() {
-                try {
-                    if (window.Telegram && window.Telegram.WebApp && window.Telegram.WebApp.HapticFeedback) {
-                        window.Telegram.WebApp.HapticFeedback.impactOccurred('light');
-                    }
-                } catch (e) {}
-            }
+        // Глобальная функция открытия книги (срабатывает всегда и на всех платформах)
+window.openBook = function(e) {
+            if (e) e.stopPropagation();
+            if (startScreen) startScreen.style.display = 'none';
+            if (bookWrapper) bookWrapper.style.display = 'flex';
+            playSound(ambientAudio);
+            triggerHaptic();
+        };
 
-            function playSound(audio) {
-                if (!audio) return;
-                try {
-                    audio.currentTime = 0;
-                    const p = audio.play();
-                    if (p !== undefined) p.catch(() => {});
-                } catch (e) {}
-            }
-
-            function updatePages(newIdx) {
-                if (newIdx < 0  newIdx >= pages.length  newIdx === currentIndex) return;
-                
-                pages[currentIndex].classList.remove('active');
-                pages[newIdx].classList.add('active');
-                currentIndex = newIdx;
-                
-                // Прокручиваем открытую страницу наверх
-                const content = pages[newIdx].querySelector('.page-content');
-                if (content) content.scrollTop = 0;
-
-                playSound(flipAudio);
-                triggerHaptic();
-            }
-
-            // Запуск книги
-            startBtn.addEventListener('click', (e) => {
-                e.stopPropagation();
-                startScreen.style.display = 'none';
-                bookWrapper.style.display = 'flex';
-                playSound(ambientAudio);
-                triggerHaptic();
-            });
-
-            // Нажатия на кнопки навигации внизу
+        // Делегирование кликов по кнопкам навигации
+        if (bookWrapper) {
             bookWrapper.addEventListener('click', (e) => {
                 const target = e.target.closest('.page-btn');
                 if (!target) return;
@@ -959,12 +932,14 @@ height: 100%;
                     updatePages(currentIndex - 1);
                 }
             });
+        }
 
-            // Корректная обработка свайпа (не ломает вертикальный скролл)
-            let touchStartX = 0;
-            let touchStartY = 0;
-            let touchStartTime = 0;
+        // Свайпы для сенсорных экранов
+        let touchStartX = 0;
+        let touchStartY = 0;
+        let touchStartTime = 0;
 
+        if (bookStage) {
             bookStage.addEventListener('touchstart', (e) => {
                 touchStartX = e.touches[0].clientX;
                 touchStartY = e.touches[0].clientY;
@@ -978,7 +953,6 @@ height: 100%;
                 const diffY = e.changedTouches[0].clientY - touchStartY;
                 const timeDiff = Date.now() - touchStartTime;
 
-                // Свайп засчитывается, если горизонтальное движение отчетливее вертикального
                 if (Math.abs(diffX) > 40 && Math.abs(diffX) > Math.abs(diffY) * 1.3 && timeDiff < 600) {
                     if (diffX < 0) {
                         updatePages(currentIndex + 1);
@@ -987,7 +961,7 @@ height: 100%;
                     }
                 }
             }, { passive: true });
-        });
+        }
     </script>
 </body>
 </html>
