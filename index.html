@@ -4,36 +4,43 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Великий Фолиант Аурхейма</title>
-    
+
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Bad+Script&family=Caveat:wght@600;700&family=Marck+Script&display=swap" rel="stylesheet">
-    
+
     <style>
         * { box-sizing: border-box; margin: 0; padding: 0; }
-        
+
+        html, body {
+            height: 100%;
+            width: 100%;
+        }
+
         body {
             background-color: #050302;
             color: #241106;
             display: flex;
             justify-content: center;
-            align-items: center; 
+            align-items: center;
             height: 100vh;
             height: 100dvh;
-            width: 100vw;
             overflow: hidden;
-            background-image: radial-gradient(circle at 20% 70%, rgba(45, 18, 6, 0.8) 0%, #040201 85%);
+            background-image:
+                radial-gradient(circle at 20% 70%, rgba(45, 18, 6, 0.8) 0%, #040201 85%);
             font-family: 'Bad Script', cursive, serif;
             user-select: none;
             -webkit-user-select: none;
         }
 
-        /* Кнопка переключения звука */
+        /* ===================================================
+           === КНОПКА ЗВУКА ===================================
+           =================================================== */
         #sound-btn {
             position: fixed;
-            top: 14px;
-            right: 14px;
+            top: max(14px, env(safe-area-inset-top));
+            right: max(14px, env(safe-area-inset-right));
             z-index: 100;
             background: rgba(36, 17, 7, 0.85);
             border: 2px solid #b8860b;
@@ -52,214 +59,310 @@
         }
         #sound-btn:active { transform: scale(0.9); }
 
-        #book-wrapper { 
-            display: flex; 
+        #book-wrapper {
+            display: flex;
             width: 100%;
-            height: 100%; 
+            height: 100%;
             position: relative;
             justify-content: center;
             align-items: center;
         }
 
         /* ===================================================
-           === 2D АНИМЕ-СВЕЧА (CEL-SHADED GHIBLI СТИЛЬ) ===
+           === 🕯️ НОВАЯ АНИМЕ-СВЕЧА (GHIBLI STYLE) ============
            =================================================== */
-        .candle-rig {
-            position: absolute;
-            left: 20px;
-            bottom: 18px;
-            z-index: 35;
+        .candle-scene {
+            position: fixed;
+            left: 0;
+            bottom: 0;
+            z-index: 30;
             pointer-events: none;
+            /* Внутренние отступы — чтобы свеча не обрезалась */
+            padding: 60px 60px 20px 20px;
+            transform-origin: left bottom;
+        }
+
+        /* Тёплое свечение, падающее на книгу */
+        .candle-glow {
+            position: absolute;
+            left: 0;
+            bottom: 0;
+            width: 340px;
+            height: 340px;
+            background: radial-gradient(circle at 30% 80%,
+                rgba(255, 180, 60, 0.28) 0%,
+                rgba(255, 120, 20, 0.12) 35%,
+                rgba(255, 80, 0, 0.04) 60%,
+                transparent 78%);
+            border-radius: 50%;
+            animation: glowPulse 3.5s ease-in-out infinite;
+            pointer-events: none;
+        }
+
+        @keyframes glowPulse {
+            0%, 100% { transform: scale(0.96); opacity: 0.85; }
+            50%      { transform: scale(1.06); opacity: 1; }
+        }
+
+        /* Корпус свечи */
+        .candle-body-wrap {
+            position: relative;
             display: flex;
             flex-direction: column;
             align-items: center;
+            filter: drop-shadow(0 6px 10px rgba(0,0,0,0.6));
         }
 
-        /* Свечение */
-        .anime-halo {
-            position: absolute;
-            top: -65px;
-            width: 190px;
-            height: 190px;
-            background: radial-gradient(circle, rgba(255, 170, 45, 0.32) 0%, rgba(255, 100, 0, 0.08) 50%, transparent 72%);
-            border-radius: 50%;
-            animation: animeHaloPulse 3s infinite ease-in-out;
-        }
-
-        @keyframes animeHaloPulse {
-            0%, 100% { transform: scale(0.94); opacity: 0.75; }
-            50% { transform: scale(1.08); opacity: 1; }
-        }
-
-        /* Аниме-пламя со ступенчатым контуром */
-        .anime-flame-box {
+        /* Пламя */
+        .anime-flame {
             position: relative;
-            width: 36px;
-            height: 64px;
-            display: flex;
-            justify-content: center;
-            align-items: flex-end;
+            width: 34px;
+            height: 62px;
             margin-bottom: -6px;
-        }
-
-        .flame-contour {
-            position: absolute;
-            bottom: 0;
-            width: 24px;
-            height: 48px;
-            background: #ff3a00;
-            border: 2px solid #5a1200;
-            border-radius: 50% 50% 35% 35% / 60% 60% 40% 40%;
-            box-shadow: 0 0 16px #ff5900, 0 0 35px rgba(255, 120, 0, 0.6);
-            animation: animeFlameSway 0.15s infinite alternate ease-in-out;
-            transform-origin: center bottom;
-        }
-
-        .flame-mid-layer {
-            position: absolute;
-            bottom: 3px;
-            width: 16px;
-            height: 36px;
-            background: linear-gradient(180deg, #ffee33 0%, #ff8c00 90%);
-            border-radius: 50% 50% 35% 35% / 60% 60% 40% 40%;
-        }
-
-        .flame-core-white {
-            position: absolute;
-            bottom: 5px;
-            width: 9px;
-            height: 20px;
-            background: #ffffff;
-            border-radius: 50%;
-            box-shadow: 0 0 4px #ffffff;
-        }
-
-        .flame-anime-blue {
-            position: absolute;
-            bottom: -2px;
-            width: 12px;
-            height: 7px;
-            background: #2575fc;
-            border-radius: 50%;
-            opacity: 0.9;
-        }
-
-        @keyframes animeFlameSway {
-            0% { transform: scale(1) rotate(-2deg) skewX(-1.5deg); }
-            100% { transform: scale(1.06, 0.95) rotate(2deg) skewX(2deg); }
-        }
-
-        /* Искры */
-        .anime-spark {
-            position: absolute;
-            background: #fff3a1;
-            border: 1px solid #ff7b00;
-            border-radius: 50%;
-            opacity: 0;
-            animation: sparkFloat 2.4s infinite ease-out;
-        }
-        .sp-1 { width: 4px; height: 4px; left: 30%; animation-delay: 0.1s; }
-        .sp-2 { width: 3px; height: 3px; left: 65%; animation-delay: 0.9s; }
-        .sp-3 { width: 5px; height: 5px; left: 45%; animation-delay: 1.7s; }
-
-        @keyframes sparkFloat {
-            0% { transform: translateY(0) scale(1); opacity: 1; }
-            50% { opacity: 0.8; transform: translateY(-40px) translateX(8px) scale(0.9); }
-            100% { transform: translateY(-80px) translateX(-12px) scale(0.2); opacity: 0; }
-        }
-
-        .anime-wick {
-            width: 3.5px;
-            height: 14px;
-            background: #1c0e06;
-            border-radius: 2px;
             z-index: 2;
         }
 
-        /* Тело свечи с выраженным 2D-контуром и подтеками */
+        /* Внешнее свечение пламени */
+        .flame-glow {
+            position: absolute;
+            left: 50%;
+            bottom: 0;
+            width: 90px;
+            height: 110px;
+            transform: translateX(-50%);
+            background: radial-gradient(ellipse at center bottom,
+                rgba(255, 200, 90, 0.55) 0%,
+                rgba(255, 130, 30, 0.28) 35%,
+                rgba(255, 80, 0, 0.08) 60%,
+                transparent 80%);
+            filter: blur(6px);
+            animation: flameGlow 2.8s ease-in-out infinite;
+            pointer-events: none;
+        }
+
+        @keyframes flameGlow {
+            0%, 100% { transform: translateX(-50%) scale(0.96); opacity: 0.85; }
+            50%      { transform: translateX(-50%) scale(1.08); opacity: 1; }
+        }
+
+        /* Основное пламя — форма капли */
+        .flame-outer {
+            position: absolute;
+            left: 50%;
+            bottom: 0;
+            width: 22px;
+            height: 50px;
+            transform: translateX(-50%);
+            background: linear-gradient(to top,
+                #ff3c00 0%,
+                #ff7300 35%,
+                #ffb000 70%,
+                #ffd85a 100%);
+            border-radius: 50% 50% 50% 50% / 70% 70% 30% 30%;
+            filter: blur(0.6px);
+            animation: flameSway 0.4s ease-in-out infinite alternate;
+            transform-origin: 50% 100%;
+            box-shadow: 0 0 18px rgba(255, 140, 0, 0.9),
+                        0 0 40px rgba(255, 90, 0, 0.55);
+        }
+
+        /* Средний слой пламени (жёлтый) */
+        .flame-middle {
+            position: absolute;
+            left: 50%;
+            bottom: 4px;
+            width: 14px;
+            height: 34px;
+            transform: translateX(-50%);
+            background: linear-gradient(to top,
+                #ffb700 0%,
+                #ffe066 50%,
+                #fff5b0 100%);
+            border-radius: 50% 50% 50% 50% / 70% 70% 30% 30%;
+            filter: blur(0.5px);
+            animation: flameSway 0.35s ease-in-out infinite alternate-reverse;
+            transform-origin: 50% 100%;
+        }
+
+        /* Внутреннее ядро (белое) */
+        .flame-core {
+            position: absolute;
+            left: 50%;
+            bottom: 6px;
+            width: 7px;
+            height: 18px;
+            transform: translateX(-50%);
+            background: radial-gradient(ellipse at bottom,
+                #ffffff 0%,
+                #fff2b0 60%,
+                transparent 100%);
+            border-radius: 50%;
+            filter: blur(1px);
+            opacity: 0.95;
+        }
+
+        /* Синее основание (пламя у фитиля) */
+        .flame-blue-base {
+            position: absolute;
+            left: 50%;
+            bottom: -2px;
+            width: 14px;
+            height: 8px;
+            transform: translateX(-50%);
+            background: radial-gradient(ellipse at center,
+                #4ea6ff 0%,
+                #1653c4 60%,
+                transparent 100%);
+            border-radius: 50%;
+            filter: blur(1.5px);
+            opacity: 0.85;
+        }
+
+        @keyframes flameSway {
+            0%   { transform: translateX(-50%) rotate(-2deg) scale(1, 1); }
+            100% { transform: translateX(-50%) rotate(2.5deg) scale(1.05, 0.96); }
+        }
+
+        /* Фитиль */
+        .anime-wick {
+            width: 3px;
+            height: 12px;
+            background: linear-gradient(to bottom, #6b3a17, #1c0e06);
+            border-radius: 2px 2px 1px 1px;
+            z-index: 1;
+            box-shadow: 0 0 4px rgba(255, 150, 0, 0.5);
+            position: relative;
+            top: 1px;
+        }
+
+        /* Тело свечи */
         .anime-candle-stick {
             position: relative;
-            width: 32px;
-            height: 95px;
-            background: #faf4e6;
-            border: 2.5px solid #3c1e0f;
-            border-radius: 6px 6px 8px 8px;
-            box-shadow: inset -9px 0 0 #d9c5a0, 0 4px 15px rgba(0,0,0,0.5);
-            overflow: visible;
+            width: 30px;
+            height: 88px;
+            background: linear-gradient(to right,
+                #d9c5a0 0%,
+                #faf4e6 25%,
+                #fffbf0 50%,
+                #f0e2c4 78%,
+                #b89968 100%);
+            border: 2px solid #3c1e0f;
+            border-radius: 5px 5px 8px 8px;
+            box-shadow:
+                inset -4px 0 6px rgba(120, 80, 30, 0.25),
+                inset 0 -6px 8px rgba(120, 80, 30, 0.2),
+                0 4px 15px rgba(0,0,0,0.5);
+            z-index: 2;
         }
 
         /* Верхняя лужица воска */
         .anime-candle-stick::before {
             content: '';
             position: absolute;
-            top: -5px;
-            left: -2.5px;
-            width: 32px;
-            height: 8px;
-            background: #fffbf0;
-            border: 2.5px solid #3c1e0f;
+            top: -4px;
+            left: -2px;
+            width: 30px;
+            height: 7px;
+            background: linear-gradient(to bottom, #fffbf0, #e6d3af);
+            border: 2px solid #3c1e0f;
             border-radius: 50%;
+            z-index: 3;
         }
 
-        /* Капли и потеки воска */
-        .anime-drip-1 {
+        /* Подтёк воска слева */
+        .anime-drip-left {
             position: absolute;
-            top: 6px;
-            left: -5px;
-            width: 9px;
-            height: 38px;
-            background: #faf4e6;
-            border: 2.5px solid #3c1e0f;
+            top: 4px;
+            left: -7px;
+            width: 8px;
+            height: 44px;
+            background: linear-gradient(to right, #e6d3af, #faf4e6);
+            border: 2px solid #3c1e0f;
             border-top: none;
             border-radius: 0 0 6px 6px;
-        }
-        .anime-drip-2 {
-            position: absolute;
-            top: 14px;
-            right: -4px;
-            width: 8px;
-            height: 26px;
-            background: #e6d3af;
-            border: 2.5px solid #3c1e0f;
-            border-top: none;
-            border-radius: 0 0 5px 5px;
+            z-index: 1;
         }
 
-        /* Винтажная аниме-подставка с ручкой */
+        /* Подтёк воска справа */
+        .anime-drip-right {
+            position: absolute;
+            top: 10px;
+            right: -6px;
+            width: 7px;
+            height: 30px;
+            background: linear-gradient(to left, #c8b188, #e6d3af);
+            border: 2px solid #3c1e0f;
+            border-top: none;
+            border-radius: 0 0 5px 5px;
+            z-index: 1;
+        }
+
+        /* Винтажная подставка */
         .anime-saucer {
             position: relative;
-            width: 68px;
-            height: 14px;
-            background: #c28834;
-            border: 2.5px solid #351a0b;
-            border-radius: 12px;
-            margin-top: -4px;
-            box-shadow: inset 0 -4px 0 #7e4b16;
+            width: 62px;
+            height: 12px;
+            background: linear-gradient(to bottom, #d99c3f, #a06520 70%, #6b3a10);
+            border: 2px solid #2a1408;
+            border-radius: 10px;
+            margin-top: -3px;
+            box-shadow: inset 0 -3px 0 #5c320c,
+                        0 4px 8px rgba(0,0,0,0.5);
+            z-index: 1;
         }
         .anime-handle {
             position: absolute;
-            left: -12px;
-            top: -10px;
-            width: 18px;
-            height: 22px;
-            border: 2.5px solid #351a0b;
+            left: -11px;
+            top: -9px;
+            width: 16px;
+            height: 20px;
+            border: 2px solid #2a1408;
+            border-right: none;
             background: transparent;
-            border-radius: 50%;
-            z-index: -1;
+            border-radius: 50% 0 0 50%;
+            z-index: 0;
         }
 
+        /* Искры */
+        .spark {
+            position: absolute;
+            background: radial-gradient(circle, #fff8b0 0%, #ffb400 60%, transparent 100%);
+            border-radius: 50%;
+            opacity: 0;
+            pointer-events: none;
+        }
+        .spark.s1 { width: 4px; height: 4px; left: 48%; bottom: 55px; animation: sparkRise 2.6s ease-out infinite; animation-delay: 0s; }
+        .spark.s2 { width: 3px; height: 3px; left: 55%; bottom: 60px; animation: sparkRise 3.1s ease-out infinite; animation-delay: 0.9s; }
+        .spark.s3 { width: 3px; height: 3px; left: 42%; bottom: 58px; animation: sparkRise 2.8s ease-out infinite; animation-delay: 1.7s; }
+        .spark.s4 { width: 2px; height: 2px; left: 50%; bottom: 62px; animation: sparkRise 3.4s ease-out infinite; animation-delay: 2.2s; }
+
+        @keyframes sparkRise {
+            0%   { transform: translate(0, 0) scale(1); opacity: 0; }
+            10%  { opacity: 1; }
+            60%  { opacity: 0.85; }
+            100% { transform: translate(-14px, -85px) scale(0.2); opacity: 0; }
+        }
+
+        /* Адаптация под маленькие экраны */
         @media (max-width: 600px) {
-            .candle-rig { transform: scale(0.65); left: -4px; bottom: 8px; }
+            .candle-scene {
+                transform: scale(0.7);
+            }
+        }
+        @media (max-height: 640px) {
+            .candle-scene {
+                transform: scale(0.6);
+            }
         }
 
         /* ===================================================
-           === КНИГА И ПЕРГАМЕНТНЫЕ СТРАНИЦЫ ===
+           === КНИГА И ПЕРГАМЕНТНЫЕ СТРАНИЦЫ =================
            =================================================== */
         #book-stage {
             position: relative;
             width: min(95vw, 440px);
             height: min(88vh, 700px);
-            max-height: calc(100dvh - 35px);
+            max-height: calc(100dvh - 30px);
             perspective: 1200px;
         }
 
@@ -269,13 +372,14 @@
             width: 100%;
             height: 100%;
             background-color: #dfceaa;
-            background-image: 
+            background-image:
                 radial-gradient(circle at 50% 50%, rgba(255, 255, 255, 0.24), transparent),
                 radial-gradient(ellipse at center, transparent 55%, rgba(68, 38, 15, 0.45) 100%),
                 url('https://www.transparenttextures.com/patterns/aged-paper.png');
-            box-shadow: 
+            box-shadow:
                 inset 0 0 50px rgba(60, 30, 10, 0.65),
-                0 12px 35px rgba(0, 0, 0, 0.85);
+                0 12px 35px rgba(0, 0, 0, 0.85),
+                0 0 60px rgba(255, 140, 30, 0.12);
             border: 1px solid #542f13;
             border-radius: 4px 12px 12px 4px;
             display: flex;
@@ -286,7 +390,10 @@
             overflow: hidden;
             transform-origin: left center;
             transform: rotateY(16deg) scale(0.97);
-            transition: transform 0.35s cubic-bezier(0.2, 0.8, 0.3, 1), opacity 0.3s ease, visibility 0.3s;
+            transition:
+                transform 0.35s cubic-bezier(0.2, 0.8, 0.3, 1),
+                opacity 0.3s ease,
+                visibility 0.3s;
         }
 
         .page.active {
@@ -305,9 +412,9 @@
             opacity: 0.28;
             filter: drop-shadow(0 1px 1px rgba(0,0,0,0.15));
         }
-        .blot-top-right { top: 12px; right: 16px; width: 32px; height: 32px; }
+        .blot-top-right   { top: 12px; right: 16px; width: 32px; height: 32px; }
         .blot-bottom-left { bottom: 58px; left: 14px; width: 26px; height: 26px; opacity: 0.22; }
-        .blot-splatter { bottom: 62px; right: 25px; width: 24px; height: 24px; opacity: 0.25; }
+        .blot-splatter    { bottom: 62px; right: 25px; width: 24px; height: 24px; opacity: 0.25; }
 
         /* Контейнер прокрутки текста */
         .page-content {
@@ -364,7 +471,7 @@
             display: block;
         }
 
-        /* Навигация внизу страниц */
+        /* Навигация */
         .page-footer {
             flex: 0 0 48px;
             height: 48px;
@@ -399,15 +506,16 @@
             -webkit-tap-highlight-color: transparent;
         }
 
+        .page-btn:hover { color: #a36200; }
         .page-btn:active {
             color: #a36200;
             transform: scale(0.92);
             background: rgba(110, 60, 20, 0.1);
         }
 
-        .page-btn[disabled] { 
-            visibility: hidden; 
-            pointer-events: none; 
+        .page-btn[disabled] {
+            visibility: hidden;
+            pointer-events: none;
         }
 
         .page-counter {
@@ -416,16 +524,20 @@
             opacity: 0.9;
         }
 
+        /* Обложки */
         .cover {
             background: #270f04 url('https://www.transparenttextures.com/patterns/leather.png');
             color: #deb66c;
             border: 4px double #b8860b;
-            box-shadow: inset 0 0 65px #000, 0 12px 35px rgba(0,0,0,0.9);
+            box-shadow:
+                inset 0 0 65px #000,
+                0 12px 35px rgba(0,0,0,0.9),
+                0 0 60px rgba(255, 140, 30, 0.1);
         }
-        .cover h1, .cover h2 { 
-            color: #deb66c; 
-            border: none; 
-            text-shadow: 2px 2px 8px #000; 
+        .cover h1, .cover h2 {
+            color: #deb66c;
+            border: none;
+            text-shadow: 2px 2px 8px #000;
         }
         .cover .page-footer {
             background: transparent;
@@ -449,6 +561,7 @@
             transition: all 0.2s ease;
             outline: none;
         }
+        .btn-open-book:hover { box-shadow: 0 0 30px rgba(212, 160, 23, 0.55); }
         .btn-open-book:active { transform: scale(0.95); }
     </style>
 </head>
@@ -456,34 +569,37 @@
 
     <button id="sound-btn" title="Звуки фолианта">🔊</button>
 
-    <div id="book-wrapper">
-        <!-- 2D Аниме-свеча с подставкой и искрами -->
-        <div class="candle-rig">
-            <div class="anime-halo"></div>
-            <div class="anime-flame-box">
-                <div class="flame-contour"></div>
-                <div class="flame-mid-layer"></div>
-                <div class="flame-core-white"></div>
-                <div class="flame-anime-blue"></div>
-                
-                <div class="anime-spark sp-1"></div>
-                <div class="anime-spark sp-2"></div>
-                <div class="anime-spark sp-3"></div>
+    <!-- 🕯️ Новая аниме-свеча -->
+    <div class="candle-scene">
+        <div class="candle-glow"></div>
+        <div class="candle-body-wrap">
+            <div class="anime-flame">
+                <div class="flame-glow"></div>
+                <div class="flame-outer"></div>
+                <div class="flame-middle"></div>
+                <div class="flame-core"></div>
+                <div class="flame-blue-base"></div>
+                <!-- Искры -->
+                <div class="spark s1"></div>
+                <div class="spark s2"></div>
+                <div class="spark s3"></div>
+                <div class="spark s4"></div>
             </div>
             <div class="anime-wick"></div>
             <div class="anime-candle-stick">
-                <div class="anime-drip-1"></div>
-                <div class="anime-drip-2"></div>
+                <div class="anime-drip-left"></div>
+                <div class="anime-drip-right"></div>
             </div>
             <div class="anime-saucer">
                 <div class="anime-handle"></div>
             </div>
         </div>
+    </div>
 
-        <!-- Книга -->
+    <div id="book-wrapper">
         <div id="book-stage">
-            
-            <svg style="display: none;">
+
+            <svg style="display: none;" aria-hidden="true">
                 <defs>
                     <g id="ink-drop-svg">
                         <path fill="#221105" d="M15,2 C15,2 25,12 25,20 C25,26.6 19.6,32 13,32 C6.4,32 1,26.6 1,20 C1,12 11,2 15,2 Z" />
@@ -534,8 +650,8 @@
                 <div class="page-content">
                     <h2>Люди (Особенности)</h2>
                     <p><b>Полный запрет (Официально):</b> Тьма и Смерть. Отступники преследуются имперскими инквизиторами без пощады.</p>
-                    <p><b>Пассивный бонус — «Адаптивность»[span_0](start_span)[span_0](end_span):</b> Награда золотом и боевым опытом увеличена на 5% за любые сражения[span_1](start_span)[span_1](end_span). Доступен дополнительный слот под кольцо или древний артефакт[span_2](start_span)[span_2](end_span).</p>
-                    <p><b>Активный навык — «Резонанс Группы»[span_3](start_span)[span_3](end_span):</b> Мощнейший катализатор уз[span_4](start_span)[span_4](end_span). В присутствии иных рас их пассивные природные дары удваивают мощь на 3 хода[span_5](start_span)[span_5](end_span).</p>
+                    <p><b>Пассивный бонус — «Адаптивность»:</b> Награда золотом и боевым опытом увеличена на 5% за любые сражения. Доступен дополнительный слот под кольцо или древний артефакт.</p>
+                    <p><b>Активный навык — «Резонанс Группы»:</b> Мощнейший катализатор уз. В присутствии иных рас их пассивные природные дары удваивают мощь на 3 хода.</p>
                 </div>
                 <div class="page-footer">
                     <button class="page-btn btn-prev" onclick="prevPage()">❮ Назад</button>
@@ -566,8 +682,8 @@
                 <div class="page-content">
                     <h2>Тёмные эльфы (Навыки)</h2>
                     <p><b>Механика:</b> Магия Тьмы терзает плоть кровотечениями и слепотой, тогда как Лёд сковывает поступь жертвы. Удары наносятся из засады с колоссальной разрушительной силой.</p>
-                    <p><b>Пассивный бонус — «Покров Ночи»[span_6](start_span)[span_6](end_span):</b> Базовый шанс критического удара увеличен на 10%[span_7](start_span)[span_7](end_span). Тьма пещер и ночная пора кратно умножают уклонение[span_8](start_span)[span_8](end_span).</p>
-                    <p><b>Активный навык — «Теневой Шаг»[span_9](start_span)[span_9](end_span):</b> Мгновенное смещение сквозь мрак за спину цели, парирующее направленный удар и наделяющее следующий выпад абсолютным критическим уроном[span_10](start_span)[span_10](end_span).</p>
+                    <p><b>Пассивный бонус — «Покров Ночи»:</b> Базовый шанс критического удара увеличен на 10%. Тьма пещер и ночная пора кратно умножают уклонение.</p>
+                    <p><b>Активный навык — «Теневой Шаг»:</b> Мгновенное смещение сквозь мрак за спину цели, парирующее направленный удар и наделяющее следующий выпад абсолютным критическим уроном.</p>
                 </div>
                 <div class="page-footer">
                     <button class="page-btn btn-prev" onclick="prevPage()">❮ Назад</button>
@@ -584,7 +700,7 @@
                     <img src="IMG_20260830_171149.jpg" class="lore-img" alt="Эльфы" onerror="this.style.display='none'">
                     <p><b>Стиль игры:</b> Контроль поля, постепенный урон (Доты), Баффы.</p>
                     <p><b>Доступные стихии:</b> Земля (Основная), Вода (Основная), Воздух (Вспомогательная).</p>
-                    <p><b>Полный запрет:</b> Огонь, Тьма, Смерть, Лёд, Молния. Магия Жизни строжайше табуирована из-за трагедии Эарлина[span_11](start_span)[span_11](end_span).</p>
+                    <p><b>Полный запрет:</b> Огонь, Тьма, Смерть, Лёд, Молния. Магия Жизни строжайше табуирована из-за трагедии Эарлина.</p>
                 </div>
                 <div class="page-footer">
                     <button class="page-btn btn-prev" onclick="prevPage()">❮ Назад</button>
@@ -598,8 +714,8 @@
                 <div class="page-content">
                     <h2>Эльфы (Симбиоз)</h2>
                     <p><b>Механика:</b> Высочайшая гармония первостихий. Враг омывается потоками Воды, а следом сковывается корнями Земли. Мана расходуется бережно и быстро.</p>
-                    <p><b>Пассивный бонус — «Эфирный Симбиоз»[span_12](start_span)[span_12](end_span):</b> Естественное исцеление ран и восстановление маны каждый ход при отсутствии входящих ранений[span_13](start_span)[span_13](end_span).</p>
-                    <p><b>Активный навык — «Живые Путы»[span_14](start_span)[span_14](end_span):</b> Побеги сковывают цель на 1 ход, срезая защиту от природных стихий и накладывая запрет на передвижение и атаки[span_15](start_span)[span_15](end_span).</p>
+                    <p><b>Пассивный бонус — «Эфирный Симбиоз»:</b> Естественное исцеление ран и восстановление маны каждый ход при отсутствии входящих ранений.</p>
+                    <p><b>Активный навык — «Живые Путы»:</b> Побеги сковывают цель на 1 ход, срезая защиту от природных стихий и накладывая запрет на передвижение и атаки.</p>
                 </div>
                 <div class="page-footer">
                     <button class="page-btn btn-prev" onclick="prevPage()">❮ Назад</button>
@@ -662,8 +778,8 @@
                 <div class="page-content">
                     <h2>Дракониты (Ярость)</h2>
                     <p><b>Механика:</b> Пламя высвобождается непосредственно через взмахи секир и клинков. Энергия маны крайне мала, но расходуется расчетливо.</p>
-                    <p><b>Пассивный бонус — «Драконья Чешуя»[span_16](start_span)[span_16](end_span):</b> Врожденное поглощение физического урона на 15% выше нормы[span_17](start_span)[span_17](end_span). Абсолютный иммунитет к пламени и горению[span_18](start_span)[span_18](end_span).</p>
-                    <p><b>Активный навык — «Истинная Ярость»[span_19](start_span)[span_19](end_span):</b> Чем глубже раны воина, тем чудовищнее его натиск[span_20](start_span)[span_20](end_span). При остатке менее 20% HP удары игнорируют тяжелые доспехи недругов[span_21](start_span)[span_21](end_span).</p>
+                    <p><b>Пассивный бонус — «Драконья Чешуя»:</b> Врожденное поглощение физического урона на 15% выше нормы. Абсолютный иммунитет к пламени и горению.</p>
+                    <p><b>Активный навык — «Истинная Ярость»:</b> Чем глубже раны воина, тем чудовищнее его натиск. При остатке менее 20% HP удары игнорируют тяжелые доспехи недругов.</p>
                 </div>
                 <div class="page-footer">
                     <button class="page-btn btn-prev" onclick="prevPage()">❮ Назад</button>
@@ -748,7 +864,7 @@
                 </div>
             </div>
 
-            <!-- Стр 16: Ноктюрн (Тёмные эльфы) -->
+            <!-- Стр 16: Ноктюрн -->
             <div class="page">
                 <svg class="ink-blot blot-top-right" viewBox="0 0 35 35"><use href="#ink-splatter-svg"/></svg>
                 <div class="page-content">
@@ -786,7 +902,7 @@
                 </div>
             </div>
 
-            <!-- Стр 18: Ауралия (Феи) -->
+            <!-- Стр 18: Ауралия -->
             <div class="page">
                 <svg class="ink-blot blot-bottom-left" viewBox="0 0 35 35"><use href="#ink-drop-svg"/></svg>
                 <div class="page-content">
@@ -805,7 +921,7 @@
                 </div>
             </div>
 
-            <!-- Стр 19: Аэтерон: Введение и Атриум -->
+            <!-- Стр 19: Аэтерон -->
             <div class="page">
                 <svg class="ink-blot blot-top-right" viewBox="0 0 35 35"><use href="#ink-drop-svg"/></svg>
                 <div class="page-content">
@@ -821,7 +937,7 @@
                 </div>
             </div>
 
-            <!-- Стр 20: Аэтерон: Базар и Венец Гармонии -->
+            <!-- Стр 20: Кварталы Аэтерона -->
             <div class="page">
                 <div class="page-content">
                     <h2>☁️ Кварталы Аэтерона</h2>
@@ -841,7 +957,7 @@
                 </div>
             </div>
 
-            <!-- Стр 21: Аэтерон: Таверна и Врата -->
+            <!-- Стр 21: Обители Аэтерона -->
             <div class="page">
                 <svg class="ink-blot blot-bottom-left" viewBox="0 0 35 35"><use href="#ink-splatter-svg"/></svg>
                 <div class="page-content">
@@ -859,19 +975,19 @@
                 </div>
             </div>
 
-            <!-- Стр 22: Бестиарий: Руины и Пещеры -->
+            <!-- Стр 22: Бестиарий 1 -->
             <div class="page">
                 <svg class="ink-blot blot-splatter" viewBox="0 0 35 35"><use href="#ink-splatter-svg"/></svg>
                 <div class="page-content">
-                    <h2>Бестиарий: Руины и Пещеры[span_22](start_span)[span_22](end_span)</h2>
-                    <h3>Руины Эарлин (Ур. 15–35)[span_23](start_span)[span_23](end_span)</h3>
-                    <p>• <b>Шипастый Богомол (Слож. 20):</b> Волк среди насекомых[span_24](start_span)[span_24](end_span). Игнорирует легкую броню[span_25](start_span)[span_25](end_span). Слабость: Пламя[span_26](start_span)[span_26](end_span).<br>
-                    • <b>Костяной Волк (Слож. 35):</b> Наружный скелет-панцирь, быстрая регенерация[span_27](start_span)[span_27](end_span).<br>
-                    • <b>Узловатый Споровик (Слож. 45):</b> Ядовитое удушье[span_28](start_span)[span_28](end_span).<br>
-                    💀 <b>Босс: Ива’Тар (Ур. 40, Слож. 75)[span_29](start_span)[span_29](end_span):</b> Древесный исполин[span_30](start_span)[span_30](end_span). Неподвижные корни сменяются рывком и уязвимостью Эфирного Ядра[span_31](start_span)[span_31](end_span).</p>
-                    <h3>Шепчущие Пещеры (Ур. 30–55)[span_32](start_span)[span_32](end_span)</h3>
-                    <p>Теневые Ползуны[span_33](start_span)[span_33](end_span), Слепые Кристаллоиды[span_34](start_span)[span_34](end_span) и Эхо Умбрарас[span_35](start_span)[span_35](end_span).<br>
-                    💀 <b>Босс: Никселия (Ур. 60, Слож. 85)[span_36](start_span)[span_36](end_span):</b> Тень королевы с вайп-криком Банши[span_37](start_span)[span_37](end_span).</p>
+                    <h2>Бестиарий: Руины и Пещеры</h2>
+                    <h3>Руины Эарлин (Ур. 15–35)</h3>
+                    <p>• <b>Шипастый Богомол (Слож. 20):</b> Волк среди насекомых. Игнорирует легкую броню. Слабость: Пламя.<br>
+                    • <b>Костяной Волк (Слож. 35):</b> Наружный скелет-панцирь, быстрая регенерация.<br>
+                    • <b>Узловатый Споровик (Слож. 45):</b> Ядовитое удушье.<br>
+                    💀 <b>Босс: Ива’Тар (Ур. 40, Слож. 75):</b> Древесный исполин. Неподвижные корни сменяются рывком и уязвимостью Эфирного Ядра.</p>
+                    <h3>Шепчущие Пещеры (Ур. 30–55)</h3>
+                    <p>Теневые Ползуны, Слепые Кристаллоиды и Эхо Умбрарас.<br>
+                    💀 <b>Босс: Никселия (Ур. 60, Слож. 85):</b> Тень королевы с вайп-криком Банши.</p>
                 </div>
                 <div class="page-footer">
                     <button class="page-btn btn-prev" onclick="prevPage()">❮ Назад</button>
@@ -880,17 +996,17 @@
                 </div>
             </div>
 
-            <!-- Стр 23: Бестиарий: Клык и Канализация -->
+            <!-- Стр 23: Бестиарий 2 -->
             <div class="page">
                 <svg class="ink-blot blot-top-right" viewBox="0 0 35 35"><use href="#ink-drop-svg"/></svg>
                 <div class="page-content">
-                    <h2>Бестиарий: Пустоши и Стоки[span_38](start_span)[span_38](end_span)</h2>
-                    <h3>Ущелье Драконьего Клыка (Ур. 50–75)[span_39](start_span)[span_39](end_span)</h3>
-                    <p>Пепельные Дрейки[span_40](start_span)[span_40](end_span), Магматические Големы[span_41](start_span)[span_41](end_span), Искрящиеся Элементали[span_42](start_span)[span_42](end_span).<br>
-                    💀 <b>Босс: Кор-Вош (Ур. 80, Слож. 95)[span_43](start_span)[span_43](end_span):</b> Громочешуйный Змей[span_44](start_span)[span_44](end_span). Смертоносный плазменный луч разрезает колонны укрытий[span_45](start_span)[span_45](end_span).</p>
-                    <h3>Подземелья Элизии (Ур. 5–25)[span_46](start_span)[span_46](end_span)</h3>
-                    <p>Чумные Крысы[span_47](start_span)[span_47](end_span), Кислотные Слизни[span_48](start_span)[span_48](end_span), Гомункулы-Отступники[span_49](start_span)[span_49](end_span).<br>
-                    💀 <b>Босс: Амальгама (Ур. 25, Слож. 40)[span_50](start_span)[span_50](end_span):</b> Пожиратель зелий и костей, распадающийся на фрагменты[span_51](start_span)[span_51](end_span).</p>
+                    <h2>Бестиарий: Пустоши и Стоки</h2>
+                    <h3>Ущелье Драконьего Клыка (Ур. 50–75)</h3>
+                    <p>Пепельные Дрейки, Магматические Големы, Искрящиеся Элементали.<br>
+                    💀 <b>Босс: Кор-Вош (Ур. 80, Слож. 95):</b> Громочешуйный Змей. Смертоносный плазменный луч разрезает колонны укрытий.</p>
+                    <h3>Подземелья Элизии (Ур. 5–25)</h3>
+                    <p>Чумные Крысы, Кислотные Слизни, Гомункулы-Отступники.<br>
+                    💀 <b>Босс: Амальгама (Ур. 25, Слож. 40):</b> Пожиратель зелий и костей, распадающийся на фрагменты.</p>
                 </div>
                 <div class="page-footer">
                     <button class="page-btn btn-prev" onclick="prevPage()">❮ Назад</button>
@@ -899,17 +1015,17 @@
                 </div>
             </div>
 
-            <!-- Стр 24: Бестиарий: Степи и Отмели -->
+            <!-- Стр 24: Бестиарий 3 -->
             <div class="page">
                 <svg class="ink-blot blot-bottom-left" viewBox="0 0 35 35"><use href="#ink-drop-svg"/></svg>
                 <div class="page-content">
-                    <h2>Бестиарий: Степи и Воды[span_52](start_span)[span_52](end_span)</h2>
-                    <h3>Пепельные Степи (Ур. 35–50)[span_53](start_span)[span_53](end_span)</h3>
-                    <p>Степные Вазилиски (окаменение)[span_54](start_span)[span_54](end_span), Пылевые Демоны[span_55](start_span)[span_55](end_span), Террадоны[span_56](start_span)[span_56](end_span).<br>
-                    💀 <b>Босс: Куарот (Ур. 55, Слож. 75)[span_57](start_span)[span_57](end_span):</b> Подземный червь с едкой кислотой[span_58](start_span)[span_58](end_span).</p>
-                    <h3>Абиссальные Отмели (Ур. 45–65)[span_59](start_span)[span_59](end_span)</h3>
-                    <p>Утопленники с цепями[span_60](start_span)[span_60](end_span), Кошмарные Удильщики[span_61](start_span)[span_61](end_span), Шипастые Сирены[span_62](start_span)[span_62](end_span).<br>
-                    💀 <b>Босс: Капитан Моргрим (Ур. 70, Слож. 85)[span_63](start_span)[span_63](end_span):</b> Призрачный залп и ядовитый прилив[span_64](start_span)[span_64](end_span).</p>
+                    <h2>Бестиарий: Степи и Воды</h2>
+                    <h3>Пепельные Степи (Ур. 35–50)</h3>
+                    <p>Степные Вазилиски (окаменение), Пылевые Демоны, Террадоны.<br>
+                    💀 <b>Босс: Куарот (Ур. 55, Слож. 75):</b> Подземный червь с едкой кислотой.</p>
+                    <h3>Абиссальные Отмели (Ур. 45–65)</h3>
+                    <p>Утопленники с цепями, Кошмарные Удильщики, Шипастые Сирены.<br>
+                    💀 <b>Босс: Капитан Моргрим (Ур. 70, Слож. 85):</b> Призрачный залп и ядовитый прилив.</p>
                 </div>
                 <div class="page-footer">
                     <button class="page-btn btn-prev" onclick="prevPage()">❮ Назад</button>
@@ -918,16 +1034,16 @@
                 </div>
             </div>
 
-            <!-- Стр 25: Бестиарий: Топи и Тракты -->
+            <!-- Стр 25: Бестиарий 4 -->
             <div class="page">
                 <div class="page-content">
-                    <h2>Бестиарий: Иллюзии и Дороги[span_65](start_span)[span_65](end_span)</h2>
-                    <h3>Иллюзорные Топи (Ур. 65–85)[span_66](start_span)[span_66](end_span)</h3>
-                    <p>Фэй-Пантеры[span_67](start_span)[span_67](end_span), Кристальные Мимики[span_68](start_span)[span_68](end_span), Плакальщицы Тумана[span_69](start_span)[span_69](end_span).<br>
-                    💀 <b>Босс: Люминекс (Ур. 90, Слож. 95)[span_70](start_span)[span_70](end_span):</b> Падший Свет с гибельным стаком Святого Пламени[span_71](start_span)[span_71](end_span).</p>
-                    <h3>Имперские Тракты и Элита[span_72](start_span)[span_72](end_span)</h3>
-                    <p>Эфирные разбойники[span_73](start_span)[span_73](end_span), Грифоны[span_74](start_span)[span_74](end_span), Осколки Разлома[span_75](start_span)[span_75](end_span).<br>
-                    🦇 <b>Мини-боссы[span_76](start_span)[span_76](end_span):</b> Кровавый Палач (Ур. 60)[span_77](start_span)[span_77](end_span) и Ткач Пустоты (Ур. 75, блокирующий телепортацию)[span_78](start_span)[span_78](end_span).</p>
+                    <h2>Бестиарий: Иллюзии и Дороги</h2>
+                    <h3>Иллюзорные Топи (Ур. 65–85)</h3>
+                    <p>Фэй-Пантеры, Кристальные Мимики, Плакальщицы Тумана.<br>
+                    💀 <b>Босс: Люминекс (Ур. 90, Слож. 95):</b> Падший Свет с гибельным стаком Святого Пламени.</p>
+                    <h3>Имперские Тракты и Элита</h3>
+                    <p>Эфирные разбойники, Грифоны, Осколки Разлома.<br>
+                    🦇 <b>Мини-боссы:</b> Кровавый Палач (Ур. 60) и Ткач Пустоты (Ур. 75, блокирующий телепортацию).</p>
                 </div>
                 <div class="page-footer">
                     <button class="page-btn btn-prev" onclick="prevPage()">❮ Назад</button>
@@ -936,20 +1052,20 @@
                 </div>
             </div>
 
-            <!-- Стр 26: Бестиарий: Лед, Знания и Мировой Босс -->
+            <!-- Стр 26: Бестиарий 5 -->
             <div class="page">
                 <svg class="ink-blot blot-top-right" viewBox="0 0 35 35"><use href="#ink-drop-svg"/></svg>
                 <div class="page-content">
                     <h2>Владыки Разломов и Бездны</h2>
-                    <h3>Ледяной Предел и Каверны[span_79](start_span)[span_79](end_span)</h3>
-                    <p>Упыри окоченения[span_80](start_span)[span_80](end_span), Горгульи[span_81](start_span)[span_81](end_span). 💀 <b>Фаргос (Ур. 60)[span_82](start_span)[span_82](end_span)</b> и Зеркальный страж <b>Эйлон (Ур. 85)[span_83](start_span)[span_83](end_span)</b>.</p>
-                    <h3>Запретный Полигон и Океан[span_84](start_span)[span_84](end_span)</h3>
-                    <p>💀 <b>Магистр Валериус (Ур. 45)[span_85](start_span)[span_85](end_span):</b> Слово Смерти[span_86](start_span)[span_86](end_span).<br>
-                    💀 <b>Рейд: Мор'Гур (Ур. 100, Слож. 100)[span_87](start_span)[span_87](end_span):</b> Древний Кракен Бездны Левиафана[span_88](start_span)[span_88](end_span).</p>
-                    <h3>Глобальный Владыка Аномалий[span_89](start_span)[span_89](end_span)</h3>
-                    <p>💀 <b>Исказитель Пространства (Ур. 100)[span_90](start_span)[span_90](end_span):</b> Сбой Врат Континента (раз в лунный месяц)[span_91](start_span)[span_91](end_span).</p>
-                    <p>• <b>Искажение реальности[span_92](start_span)[span_92](end_span):</b> Исцеление ранит, огонь морозит[span_93](start_span)[span_93](end_span).<br>
-                    • <b>Награда[span_94](start_span)[span_94](end_span):</b> «Осколки Эфира» на закладку родовых замков[span_95](start_span)[span_95](end_span).</p>
+                    <h3>Ледяной Предел и Каверны</h3>
+                    <p>Упыри окоченения, Горгульи. 💀 <b>Фаргос (Ур. 60)</b> и Зеркальный страж <b>Эйлон (Ур. 85)</b>.</p>
+                    <h3>Запретный Полигон и Океан</h3>
+                    <p>💀 <b>Магистр Валериус (Ур. 45):</b> Слово Смерти.<br>
+                    💀 <b>Рейд: Мор’Гур (Ур. 100, Слож. 100):</b> Древний Кракен Бездны Левиафана.</p>
+                    <h3>Глобальный Владыка Аномалий</h3>
+                    <p>💀 <b>Исказитель Пространства (Ур. 100):</b> Сбой Врат Континента (раз в лунный месяц).</p>
+                    <p>• <b>Искажение реальности:</b> Исцеление ранит, огонь морозит.<br>
+                    • <b>Награда:</b> «Осколки Эфира» на закладку родовых замков.</p>
                 </div>
                 <div class="page-footer">
                     <button class="page-btn btn-prev" onclick="prevPage()">❮ Назад</button>
@@ -985,14 +1101,14 @@
         const pages = Array.from(document.querySelectorAll('#book-stage .page'));
         let currentIndex = 0;
 
-        // Обновление счетчиков на всех страницах
+        // Обновление счётчиков на всех страницах
         pages.forEach((p, idx) => {
             const counter = p.querySelector('.page-counter');
             if (counter) counter.textContent = `${idx + 1} / ${pages.length}`;
         });
 
         // =========================================================
-        // === ПРОЦЕДУРНЫЙ ШЕЛЕСТ СТАРОЙ БУМАГИ (WEB AUDIO API) ===
+        // === АУДИО: шелест бумаги + потрескивание огня ===
         // =========================================================
         let audioCtx = null;
         let isMuted = false;
@@ -1012,7 +1128,6 @@
             return audioCtx;
         }
 
-        // Синтез глубокого сухого шелеста тяжелого пергамента
         function playPaperRustle() {
             if (isMuted) return;
             const ctx = getAudioContext();
@@ -1024,13 +1139,11 @@
             const buffer = ctx.createBuffer(1, sampleCount, ctx.sampleRate);
             const data = buffer.getChannelData(0);
 
-            // 1. Создаем шум волокон бумаги
             let lastOut = 0.0;
             for (let i = 0; i < sampleCount; i++) {
                 const white = Math.random() * 2 - 1;
                 data[i] = (lastOut + (0.04 * white)) / 1.04;
                 lastOut = data[i];
-                // Микро-треск старого сухого листа (микрощелчки трения)
                 if (Math.random() < 0.015) {
                     data[i] += (Math.random() * 2 - 1) * 0.45;
                 }
@@ -1039,11 +1152,9 @@
             const noiseSource = ctx.createBufferSource();
             noiseSource.buffer = buffer;
 
-            // 2. Двойная фильтрация для ощущения плотного листа
             const bandpass = ctx.createBiquadFilter();
             bandpass.type = 'bandpass';
             bandpass.Q.setValueAtTime(1.8, t);
-            // Модуляция частоты: начало трения -> взмах -> опускание листа
             bandpass.frequency.setValueAtTime(750 + Math.random() * 100, t);
             bandpass.frequency.exponentialRampToValueAtTime(1600, t + 0.12);
             bandpass.frequency.exponentialRampToValueAtTime(550, t + duration);
@@ -1052,7 +1163,6 @@
             lowpass.type = 'lowpass';
             lowpass.frequency.setValueAtTime(2400, t);
 
-            // 3. Огибающая громкости
             const gainNode = ctx.createGain();
             gainNode.gain.setValueAtTime(0.001, t);
             gainNode.gain.linearRampToValueAtTime(0.35, t + 0.08);
@@ -1066,7 +1176,6 @@
             noiseSource.start(t);
         }
 
-        // Потрескивание свечи
         function startFireAmbient() {
             if (!audioCtx) return;
             const bufferSize = audioCtx.sampleRate * 2;
@@ -1117,7 +1226,9 @@
             } catch (e) {}
         }
 
-        // Навигация
+        // =========================================================
+        // === НАВИГАЦИЯ ===
+        // =========================================================
         function goToPage(newIdx) {
             if (newIdx < 0 || newIdx >= pages.length || newIdx === currentIndex) return;
 
@@ -1132,34 +1243,43 @@
             triggerHaptic();
         }
 
-        window.nextPage = function() {
-            goToPage(currentIndex + 1);
-        };
+        window.nextPage = function() { goToPage(currentIndex + 1); };
+        window.prevPage = function() { goToPage(currentIndex - 1); };
 
-        window.prevPage = function() {
-            goToPage(currentIndex - 1);
-        };
-
-        // Управление клавиатурой
+        // Клавиатура
         window.addEventListener('keydown', (e) => {
             if (e.key === 'ArrowRight' || e.key === ' ') nextPage();
             else if (e.key === 'ArrowLeft') prevPage();
         });
 
-        // Свайпы пальцем
+        // =========================================================
+        // === СВАЙПЫ (не конфликтуют со скроллом текста) ===
+        // =========================================================
         const bookStage = document.getElementById('book-stage');
         let startTouchX = 0;
         let startTouchY = 0;
         let startTouchTime = 0;
+        let swipeAllowed = false;
 
         bookStage.addEventListener('touchstart', (e) => {
             getAudioContext();
             startTouchX = e.touches[0].clientX;
             startTouchY = e.touches[0].clientY;
             startTouchTime = Date.now();
+
+            // Разрешаем свайп, только если тап НЕ по скроллируемому контенту
+            const target = e.target;
+            const content = target.closest('.page-content');
+            if (content && content.scrollHeight > content.clientHeight) {
+                swipeAllowed = false;
+            } else {
+                swipeAllowed = true;
+            }
         }, { passive: true });
 
         bookStage.addEventListener('touchend', (e) => {
+            if (!swipeAllowed) return;
+
             const diffX = e.changedTouches[0].clientX - startTouchX;
             const diffY = e.changedTouches[0].clientY - startTouchY;
             const timeDiff = Date.now() - startTouchTime;
