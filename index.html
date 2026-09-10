@@ -1,3 +1,4 @@
+𝖋𝖎𝖑𝖈𝖍𝖍𝖍, [10.09.2026 14:16]
 <!DOCTYPE html>
 <html lang="ru">
 <head>
@@ -6,22 +7,26 @@
     <title>Великий Фолиант Аурхейма</title>
     
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Caveat:wght@400;700&family=Neucha&display=swap" rel="stylesheet">
+    <!-- Подключаем аутентичные рукописные шрифты -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Bad+Script&family=Caveat:wght@600;700&family=Marck+Script&display=swap" rel="stylesheet">
     
     <style>
         * { box-sizing: border-box; margin: 0; padding: 0; }
         
         body {
             background-color: #060403;
-            color: #2b1408;
+            color: #281408;
             display: flex;
             justify-content: center;
             align-items: center; 
             height: 100vh;
+            height: 100dvh;
             width: 100vw;
             overflow: hidden;
-            background-image: radial-gradient(circle at 20% 50%, rgba(35, 18, 8, 0.6) 0%, #050302 80%);
-            font-family: 'Neucha', cursive;
+            background-image: radial-gradient(circle at 25% 60%, rgba(45, 22, 10, 0.7) 0%, #050302 85%);
+            font-family: 'Bad Script', cursive;
             user-select: none;
             -webkit-user-select: none;
         }
@@ -30,33 +35,34 @@
             position: fixed;
             top: 0; left: 0;
             z-index: 1000;
-            background: rgba(8, 5, 3, 0.98);
+            background: radial-gradient(circle at 50% 40%, rgba(30, 16, 8, 0.98), rgba(6, 4, 3, 0.99));
             width: 100%;
             height: 100%;
             display: flex;
             flex-direction: column;
             justify-content: center;
             align-items: center;
-            color: #d8b26e;
+            color: #deb66c;
             text-align: center;
-            padding: 20px;
+            padding: 24px;
         }
 
         #start-btn {
-            background: linear-gradient(180deg, #4a2810 0%, #291205 100%);
-            color: #f1dfbc;
-            border: 2px solid #b8860b;
-            padding: 16px 36px;
-            font-size: 26px;
+            background: linear-gradient(180deg, #572d11 0%, #2e1405 100%);
+            color: #fcefd6;
+            border: 2px solid #cf9e3d;
+            padding: 14px 38px;
+            font-size: 28px;
             font-family: 'Caveat', cursive;
             cursor: pointer;
-            border-radius: 6px;
-            box-shadow: 0 0 25px rgba(212, 160, 23, 0.4);
+            border-radius: 8px;
+            box-shadow: 0 0 25px rgba(212, 160, 23, 0.35), inset 0 0 10px rgba(255, 215, 0, 0.2);
             margin-top: 25px;
+            transition: all 0.2s ease;
             outline: none;
         }
 
-        #start-btn:active { transform: scale(0.95); }
+        #start-btn:active { transform: scale(0.95); box-shadow: 0 0 12px rgba(212, 160, 23, 0.6); }
 
         #book-wrapper { 
             display: none; 
@@ -67,11 +73,13 @@
             align-items: center;
         }
 
-        /* === АНИМЕ-СВЕЧА С ПОДТЕКАМИ И ПЛАМЕНЕМ === */
+        /* ===================================================
+           === АНИМЕ-СВЕЧА С ЧАСТИЦАМИ И СОЧНЫМ ПЛАМЕНЕМ ===
+           =================================================== */
         .candle-rig {
             position: absolute;
-            left: 18px;
-            bottom: 22px;
+            left: 20px;
+            bottom: 24px;
             z-index: 30;
             pointer-events: none;
             display: flex;
@@ -79,218 +87,376 @@
             align-items: center;
         }
 
-        .candle-body {
+        .anime-flame-container {
             position: relative;
-            width: 30px;
-            height: 105px;
-            background: linear-gradient(90deg, #d3c4a5 0%, #fbf6ec 45%, #e1d3b7 80%, #b8a682 100%);
-            border-radius: 4px 4px 6px 6px;
-            box-shadow: 0 0 15px rgba(255, 150, 40, 0.25), inset -3px 0 6px rgba(0,0,0,0.25);
+            width: 32px;
+            height: 60px;
+            display: flex;
+            justify-content: center;
+            align-items: flex-end;
+            margin-bottom: -5px;
         }
 
-        .wax-drip-left {
+        /* Многослойное аниме-пламя */
+        .flame-outer {
             position: absolute;
-            top: 14px;
-            left: -4px;
-            width: 7px;
-            height: 34px;
-            background: #fbf6ec;
-            border-radius: 0 0 6px 6px;
-            box-shadow: -1px 2px 4px rgba(0,0,0,0.2);
+            bottom: 0;
+            width: 22px;
+            height: 44px;
+            background: #ff4800;
+            border-radius: 50% 50% 35% 35% / 60% 60% 40% 40%;
+            box-shadow: 0 0 20px #ff5900, 0 0 45px rgba(255, 140, 0, 0.7);
+            animation: flameAnime 0.12s infinite alternate ease-in-out;
+            transform-origin: center bottom;
         }
 
-        .wax-drip-right {
+        .flame-mid {
             position: absolute;
-            top: 26px;
-            right: -3px;
-            width: 6px;
-            height: 24px;
-            background: #e8dbbe;
-            border-radius: 0 0 5px 5px;
+            bottom: 2px;
+            width: 14px;
+            height: 32px;
+            background: linear-gradient(180deg, #ffea00 0%, #ff8800 100%);
+            border-radius: 50% 50% 35% 35% / 60% 60% 40% 40%;
+        }
+
+𝖋𝖎𝖑𝖈𝖍𝖍𝖍, [10.09.2026 14:16]
+.flame-core {
+            position: absolute;
+            bottom: 3px;
+            width: 8px;
+            height: 18px;
+            background: #ffffff;
+            border-radius: 50%;
+            filter: drop-shadow(0 0 4px #ffffff);
+        }
+
+        .flame-base-blue {
+            position: absolute;
+            bottom: -2px;
+            width: 10px;
+            height: 6px;
+            background: #4776ff;
+            border-radius: 50%;
+            opacity: 0.85;
+            filter: blur(1px);
+        }
+
+        /* Аниме-искры (эмберы) */
+        .ember {
+            position: absolute;
+            background: #ffe682;
+            border-radius: 50%;
+            box-shadow: 0 0 6px #ff8800;
+            opacity: 0;
+            animation: emberFly 2.2s infinite ease-out;
+        }
+        .ember-1 { width: 3px; height: 3px; left: 35%; animation-delay: 0.2s; }
+        .ember-2 { width: 4px; height: 4px; left: 55%; animation-delay: 0.9s; }
+        .ember-3 { width: 2.5px; height: 2.5px; left: 45%; animation-delay: 1.6s; }
+
+        @keyframes emberFly {
+            0% { transform: translateY(0) scale(1); opacity: 1; }
+            50% { opacity: 0.9; transform: translateY(-35px) translateX(6px) scale(0.9); }
+            100% { transform: translateY(-75px) translateX(-10px) scale(0.2); opacity: 0; }
+        }
+
+        @keyframes flameAnime {
+            0% { transform: scale(1) rotate(-1.5deg) skewX(-1deg); }
+            100% { transform: scale(1.08, 0.94) rotate(1.8deg) skewX(1.5deg); }
+        }
+
+        .flame-halo {
+            position: absolute;
+            top: -50px;
+            width: 160px;
+            height: 160px;
+            background: radial-gradient(circle, rgba(255, 160, 40, 0.3) 0%, rgba(255, 100, 0, 0.08) 50%, transparent 72%);
+            border-radius: 50%;
+            pointer-events: none;
+            animation: haloAnime 2.8s infinite ease-in-out;
+        }
+
+        @keyframes haloAnime {
+            0%, 100% { opacity: 0.7; transform: scale(0.95); }
+            50% { opacity: 1; transform: scale(1.1); }
         }
 
         .wick {
             width: 3px;
             height: 12px;
-            background: #24140a;
+            background: #1a0c05;
             border-radius: 2px;
-            margin-bottom: -3px;
+            z-index: 2;
         }
 
-        .flame {
-            width: 18px;
-            height: 34px;
+        .candle-body {
             position: relative;
-            background: radial-gradient(ellipse at 50% 80%, #ffffff 0%, #ffdf6d 35%, #ff7700 75%, rgba(200, 30, 0, 0.8) 100%);
-            border-radius: 50% 50% 35% 35% / 60% 60% 40% 40%;
-            filter: drop-shadow(0 0 12px rgba(255, 140, 0, 0.95));
-            animation: animeFlicker 0.1s infinite alternate ease-in-out;
-            transform-origin: center bottom;
+            width: 28px;
+            height: 100px;
+            background: linear-gradient(90deg, #cfbe9b 0%, #fff9ec 40%, #e6d7b8 75%, #a6936d 100%);
+            border-radius: 4px 4px 6px 6px;
+            box-shadow: 0 0 20px rgba(255, 140, 30, 0.3), inset -3px 0 5px rgba(0,0,0,0.25);
         }
 
-.flame-halo {
+        /* Восковые подтеки с мягким градиентом */
+        .wax-drip-left {
             position: absolute;
-            top: -45px;
-            width: 130px;
-            height: 130px;
-            background: radial-gradient(circle, rgba(255, 170, 40, 0.28) 0%, rgba(255, 110, 0, 0.08) 45%, transparent 70%);
-            border-radius: 50%;
-            pointer-events: none;
-            animation: haloGlow 2.5s infinite ease-in-out;
+            top: 10px;
+            left: -4px;
+            width: 8px;
+            height: 38px;
+            background: #fff8e8;
+            border-radius: 0 0 6px 6px;
+            box-shadow: -1px 2px 4px rgba(0,0,0,0.18);
         }
-
-        @keyframes animeFlicker {
-            0% { transform: scale(1) rotate(-1deg); }
-            100% { transform: scale(1.06, 0.96) rotate(1.5deg); }
-        }
-
-        @keyframes haloGlow {
-            0%, 100% { opacity: 0.6; transform: scale(0.95); }
-            50% { opacity: 0.95; transform: scale(1.08); }
+        .wax-drip-right {
+            position: absolute;
+            top: 22px;
+            right: -3px;
+            width: 6px;
+            height: 26px;
+            background: #ede0c7;
+            border-radius: 0 0 5px 5px;
         }
 
         @media (max-width: 600px) {
-            .candle-rig { transform: scale(0.65); left: 0px; bottom: 4px; }
+            .candle-rig { transform: scale(0.68); left: -4px; bottom: 8px; }
         }
 
-        /* === КНИГА И СТРАНИЦЫ === */
+        /* ===================================================
+           === КНИГА, СТРАНИЦЫ И ВИНТАЖНЫЙ ПЕРГАМЕНТ ===
+           =================================================== */
         #book-stage {
             position: relative;
-            width: min(94vw, 420px);
-            height: min(90vh, 670px);
+            width: min(94vw, 440px);
+            height: min(88vh, 690px);
+            max-height: calc(100dvh - 35px);
+            perspective: 1200px;
         }
 
         .page {
             position: absolute;
             top: 0; left: 0;
             width: 100%;
-            height: 100%;
-            background-color: #dfcdab;
+
+𝖋𝖎𝖑𝖈𝖍𝖍𝖍, [10.09.2026 14:16]
+height: 100%;
+            background-color: #dfceaa;
             background-image: 
-                radial-gradient(circle at 50% 50%, rgba(255,255,255,0.15), transparent),
-                radial-gradient(ellipse at center, transparent 60%, rgba(68, 38, 15, 0.55) 100%),
+                radial-gradient(circle at 50% 50%, rgba(255, 255, 255, 0.2), transparent),
+                radial-gradient(ellipse at center, transparent 55%, rgba(68, 38, 15, 0.45) 100%),
                 url('https://www.transparenttextures.com/patterns/aged-paper.png');
             box-shadow: 
-                inset 0 0 45px rgba(58, 30, 10, 0.7),
-                0 10px 30px rgba(0, 0, 0, 0.9);
+                inset 0 0 50px rgba(60, 30, 10, 0.65),
+                0 12px 35px rgba(0, 0, 0, 0.85);
             border: 1px solid #542f13;
-            border-radius: 3px 10px 10px 3px;
-            padding: 16px 14px 44px 18px;
-            display: none;
+            border-radius: 4px 12px 12px 4px;
+            padding: 18px 16px 14px 20px;
+            display: flex;
+            flex-direction: column;
             opacity: 0;
+            visibility: hidden;
+            pointer-events: none;
             overflow: hidden;
-            transition: opacity 0.2s ease-in-out;
+            transform-origin: left center;
+            transform: rotateY(16deg) scale(0.97);
+            transition: transform 0.35s cubic-bezier(0.2, 0.8, 0.3, 1), opacity 0.3s ease, visibility 0.3s;
         }
 
         .page.active {
-            display: block;
             opacity: 1;
+            visibility: visible;
+            pointer-events: auto;
             z-index: 5;
+            transform: rotateY(0deg) scale(1);
         }
 
+        /* Капли и кляксы чернил */
+        .ink-blot {
+            position: absolute;
+            pointer-events: none;
+            z-index: 1;
+            opacity: 0.28;
+            filter: drop-shadow(0 1px 1px rgba(0,0,0,0.15));
+        }
+        .blot-top-right {
+            top: 14px;
+            right: 18px;
+            width: 32px;
+            height: 32px;
+        }
+        .blot-bottom-left {
+            bottom: 48px;
+            left: 12px;
+            width: 26px;
+            height: 26px;
+            opacity: 0.22;
+        }
+        .blot-splatter {
+            bottom: 75px;
+            right: 25px;
+            width: 22px;
+            height: 22px;
+            opacity: 0.25;
+        }
+
+        /* Контейнер текста — скроллится аккуратно, ничего не обрезается */
         .page-content {
-            height: 100%;
+            flex: 1;
             overflow-y: auto;
             overflow-x: hidden;
-            padding-right: 4px;
+            padding-right: 6px;
+            padding-bottom: 58px; /* Запас чтобы футер не перекрывал низ текста */
             position: relative;
             z-index: 2;
+            -webkit-overflow-scrolling: touch;
         }
 
-        .page-content::-webkit-scrollbar { width: 3px; }
+        .page-content::-webkit-scrollbar { width: 4px; }
         .page-content::-webkit-scrollbar-thumb {
-            background: rgba(90, 50, 20, 0.4);
-            border-radius: 3px;
+            background: rgba(85, 45, 18, 0.45);
+            border-radius: 4px;
         }
 
         h1, h2, h3 {
             font-family: 'Caveat', cursive;
-            color: #2b1103;
+            color: #260e02;
             text-align: center;
             line-height: 1.15;
             margin-bottom: 8px;
-            border-bottom: 1px solid rgba(120, 70, 25, 0.35);
-            padding-bottom: 3px;
+            border-bottom: 1px solid rgba(120, 65, 20, 0.35);
+            padding-bottom: 4px;
+            text-shadow: 0 1px 1px rgba(255, 255, 255, 0.2);
         }
 
-        h1 { font-size: 32px; margin-top: 35%; }
-        h2 { font-size: 24px; margin-top: 6px; }
-        h3 { font-size: 19px; color: #4e2208; margin-top: 10px; }
+        h1 { font-size: 34px; margin-top: 30%; }
+        h2 { font-size: 26px; margin-top: 4px; }
+        h3 { font-size: 21px; color: #4a1f06; margin-top: 10px; }
 
         p, li {
-            font-size: 16px;
-            line-height: 1.35;
-            margin-bottom: 7px;
-            color: #1e0d05;
+            font-size: 17.5px;
+            line-height: 1.38;
+            margin-bottom: 8px;
+            color: #231207;
+            text-shadow: 0 0 1px rgba(35, 18, 7, 0.2);
         }
 
-        ul { padding-left: 18px; margin-bottom: 8px; }
+        ul { padding-left: 20px; margin-bottom: 10px; }
 
+        /* Изображения с художественной рамкой */
         .lore-img {
             width: 100%;
-            max-height: 180px;
+            max-height: 190px;
             object-fit: cover;
-            border-radius: 3px;
-            margin: 6px 0 10px;
-            border: 1px solid rgba(80, 40, 15, 0.6);
-            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+            border-radius: 5px;
+            margin: 8px 0 12px;
+            border: 1px solid rgba(80, 40, 15, 0.65);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.35);
             filter: sepia(0.2) contrast(1.05);
             display: block;
         }
 
-        /* Навигация внутри страниц */
+        /* ===================================================
+
+𝖋𝖎𝖑𝖈𝖍𝖍𝖍, [10.09.2026 14:16]
+=== ФУТЕР И СТРЕЛКИ НАВИГАЦИИ ПО БОКАМ ВНИЗУ ===
+           =================================================== */
         .page-footer {
             position: absolute;
             bottom: 8px;
-            left: 16px;
-            right: 16px;
+            left: 14px;
+            right: 14px;
+            height: 44px;
             display: flex;
             justify-content: space-between;
             align-items: center;
             font-family: 'Caveat', cursive;
-            font-size: 19px;
-            color: #6d4220;
+            font-size: 20px;
+            color: #552709;
             z-index: 10;
-            border-top: 1px dashed rgba(110, 60, 20, 0.25);
-            padding-top: 4px;
+            border-top: 1px dashed rgba(110, 60, 20, 0.3);
+            padding-top: 2px;
+            background: linear-gradient(180deg, rgba(223, 206, 170, 0.4) 0%, rgba(223, 206, 170, 0.95) 80%);
         }
 
-.page-btn {
+        .page-btn {
             background: none;
             border: none;
-            color: #552709;
+            color: #4a1f05;
             font-family: 'Caveat', cursive;
-            font-size: 20px;
-            font-weight: bold;
+            font-size: 22px;
+            font-weight: 700;
             cursor: pointer;
-            padding: 4px 10px;
+            padding: 6px 12px;
             outline: none;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            border-radius: 6px;
+            transition: all 0.15s ease;
         }
 
-        .page-btn:active { color: #b8860b; }
-        .page-btn[disabled] { visibility: hidden; }
+        .page-btn:active {
+            color: #a36200;
+            transform: scale(0.92);
+            background: rgba(110, 60, 20, 0.1);
+        }
 
+        .page-btn[disabled] { 
+            visibility: hidden; 
+            pointer-events: none; 
+        }
+
+        .page-counter {
+            font-size: 19px;
+            font-weight: 600;
+            opacity: 0.85;
+        }
+
+        /* Обложка книги */
         .cover {
-            background: #2b1106 url('https://www.transparenttextures.com/patterns/leather.png');
-            color: #d6b26d;
+            background: #270f04 url('https://www.transparenttextures.com/patterns/leather.png');
+            color: #deb66c;
             border: 4px double #b8860b;
-            box-shadow: inset 0 0 60px #000, 0 10px 30px rgba(0,0,0,0.9);
+            box-shadow: inset 0 0 65px #000, 0 12px 35px rgba(0,0,0,0.9);
         }
-        .cover h1, .cover h2 { color: #d6b26d; border: none; text-shadow: 2px 2px 6px #000; }
+        .cover h1, .cover h2 { 
+            color: #deb66c; 
+            border: none; 
+            text-shadow: 2px 2px 8px #000; 
+        }
+        .cover .page-footer {
+            background: transparent;
+            border-top: 1px dashed rgba(222, 182, 108, 0.3);
+            color: #deb66c;
+        }
+        .cover .page-btn { color: #deb66c; }
+        .cover .page-btn:active { color: #fff; background: rgba(255,255,255,0.08); }
     </style>
 </head>
 <body>
 
+    <!-- Экран начала / Приветствие -->
     <div id="start-screen">
-        <h2 style="font-size: 38px; border:none; margin-bottom: 15px;">Библиотека Арканума</h2>
-        <p style="font-size: 20px; color: #d0be9b;">Позвольте огню рассеять тьму древних страниц...</p>
+        <h2 style="font-size: 40px; border:none; margin-bottom: 12px; font-family: 'Marck Script', cursive;">Библиотека Арканума</h2>
+        <p style="font-size: 21px; color: #d6be95;">Позвольте огню рассеять тьму древних страниц...</p>
         <button id="start-btn" type="button">Открыть Фолиант</button>
     </div>
 
     <div id="book-wrapper">
+        <!-- Аниме-свеча со светящимся ореолом и искрами -->
         <div class="candle-rig">
             <div class="flame-halo"></div>
-            <div class="flame"></div>
+            <div class="anime-flame-container">
+                <div class="flame-outer"></div>
+                <div class="flame-mid"></div>
+                <div class="flame-core"></div>
+                <div class="flame-base-blue"></div>
+                
+                <div class="ember ember-1"></div>
+                <div class="ember ember-2"></div>
+                <div class="ember ember-3"></div>
+            </div>
             <div class="wick"></div>
             <div class="candle-body">
                 <div class="wax-drip-left"></div>
@@ -298,64 +464,88 @@
             </div>
         </div>
 
+        <!-- Книга -->
         <div id="book-stage">
+            
+            <!-- SVG Шаблон чернильных капель -->
+            <svg style="display: none;">
+                <defs>
+                    <g id="ink-drop-svg">
+                        <path fill="#221105" d="M15,2 C15,2 25,12 25,20 C25,26.6 19.6,32 13,32 C6.4,32 1,26.6 1,20 C1,12 11,2 15,2 Z" />
+
+𝖋𝖎𝖑𝖈𝖍𝖍𝖍, [10.09.2026 14:16]
+<circle fill="#221105" cx="26" cy="7" r="2.5" />
+                        <circle fill="#221105" cx="4" cy="9" r="1.8" />
+                    </g>
+                    <g id="ink-splatter-svg">
+                        <path fill="#221105" d="M12,12 C16,4 21,9 25,12 C28,15 34,13 32,18 C30,22 35,26 30,28 C25,30 24,35 19,32 C14,29 9,33 8,28 C7,23 2,21 6,17 C10,13 7,7 12,12 Z" />
+                        <circle fill="#221105" cx="33" cy="8" r="2" />
+                        <circle fill="#221105" cx="5" cy="33" r="1.5" />
+                        <circle fill="#221105" cx="35" cy="27" r="1.2" />
+                    </g>
+                </defs>
+            </svg>
+
             <!-- Стр 1: Обложка -->
             <div class="page cover active">
                 <div class="page-content" style="display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center;">
-                    <h1>Летопись Аурхейма</h1>
-                    <h2 style="margin-top: 15px;">Расы, Локации и Бестиарий</h2>
+                    <h1 style="font-family: 'Marck Script', cursive; font-size: 42px;">Летопись Аурхейма</h1>
+                    <h2 style="margin-top: 15px; font-size: 24px;">Расы, Локации и Бестиарий</h2>
                 </div>
                 <div class="page-footer">
-                    <button class="page-btn btn-prev" disabled>« Назад</button>
+                    <button class="page-btn btn-prev" disabled>❮ Назад</button>
                     <span class="page-counter">1 / 23</span>
-                    <button class="page-btn btn-next">Далее »</button>
+                    <button class="page-btn btn-next">Вперёд ❯</button>
                 </div>
             </div>
 
             <!-- Стр 2: Люди: Арт -->
             <div class="page">
+                <svg class="ink-blot blot-top-right" viewBox="0 0 35 35"><use href="#ink-drop-svg"/></svg>
                 <div class="page-content">
                     <h2>Люди (Империя Аквилон)</h2>
-                    <img src="IMG_20260830_171117.jpg" class="lore-img" alt="Люди">
+                    <img src="IMG_20260830_171117.jpg" class="lore-img" alt="Люди" onerror="this.style.display='none'">
                     <p><b>Стиль игры:</b> Универсалы, Маги-артиллеристы, Паладины.</p>
                     <p><b>Доступные стихии:</b> Люди не привязаны к Эфиру биологически и изучают его как точную науку. При сотворении персонаж избирает <b>ОДИН</b> базовый элемент (Огонь, Вода, Воздух или Земля). Лишь высокое признание в Академии Арканума открывает родственную грань.</p>
                 </div>
                 <div class="page-footer">
-                    <button class="page-btn btn-prev">« Назад</button>
+                    <button class="page-btn btn-prev">❮ Назад</button>
                     <span class="page-counter">2 / 23</span>
-                    <button class="page-btn btn-next">Далее »</button>
+                    <button class="page-btn btn-next">Вперёд ❯</button>
                 </div>
             </div>
 
             <!-- Стр 3: Люди: Механики -->
             <div class="page">
+                <svg class="ink-blot blot-bottom-left" viewBox="0 0 35 35"><use href="#ink-splatter-svg"/></svg>
                 <div class="page-content">
                     <h2>Люди (Особенности)</h2>
                     <p><b>Полный запрет (Официально):</b> Тьма и Смерть. Отступники преследуются имперскими инквизиторами без пощады.</p>
                     <p><b>Пассивный бонус — «Адаптивность»[span_0](start_span)[span_0](end_span):</b> Награда золотом и боевым опытом увеличена на 5% за любые сражения[span_1](start_span)[span_1](end_span). Доступен дополнительный слот под кольцо или древний артефакт[span_2](start_span)[span_2](end_span).</p>
                     <p><b>Активный навык — «Резонанс Группы»[span_3](start_span)[span_3](end_span):</b> Мощнейший катализатор уз[span_4](start_span)[span_4](end_span). В присутствии иных рас их пассивные природные дары удваивают мощь на 3 хода[span_5](start_span)[span_5](end_span).</p>
-
-</div>
+                </div>
                 <div class="page-footer">
-                    <button class="page-btn btn-prev">« Назад</button>
+                    <button class="page-btn btn-prev">❮ Назад</button>
                     <span class="page-counter">3 / 23</span>
-                    <button class="page-btn btn-next">Далее »</button>
+                    <button class="page-btn btn-next">Вперёд ❯</button>
                 </div>
             </div>
 
-            <!-- Стр 4: Тёмные эльфы: Арт -->
+𝖋𝖎𝖑𝖈𝖍𝖍𝖍, [10.09.2026 14:16]
+<!-- Стр 4: Тёмные эльфы: Арт -->
             <div class="page">
+                <svg class="ink-blot blot-top-right" viewBox="0 0 35 35"><use href="#ink-splatter-svg"/></svg>
                 <div class="page-content">
                     <h2>Тёмные эльфы (Умбрарас)</h2>
-                    <img src="IMG_20260830_171126.jpg" class="lore-img" alt="Тёмные эльфы">
+                    <img src="IMG_20260830_171126.jpg" class="lore-img" alt="Тёмные эльфы" onerror="this.style.display='none'">
                     <p><b>Стиль игры:</b> Скрытность, Убийцы (Ассасины), Дебаффы.</p>
                     <p><b>Доступные стихии:</b> Лёд (Основная), Тьма (Девиантная).</p>
                     <p><b>Полный запрет:</b> Огонь, Свет, Жизнь, Воздух, Земля, Вода.</p>
                 </div>
                 <div class="page-footer">
-                    <button class="page-btn btn-prev">« Назад</button>
+                    <button class="page-btn btn-prev">❮ Назад</button>
                     <span class="page-counter">4 / 23</span>
-                    <button class="page-btn btn-next">Далее »</button>
+                    <button class="page-btn btn-next">Вперёд ❯</button>
                 </div>
             </div>
 
@@ -368,25 +558,26 @@
                     <p><b>Активный навык — «Теневой Шаг»[span_9](start_span)[span_9](end_span):</b> Мгновенное смещение сквозь мрак за спину цели, парирующее направленный удар и наделяющее следующий выпад абсолютным критическим уроном[span_10](start_span)[span_10](end_span).</p>
                 </div>
                 <div class="page-footer">
-                    <button class="page-btn btn-prev">« Назад</button>
+                    <button class="page-btn btn-prev">❮ Назад</button>
                     <span class="page-counter">5 / 23</span>
-                    <button class="page-btn btn-next">Далее »</button>
+                    <button class="page-btn btn-next">Вперёд ❯</button>
                 </div>
             </div>
 
             <!-- Стр 6: Эльфы: Арт -->
             <div class="page">
+                <svg class="ink-blot blot-bottom-left" viewBox="0 0 35 35"><use href="#ink-drop-svg"/></svg>
                 <div class="page-content">
                     <h2>Эльфы (Домен Элдоран)</h2>
-                    <img src="IMG_20260830_171149.jpg" class="lore-img" alt="Эльфы">
+                    <img src="IMG_20260830_171149.jpg" class="lore-img" alt="Эльфы" onerror="this.style.display='none'">
                     <p><b>Стиль игры:</b> Контроль поля, постепенный урон (Доты), Баффы.</p>
                     <p><b>Доступные стихии:</b> Земля (Основная), Вода (Основная), Воздух (Вспомогательная).</p>
                     <p><b>Полный запрет:</b> Огонь, Тьма, Смерть, Лёд, Молния. Магия Жизни строжайше табуирована из-за трагедии Эарлина[span_11](start_span)[span_11](end_span)[span_12](start_span)[span_12](end_span).</p>
                 </div>
                 <div class="page-footer">
-                    <button class="page-btn btn-prev">« Назад</button>
+                    <button class="page-btn btn-prev">❮ Назад</button>
                     <span class="page-counter">6 / 23</span>
-                    <button class="page-btn btn-next">Далее »</button>
+                    <button class="page-btn btn-next">Вперёд ❯</button>
                 </div>
             </div>
 
@@ -397,28 +588,30 @@
                     <p><b>Механика:</b> Высочайшая гармония первостихий. Враг омывается потоками Воды, а следом сковывается корнями Земли. Мана расходуется бережно и быстро.</p>
                     <p><b>Пассивный бонус — «Эфирный Симбиоз»[span_13](start_span)[span_13](end_span):</b> Естественное исцеление ран и восстановление маны каждый ход при отсутствии входящих ранений[span_14](start_span)[span_14](end_span).</p>
 
+𝖋𝖎𝖑𝖈𝖍𝖍𝖍, [10.09.2026 14:16]
 <p><b>Активный навык — «Живые Путы»[span_15](start_span)[span_15](end_span):</b> Побеги сковывают цель на 1 ход, срезая защиту от природных стихий и накладывая запрет на передвижение и атаки[span_16](start_span)[span_16](end_span).</p>
                 </div>
                 <div class="page-footer">
-                    <button class="page-btn btn-prev">« Назад</button>
+                    <button class="page-btn btn-prev">❮ Назад</button>
                     <span class="page-counter">7 / 23</span>
-                    <button class="page-btn btn-next">Далее »</button>
+                    <button class="page-btn btn-next">Вперёд ❯</button>
                 </div>
             </div>
 
             <!-- Стр 8: Зверолюды: Арт -->
             <div class="page">
+                <svg class="ink-blot blot-top-right" viewBox="0 0 35 35"><use href="#ink-drop-svg"/></svg>
                 <div class="page-content">
                     <h2>Зверолюды (Шаманизм крови)</h2>
-                    <img src="IMG_20260830_171207.jpg" class="lore-img" alt="Зверолюды">
+                    <img src="IMG_20260830_171207.jpg" class="lore-img" alt="Зверолюды" onerror="this.style.display='none'">
                     <p><b>Стиль игры:</b> Ловкачи, Адепты затяжных маневров, Охотники.</p>
                     <p><b>Доступные стихии:</b> Воздух (молниеносные прыжки), Земля (крепость когтей и шкуры).</p>
                     <p><b>Полный запрет:</b> Свет, Тьма, Смерть, Лёд, Огонь.</p>
                 </div>
                 <div class="page-footer">
-                    <button class="page-btn btn-prev">« Назад</button>
+                    <button class="page-btn btn-prev">❮ Назад</button>
                     <span class="page-counter">8 / 23</span>
-                    <button class="page-btn btn-next">Далее »</button>
+                    <button class="page-btn btn-next">Вперёд ❯</button>
                 </div>
             </div>
 
@@ -431,25 +624,26 @@
                     <p><b>Активный навык — «Охотничий Раж»:</b> Полный сброс эффектов контроля (стана, заморозки, опутавших пут) с мгновенным нанесением серии из трех молниеносных ударов.</p>
                 </div>
                 <div class="page-footer">
-                    <button class="page-btn btn-prev">« Назад</button>
+                    <button class="page-btn btn-prev">❮ Назад</button>
                     <span class="page-counter">9 / 23</span>
-                    <button class="page-btn btn-next">Далее »</button>
+                    <button class="page-btn btn-next">Вперёд ❯</button>
                 </div>
             </div>
 
             <!-- Стр 10: Дракониты: Арт -->
             <div class="page">
+                <svg class="ink-blot blot-bottom-left" viewBox="0 0 35 35"><use href="#ink-splatter-svg"/></svg>
                 <div class="page-content">
                     <h2>Дракониты (Кланы Игниса)</h2>
-                    <img src="IMG_20260830_171224.jpg" class="lore-img" alt="Дракониты">
+                    <img src="IMG_20260830_171224.jpg" class="lore-img" alt="Дракониты" onerror="this.style.display='none'">
                     <p><b>Стиль игры:</b> Передовая, Сокрушающий Бурст, Тяжелые Танки.</p>
                     <p><b>Доступные стихии:</b> Огонь (База), Молния (Высшие круги), Земля (Твердь).</p>
                     <p><b>Полный запрет:</b> Вода, Лёд, Тьма, Свет, Жизнь, Смерть.</p>
                 </div>
                 <div class="page-footer">
-                    <button class="page-btn btn-prev">« Назад</button>
+                    <button class="page-btn btn-prev">❮ Назад</button>
                     <span class="page-counter">10 / 23</span>
-                    <button class="page-btn btn-next">Далее »</button>
+                    <button class="page-btn btn-next">Вперёд ❯</button>
                 </div>
             </div>
 
@@ -457,20 +651,22 @@
             <div class="page">
                 <div class="page-content">
                     <h2>Дракониты (Ярость)</h2>
-                    <p><b>Механика:</b> Пламя высвобождается непосредственно через взмахи секир и клинков. Энергия маны крайне мала, но расходуется расчетливо.</p>
-                    <p><b>Пассивный бонус — «Драконья Чешуя»[span_17](start_span)[span_17](end_span):</b> Врожденное поглощение физического урона на 15% выше нормы[span_18](start_span)[span_18](end_span). Абсолютный иммунитет к пламени и горению[span_19](start_span)[span_19](end_span).</p>
 
-<p><b>Активный навык — «Истинная Ярость»[span_20](start_span)[span_20](end_span):</b> Чем глубже раны воина, тем чудовищнее его натиск[span_21](start_span)[span_21](end_span). При остатке менее 20% HP удары игнорируют тяжелые доспехи недругов[span_22](start_span)[span_22](end_span).</p>
+𝖋𝖎𝖑𝖈𝖍𝖍𝖍, [10.09.2026 14:16]
+<p><b>Механика:</b> Пламя высвобождается непосредственно через взмахи секир и клинков. Энергия маны крайне мала, но расходуется расчетливо.</p>
+                    <p><b>Пассивный бонус — «Драконья Чешуя»[span_17](start_span)[span_17](end_span):</b> Врожденное поглощение физического урона на 15% выше нормы[span_18](start_span)[span_18](end_span). Абсолютный иммунитет к пламени и горению[span_19](start_span)[span_19](end_span).</p>
+                    <p><b>Активный навык — «Истинная Ярость»[span_20](start_span)[span_20](end_span):</b> Чем глубже раны воина, тем чудовищнее его натиск[span_21](start_span)[span_21](end_span). При остатке менее 20% HP удары игнорируют тяжелые доспехи недругов[span_22](start_span)[span_22](end_span).</p>
                 </div>
                 <div class="page-footer">
-                    <button class="page-btn btn-prev">« Назад</button>
+                    <button class="page-btn btn-prev">❮ Назад</button>
                     <span class="page-counter">11 / 23</span>
-                    <button class="page-btn btn-next">Далее »</button>
+                    <button class="page-btn btn-next">Вперёд ❯</button>
                 </div>
             </div>
 
             <!-- Стр 12: Локации: Элизия и Порт -->
             <div class="page">
+                <svg class="ink-blot blot-top-right" viewBox="0 0 35 35"><use href="#ink-drop-svg"/></svg>
                 <div class="page-content">
                     <h2>Атлас: Земли Империи</h2>
                     <h3>Элизия — Белокаменная Столица</h3>
@@ -479,14 +675,15 @@
                     <p>Приют контрабандистов и пиратских гильдий. Пирсы из остовов разбитых судов, где в пещерах прилива процветает нелегальный Рынок Утопленника.</p>
                 </div>
                 <div class="page-footer">
-                    <button class="page-btn btn-prev">« Назад</button>
+                    <button class="page-btn btn-prev">❮ Назад</button>
                     <span class="page-counter">12 / 23</span>
-                    <button class="page-btn btn-next">Далее »</button>
+                    <button class="page-btn btn-next">Вперёд ❯</button>
                 </div>
             </div>
 
             <!-- Стр 13: Локации: Лес и Подземелья -->
             <div class="page">
+                <svg class="ink-blot blot-bottom-left" viewBox="0 0 35 35"><use href="#ink-splatter-svg"/></svg>
                 <div class="page-content">
                     <h2>Атлас: Лес и Подземелья</h2>
                     <h3>Сильванар — Сердце Леса</h3>
@@ -497,9 +694,9 @@
                     <p>Оплот Тёмных эльфов в колоссальном тектоническом разломе. Стеклянные мосты и ледяные чертоги освещены лишь спорами синих грибов.</p>
                 </div>
                 <div class="page-footer">
-                    <button class="page-btn btn-prev">« Назад</button>
+                    <button class="page-btn btn-prev">❮ Назад</button>
                     <span class="page-counter">13 / 23</span>
-                    <button class="page-btn btn-next">Далее »</button>
+                    <button class="page-btn btn-next">Вперёд ❯</button>
                 </div>
             </div>
 
@@ -509,20 +706,23 @@
                     <h2>Атлас: Огонь и Свет</h2>
                     <h3>Цитадель Кар-Орот</h3>
                     <p>Обсидиановая твердыня внутри спящего вулкана. Реки магмы питают наковальни, а Арена Пепла принимает дуэли чести Кланов.</p>
-                    <h3>Ущелье Драконьего Клыка[span_26](start_span)[span_26](end_span)</h3>
+
+𝖋𝖎𝖑𝖈𝖍𝖍𝖍, [10.09.2026 14:16]
+<h3>Ущелье Драконьего Клыка[span_26](start_span)[span_26](end_span)</h3>
                     <p>Скалистый каньон, усеянный прахом смельчаков и защитными рунами взрыва[span_27](start_span)[span_27](end_span).</p>
                     <h3>Ауралия — Парящие Острова</h3>
                     <p>Хрустальные сады над Озером Миражей. В Павильонах Исцеления недуги лечат за концептуальную плату — осколки памяти или искры удачи.</p>
                 </div>
                 <div class="page-footer">
-                    <button class="page-btn btn-prev">« Назад</button>
+                    <button class="page-btn btn-prev">❮ Назад</button>
                     <span class="page-counter">14 / 23</span>
-                    <button class="page-btn btn-next">Далее »</button>
+                    <button class="page-btn btn-next">Вперёд ❯</button>
                 </div>
             </div>
 
-<!-- Стр 15: Аэтерон -->
+            <!-- Стр 15: Аэтерон -->
             <div class="page">
+                <svg class="ink-blot blot-top-right" viewBox="0 0 35 35"><use href="#ink-drop-svg"/></svg>
                 <div class="page-content">
                     <h2>Аэтерон — Расколотое Небо</h2>
                     <p>Дрейфующая жемчужина над бездной Ока Эфира.</p>
@@ -534,14 +734,15 @@
                     </ul>
                 </div>
                 <div class="page-footer">
-                    <button class="page-btn btn-prev">« Назад</button>
+                    <button class="page-btn btn-prev">❮ Назад</button>
                     <span class="page-counter">15 / 23</span>
-                    <button class="page-btn btn-next">Далее »</button>
+                    <button class="page-btn btn-next">Вперёд ❯</button>
                 </div>
             </div>
 
             <!-- Стр 16: Бестиарий: Эарлин и Пещеры -->
             <div class="page">
+                <svg class="ink-blot blot-splatter" viewBox="0 0 35 35"><use href="#ink-splatter-svg"/></svg>
                 <div class="page-content">
                     <h2>Бестиарий: Руины и Пещеры[span_28](start_span)[span_28](end_span)</h2>
                     <h3>Руины Эарлин (Ур. 15–35)[span_29](start_span)[span_29](end_span)</h3>
@@ -554,32 +755,35 @@
                     💀 <b>Босс: Никселия (Ур. 60, Слож. 85)[span_42](start_span)[span_42](end_span):</b> Тень королевы с вайп-криком Банши[span_43](start_span)[span_43](end_span).</p>
                 </div>
                 <div class="page-footer">
-                    <button class="page-btn btn-prev">« Назад</button>
+                    <button class="page-btn btn-prev">❮ Назад</button>
                     <span class="page-counter">16 / 23</span>
-                    <button class="page-btn btn-next">Далее »</button>
+                    <button class="page-btn btn-next">Вперёд ❯</button>
                 </div>
             </div>
 
-            <!-- Стр 17: Бестиарий: Клык и Канализация -->
+𝖋𝖎𝖑𝖈𝖍𝖍𝖍, [10.09.2026 14:16]
+<!-- Стр 17: Бестиарий: Клык и Канализация -->
             <div class="page">
+                <svg class="ink-blot blot-top-right" viewBox="0 0 35 35"><use href="#ink-drop-svg"/></svg>
                 <div class="page-content">
                     <h2>Бестиарий: Пустоши и Стоки[span_44](start_span)[span_44](end_span)</h2>
                     <h3>Ущелье Драконьего Клыка (Ур. 50–75)[span_45](start_span)[span_45](end_span)</h3>
                     <p>Пепельные Дрейки[span_46](start_span)[span_46](end_span), Магматические Големы[span_47](start_span)[span_47](end_span), Искрящиеся Элементали[span_48](start_span)[span_48](end_span).<br>
                     💀 <b>Босс: Кор-Вош (Ур. 80, Слож. 95)[span_49](start_span)[span_49](end_span):</b> Громочешуйный Змей[span_50](start_span)[span_50](end_span). Смертоносный плазменный луч разрезает колонны укрытий[span_51](start_span)[span_51](end_span).</p>
                     <h3>Подземелья Элизии (Ур. 5–25)[span_52](start_span)[span_52](end_span)</h3>
-<p>Чумные Крысы[span_53](start_span)[span_53](end_span), Кислотные Слизни[span_54](start_span)[span_54](end_span), Гомункулы-Отступники[span_55](start_span)[span_55](end_span).<br>
+                    <p>Чумные Крысы[span_53](start_span)[span_53](end_span), Кислотные Слизни[span_54](start_span)[span_54](end_span), Гомункулы-Отступники[span_55](start_span)[span_55](end_span).<br>
                     💀 <b>Босс: Амальгама (Ур. 25, Слож. 40)[span_56](start_span)[span_56](end_span):</b> Пожиратель зелий и костей, распадающийся на фрагменты[span_57](start_span)[span_57](end_span).</p>
                 </div>
                 <div class="page-footer">
-                    <button class="page-btn btn-prev">« Назад</button>
+                    <button class="page-btn btn-prev">❮ Назад</button>
                     <span class="page-counter">17 / 23</span>
-                    <button class="page-btn btn-next">Далее »</button>
+                    <button class="page-btn btn-next">Вперёд ❯</button>
                 </div>
             </div>
 
             <!-- Стр 18: Бестиарий: Степи и Отмели -->
             <div class="page">
+                <svg class="ink-blot blot-bottom-left" viewBox="0 0 35 35"><use href="#ink-drop-svg"/></svg>
                 <div class="page-content">
                     <h2>Бестиарий: Степи и Воды[span_58](start_span)[span_58](end_span)</h2>
                     <h3>Пепельные Степи (Ур. 35–50)[span_59](start_span)[span_59](end_span)</h3>
@@ -590,9 +794,9 @@
                     💀 <b>Босс: Капитан Моргрим (Ур. 70, Слож. 85)[span_69](start_span)[span_69](end_span):</b> Призрачный залп и ядовитый прилив[span_70](start_span)[span_70](end_span).</p>
                 </div>
                 <div class="page-footer">
-                    <button class="page-btn btn-prev">« Назад</button>
+                    <button class="page-btn btn-prev">❮ Назад</button>
                     <span class="page-counter">18 / 23</span>
-                    <button class="page-btn btn-next">Далее »</button>
+                    <button class="page-btn btn-next">Вперёд ❯</button>
                 </div>
             </div>
 
@@ -602,21 +806,23 @@
                     <h2>Бестиарий: Иллюзии и Дороги[span_71](start_span)[span_71](end_span)</h2>
                     <h3>Иллюзорные Топи (Ур. 65–85)[span_72](start_span)[span_72](end_span)</h3>
                     <p>Фэй-Пантеры[span_73](start_span)[span_73](end_span), Кристальные Мимики[span_74](start_span)[span_74](end_span), Плакальщицы Тумана[span_75](start_span)[span_75](end_span).<br>
-                    💀 <b>Босс: Люминекс (Ур. 90, Слож. 95)[span_76](start_span)[span_76](end_span):</b> Падший Свет с гибельным стаком Святого Пламени[span_77](start_span)[span_77](end_span).</p>
+
+𝖋𝖎𝖑𝖈𝖍𝖍𝖍, [10.09.2026 14:16]
+💀 <b>Босс: Люминекс (Ур. 90, Слож. 95)[span_76](start_span)[span_76](end_span):</b> Падший Свет с гибельным стаком Святого Пламени[span_77](start_span)[span_77](end_span).</p>
                     <h3>Имперские Тракты и Элита[span_78](start_span)[span_78](end_span)</h3>
                     <p>Эфирные разбойники[span_79](start_span)[span_79](end_span), Грифоны[span_80](start_span)[span_80](end_span), Осколки Разлома[span_81](start_span)[span_81](end_span).<br>
                     🦇 <b>Мини-боссы[span_82](start_span)[span_82](end_span):</b> Кровавый Палач (Ур. 60)[span_83](start_span)[span_83](end_span) и Ткач Пустоты (Ур. 75, блокирующий телепортацию)[span_84](start_span)[span_84](end_span).</p>
                 </div>
                 <div class="page-footer">
-                    <button class="page-btn btn-prev">« Назад</button>
+                    <button class="page-btn btn-prev">❮ Назад</button>
                     <span class="page-counter">19 / 23</span>
-                    <button class="page-btn btn-next">Далее »</button>
+                    <button class="page-btn btn-next">Вперёд ❯</button>
                 </div>
             </div>
 
             <!-- Стр 20: Бестиарий: Лед и Каверны -->
-
-<div class="page">
+            <div class="page">
+                <svg class="ink-blot blot-top-right" viewBox="0 0 35 35"><use href="#ink-drop-svg"/></svg>
                 <div class="page-content">
                     <h2>Бестиарий: Лед и Кристаллы[span_85](start_span)[span_85](end_span)</h2>
                     <h3>Ледяной Предел (Ур. 40–60)[span_86](start_span)[span_86](end_span)</h3>
@@ -627,14 +833,15 @@
                     💀 <b>Босс: Эйлон (Ур. 85, Слож. 90)[span_96](start_span)[span_96](end_span):</b> Зеркальный страж, дублирующий бойцов отряда[span_97](start_span)[span_97](end_span).</p>
                 </div>
                 <div class="page-footer">
-                    <button class="page-btn btn-prev">« Назад</button>
+                    <button class="page-btn btn-prev">❮ Назад</button>
                     <span class="page-counter">20 / 23</span>
-                    <button class="page-btn btn-next">Далее »</button>
+                    <button class="page-btn btn-next">Вперёд ❯</button>
                 </div>
             </div>
 
             <!-- Стр 21: Бестиарий: Полигон и Океан -->
             <div class="page">
+                <svg class="ink-blot blot-splatter" viewBox="0 0 35 35"><use href="#ink-splatter-svg"/></svg>
                 <div class="page-content">
                     <h2>Бестиарий: Знания и Бездна[span_98](start_span)[span_98](end_span)</h2>
                     <h3>Запретный Полигон (Ур. 25–45)[span_99](start_span)[span_99](end_span)</h3>
@@ -643,52 +850,55 @@
                     <h3>Бездна Левиафана (Ур. 90–100)[span_105](start_span)[span_105](end_span)</h3>
                     <p>Глубинные Сталкеры[span_106](start_span)[span_106](end_span), Ежи-Исполины[span_107](start_span)[span_107](end_span), Киты-Тараны[span_108](start_span)[span_108](end_span).<br>
                     💀 <b>Рейдовый Босс: Мор'Гур (Ур. 100, Слож. 100)[span_109](start_span)[span_109](end_span):</b> Древний Кракен[span_110](start_span)[span_110](end_span). Слепое око поражается направленным лучом Света[span_111](start_span)[span_111](end_span).</p>
-                </div>
+
+𝖋𝖎𝖑𝖈𝖍𝖍𝖍, [10.09.2026 14:16]
+</div>
                 <div class="page-footer">
-                    <button class="page-btn btn-prev">« Назад</button>
+                    <button class="page-btn btn-prev">❮ Назад</button>
                     <span class="page-counter">21 / 23</span>
-                    <button class="page-btn btn-next">Далее »</button>
+                    <button class="page-btn btn-next">Вперёд ❯</button>
                 </div>
             </div>
 
             <!-- Стр 22: Мировой Босс -->
             <div class="page">
+                <svg class="ink-blot blot-top-right" viewBox="0 0 35 35"><use href="#ink-drop-svg"/></svg>
                 <div class="page-content">
                     <h2>Глобальный Владыка Аномалий[span_112](start_span)[span_112](end_span)</h2>
                     <h3>Исказитель Пространства (Ур. 100)[span_113](start_span)[span_113](end_span)</h3>
                     <p>Сбой первичных Врат Континента, восстающий раз в лунный месяц[span_114](start_span)[span_114](end_span). Иммунен к оковам, меняет уязвимости каждые полминуты[span_115](start_span)[span_115](end_span).</p>
                     <p><b>Искажение реальности[span_116](start_span)[span_116](end_span):</b> Целебные чары обращаются ранами, огонь сковывает льдом, а погибшие владыки восстают призраками[span_117](start_span)[span_117](end_span).</p>
-
-<p><b>Дар победы[span_118](start_span)[span_118](end_span):</b> «Осколки Эфира», дарующие право закладки родовых замков и влияния на корону[span_119](start_span)[span_119](end_span).</p>
+                    <p><b>Дар победы[span_118](start_span)[span_118](end_span):</b> «Осколки Эфира», дарующие право закладки родовых замков и влияния на корону[span_119](start_span)[span_119](end_span).</p>
                 </div>
                 <div class="page-footer">
-                    <button class="page-btn btn-prev">« Назад</button>
+                    <button class="page-btn btn-prev">❮ Назад</button>
                     <span class="page-counter">22 / 23</span>
-                    <button class="page-btn btn-next">Далее »</button>
+                    <button class="page-btn btn-next">Вперёд ❯</button>
                 </div>
             </div>
 
             <!-- Стр 23: Финал -->
             <div class="page cover">
                 <div class="page-content" style="display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center;">
-                    <h1>Конец Летописи</h1>
-                    <p style="color: #d6b26d; font-size: 20px; margin-top: 25px;">Да сохранит Эфир ваши шаги на трактах Аурхейма...</p>
+                    <h1 style="font-family: 'Marck Script', cursive; font-size: 38px;">Конец Летописи</h1>
+                    <p style="color: #deb66c; font-size: 21px; margin-top: 25px;">Да сохранит Эфир ваши шаги на трактах Аурхейма...</p>
                 </div>
                 <div class="page-footer">
-                    <button class="page-btn btn-prev">« Назад</button>
+                    <button class="page-btn btn-prev">❮ Назад</button>
                     <span class="page-counter">23 / 23</span>
-                    <button class="page-btn btn-next" disabled>Далее »</button>
+                    <button class="page-btn btn-next" disabled>Вперёд ❯</button>
                 </div>
             </div>
         </div>
     </div>
 
-    <!-- Аудиоэффекты -->
+    <!-- Звуковое сопровождение -->
     <audio id="audio-flip" src="https://upload.wikimedia.org/wikipedia/commons/f/f6/Page_turn.ogg" preload="none"></audio>
     <audio id="audio-ambient" src="https://upload.wikimedia.org/wikipedia/commons/4/41/Fire_01.ogg" loop preload="none"></audio>
 
     <script>
         document.addEventListener('DOMContentLoaded', () => {
+            // Telegram WebApp инициализация и полноэкранный режим
             try {
                 if (window.Telegram && window.Telegram.WebApp) {
                     window.Telegram.WebApp.ready();
@@ -699,6 +909,7 @@
             const startBtn = document.getElementById('start-btn');
             const startScreen = document.getElementById('start-screen');
             const bookWrapper = document.getElementById('book-wrapper');
+            const bookStage = document.getElementById('book-stage');
             const flipAudio = document.getElementById('audio-flip');
             const ambientAudio = document.getElementById('audio-ambient');
 
@@ -706,6 +917,16 @@
 
             const pages = Array.from(document.querySelectorAll('#book-stage .page'));
             let currentIndex = 0;
+
+𝖋𝖎𝖑𝖈𝖍𝖍𝖍, [10.09.2026 14:16]
+// Виброотклик для Telegram
+            function triggerHaptic() {
+                try {
+                    if (window.Telegram && window.Telegram.WebApp && window.Telegram.WebApp.HapticFeedback) {
+                        window.Telegram.WebApp.HapticFeedback.impactOccurred('light');
+                    }
+                } catch (e) {}
+            }
 
             function playSound(audio) {
                 if (!audio) return;
@@ -717,13 +938,18 @@
             }
 
             function updatePages(newIdx) {
-                if (newIdx < 0 || newIdx >= pages.length) return;
+                if (newIdx < 0  newIdx >= pages.length  newIdx === currentIndex) return;
                 
                 pages[currentIndex].classList.remove('active');
                 pages[newIdx].classList.add('active');
                 currentIndex = newIdx;
                 
+                // Прокручиваем открытую страницу наверх
+                const content = pages[newIdx].querySelector('.page-content');
+                if (content) content.scrollTop = 0;
+
                 playSound(flipAudio);
+                triggerHaptic();
             }
 
             // Запуск книги
@@ -732,11 +958,14 @@
                 startScreen.style.display = 'none';
                 bookWrapper.style.display = 'flex';
                 playSound(ambientAudio);
+                triggerHaptic();
             });
 
-            // Делегирование кликов на кнопки навигации
+            // Нажатия на кнопки навигации внизу
             bookWrapper.addEventListener('click', (e) => {
-                const target = e.target;
+                const target = e.target.closest('.page-btn');
+                if (!target) return;
+
                 if (target.classList.contains('btn-next')) {
                     updatePages(currentIndex + 1);
                 } else if (target.classList.contains('btn-prev')) {
@@ -744,22 +973,31 @@
                 }
             });
 
-            // Свайпы для мобильных устройств
-            let startX = 0;
-            let startY = 0;
+            // Корректная обработка свайпа (не ломает вертикальный скролл)
+            let touchStartX = 0;
+            let touchStartY = 0;
+            let touchStartTime = 0;
 
-            document.addEventListener('touchstart', (e) => {
-                startX = e.touches[0].clientX;
-                startY = e.touches[0].clientY;
+            bookStage.addEventListener('touchstart', (e) => {
+                touchStartX = e.touches[0].clientX;
+                touchStartY = e.touches[0].clientY;
+                touchStartTime = Date.now();
             }, { passive: true });
-document.addEventListener('touchend', (e) => {
-                if (bookWrapper.style.display !== 'flex') return;
-                const diffX = e.changedTouches[0].clientX - startX;
-                const diffY = e.changedTouches[0].clientY - startY;
 
-                if (Math.abs(diffX) > 50 && Math.abs(diffX) > Math.abs(diffY)) {
-                    if (diffX < 0) updatePages(currentIndex + 1);
-                    else updatePages(currentIndex - 1);
+            bookStage.addEventListener('touchend', (e) => {
+                if (bookWrapper.style.display !== 'flex') return;
+                
+                const diffX = e.changedTouches[0].clientX - touchStartX;
+                const diffY = e.changedTouches[0].clientY - touchStartY;
+                const timeDiff = Date.now() - touchStartTime;
+
+                // Свайп засчитывается, если горизонтальное движение отчетливее вертикального
+                if (Math.abs(diffX) > 40 && Math.abs(diffX) > Math.abs(diffY) * 1.3 && timeDiff < 600) {
+                    if (diffX < 0) {
+                        updatePages(currentIndex + 1);
+                    } else {
+                        updatePages(currentIndex - 1);
+                    }
                 }
             }, { passive: true });
         });
