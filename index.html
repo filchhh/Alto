@@ -14,8 +14,8 @@
         * { box-sizing: border-box; margin: 0; padding: 0; }
         
         body {
-            background-color: #060403;
-            color: #281408;
+            background-color: #050302;
+            color: #241106;
             display: flex;
             justify-content: center;
             align-items: center; 
@@ -23,48 +23,38 @@
             height: 100dvh;
             width: 100vw;
             overflow: hidden;
-            background-image: radial-gradient(circle at 25% 60%, rgba(45, 22, 10, 0.7) 0%, #050302 85%);
-            font-family: 'Bad Script', cursive;
+            background-image: radial-gradient(circle at 25% 65%, rgba(45, 20, 8, 0.75) 0%, #050302 85%);
+            font-family: 'Bad Script', cursive, serif;
             user-select: none;
             -webkit-user-select: none;
         }
 
-        #start-screen {
+        /* Кнопка включения/выключения звука в углу */
+        #audio-toggle-btn {
             position: fixed;
-            top: 0; left: 0;
-            z-index: 1000;
-            background: radial-gradient(circle at 50% 40%, rgba(30, 16, 8, 0.98), rgba(6, 4, 3, 0.99));
-            width: 100%;
-            height: 100%;
+            top: 14px;
+            right: 14px;
+            z-index: 100;
+            background: rgba(30, 15, 6, 0.75);
+            border: 1px solid #b8860b;
+            color: #deb66c;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            font-size: 18px;
+            cursor: pointer;
             display: flex;
-            flex-direction: column;
             justify-content: center;
             align-items: center;
-            color: #deb66c;
-            text-align: center;
-            padding: 24px;
-        }
-
-        #start-btn {
-            background: linear-gradient(180deg, #572d11 0%, #2e1405 100%);
-            color: #fcefd6;
-            border: 2px solid #cf9e3d;
-            padding: 14px 38px;
-            font-size: 28px;
-            font-family: 'Caveat', cursive;
-            cursor: pointer;
-            border-radius: 8px;
-            box-shadow: 0 0 25px rgba(212, 160, 23, 0.35), inset 0 0 10px rgba(255, 215, 0, 0.2);
-            margin-top: 25px;
-            transition: all 0.2s ease;
+            box-shadow: 0 0 12px rgba(0,0,0,0.7);
+            transition: all 0.2s;
             outline: none;
-            -webkit-tap-highlight-color: transparent;
         }
+        #audio-toggle-btn:active { transform: scale(0.92); }
 
-        #start-btn:active { transform: scale(0.95); box-shadow: 0 0 12px rgba(212, 160, 23, 0.6); }
-
+        /* Контейнер книги */
         #book-wrapper { 
-            display: none; 
+            display: flex; 
             width: 100%;
             height: 100%; 
             position: relative;
@@ -72,10 +62,12 @@
             align-items: center;
         }
 
-        /* === АНИМЕ-СВЕЧА С ЧАСТИЦАМИ И СОЧНЫМ ПЛАМЕНЕМ === */
+        /* ===================================================
+           === АНИМЕ-СВЕЧА С ЧАСТИЦАМИ И СОЧНЫМ ПЛАМЕНЕМ ===
+           =================================================== */
         .candle-rig {
             position: absolute;
-            left: 20px;
+            left: 24px;
             bottom: 24px;
             z-index: 30;
             pointer-events: none;
@@ -101,7 +93,7 @@
             height: 44px;
             background: #ff4800;
             border-radius: 50% 50% 35% 35% / 60% 60% 40% 40%;
-            box-shadow: 0 0 20px #ff5900, 0 0 45px rgba(255, 140, 0, 0.7);
+            box-shadow: 0 0 22px #ff5900, 0 0 45px rgba(255, 140, 0, 0.7);
             animation: flameAnime 0.12s infinite alternate ease-in-out;
             transform-origin: center bottom;
         }
@@ -115,7 +107,7 @@
             border-radius: 50% 50% 35% 35% / 60% 60% 40% 40%;
         }
 
-.flame-core {
+        .flame-core {
             position: absolute;
             bottom: 3px;
             width: 8px;
@@ -130,7 +122,7 @@
             bottom: -2px;
             width: 10px;
             height: 6px;
-            background: #4776ff;
+            background: #3d71ff;
             border-radius: 50%;
             opacity: 0.85;
             filter: blur(1px);
@@ -144,9 +136,9 @@
             opacity: 0;
             animation: emberFly 2.2s infinite ease-out;
         }
-        .ember-1 { width: 3px; height: 3px; left: 35%; animation-delay: 0.2s; }
-        .ember-2 { width: 4px; height: 4px; left: 55%; animation-delay: 0.9s; }
-        .ember-3 { width: 2.5px; height: 2.5px; left: 45%; animation-delay: 1.6s; }
+        .ember-1 { width: 3px; height: 3px; left: 30%; animation-delay: 0.1s; }
+        .ember-2 { width: 4px; height: 4px; left: 60%; animation-delay: 0.8s; }
+        .ember-3 { width: 2.5px; height: 2.5px; left: 45%; animation-delay: 1.5s; }
 
         @keyframes emberFly {
             0% { transform: translateY(0) scale(1); opacity: 1; }
@@ -213,14 +205,16 @@
         }
 
         @media (max-width: 600px) {
-            .candle-rig { transform: scale(0.68); left: -4px; bottom: 8px; }
+            .candle-rig { transform: scale(0.65); left: -6px; bottom: 8px; }
         }
 
-        /* === КНИГА И СТРАНИЦЫ === */
+        /* ===================================================
+           === КНИГА И ВИНТАЖНЫЙ ПЕРГАМЕНТ ===
+           =================================================== */
         #book-stage {
             position: relative;
             width: min(94vw, 440px);
-            height: min(88vh, 690px);
+            height: min(88vh, 700px);
             max-height: calc(100dvh - 35px);
             perspective: 1200px;
         }
@@ -232,16 +226,14 @@
             height: 100%;
             background-color: #dfceaa;
             background-image: 
-                radial-gradient(circle at 50% 50%, rgba(255, 255, 255, 0.2), transparent),
+                radial-gradient(circle at 50% 50%, rgba(255, 255, 255, 0.22), transparent),
                 radial-gradient(ellipse at center, transparent 55%, rgba(68, 38, 15, 0.45) 100%),
-
-url('https://www.transparenttextures.com/patterns/aged-paper.png');
+                url('https://www.transparenttextures.com/patterns/aged-paper.png');
             box-shadow: 
                 inset 0 0 50px rgba(60, 30, 10, 0.65),
                 0 12px 35px rgba(0, 0, 0, 0.85);
             border: 1px solid #542f13;
             border-radius: 4px 12px 12px 4px;
-            padding: 18px 16px 14px 20px;
             display: flex;
             flex-direction: column;
             opacity: 0;
@@ -270,15 +262,15 @@ url('https://www.transparenttextures.com/patterns/aged-paper.png');
             filter: drop-shadow(0 1px 1px rgba(0,0,0,0.15));
         }
         .blot-top-right { top: 14px; right: 18px; width: 32px; height: 32px; }
-        .blot-bottom-left { bottom: 48px; left: 12px; width: 26px; height: 26px; opacity: 0.22; }
-        .blot-splatter { bottom: 75px; right: 25px; width: 22px; height: 22px; opacity: 0.25; }
+        .blot-bottom-left { bottom: 58px; left: 14px; width: 26px; height: 26px; opacity: 0.22; }
+        .blot-splatter { bottom: 62px; right: 25px; width: 22px; height: 22px; opacity: 0.25; }
 
+        /* Контейнер текста — скроллится аккуратно, никогда не обрезается */
         .page-content {
-            flex: 1;
+            flex: 1 1 auto;
             overflow-y: auto;
             overflow-x: hidden;
-            padding-right: 6px;
-            padding-bottom: 58px;
+            padding: 18px 16px 20px 20px;
             position: relative;
             z-index: 2;
             -webkit-overflow-scrolling: touch;
@@ -301,9 +293,9 @@ url('https://www.transparenttextures.com/patterns/aged-paper.png');
             text-shadow: 0 1px 1px rgba(255, 255, 255, 0.2);
         }
 
-        h1 { font-size: 34px; margin-top: 30%; }
-        h2 { font-size: 26px; margin-top: 4px; }
-        h3 { font-size: 21px; color: #4a1f06; margin-top: 10px; }
+        h1 { font-size: 34px; margin-top: 25%; }
+        h2 { font-size: 25px; margin-top: 4px; }
+        h3 { font-size: 20px; color: #4a1f06; margin-top: 10px; }
 
         p, li {
             font-size: 17.5px;
@@ -317,7 +309,7 @@ url('https://www.transparenttextures.com/patterns/aged-paper.png');
 
         .lore-img {
             width: 100%;
-            max-height: 190px;
+            max-height: 185px;
             object-fit: cover;
             border-radius: 5px;
             margin: 8px 0 12px;
@@ -327,36 +319,34 @@ url('https://www.transparenttextures.com/patterns/aged-paper.png');
             display: block;
         }
 
-        /* Навигация внизу страниц */
+        /* ===================================================
+           === ФУТЕР И СТРЕЛКИ НАВИГАЦИИ ПО БОКАМ ВНИЗУ ===
+           =================================================== */
         .page-footer {
-            position: absolute;
-            bottom: 8px;
-            left: 14px;
-            right: 14px;
-            height: 44px;
+            flex: 0 0 48px;
+            height: 48px;
             display: flex;
             justify-content: space-between;
             align-items: center;
             font-family: 'Caveat', cursive;
-            font-size: 20px;
+            font-size: 21px;
             color: #552709;
             z-index: 10;
-            border-top: 1px dashed rgba(110, 60, 20, 0.3);
-            padding-top: 2px;
-            background: linear-gradient(180deg, rgba(223, 206, 170, 0.4) 0%, rgba(223, 206, 170, 0.95) 80%);
+            border-top: 1px dashed rgba(110, 60, 20, 0.35);
+            padding: 0 14px;
+            background: rgba(223, 206, 170, 0.75);
+            backdrop-filter: blur(2px);
         }
 
         .page-btn {
             background: none;
             border: none;
             color: #4a1f05;
-
-𝖋𝖎𝖑𝖈𝖍𝖍𝖍, [10.09.2026 15:08]
-font-family: 'Caveat', cursive;
+            font-family: 'Caveat', cursive;
             font-size: 22px;
             font-weight: 700;
             cursor: pointer;
-            padding: 6px 12px;
+            padding: 6px 14px;
             outline: none;
             display: flex;
             align-items: center;
@@ -380,9 +370,10 @@ font-family: 'Caveat', cursive;
         .page-counter {
             font-size: 19px;
             font-weight: 600;
-            opacity: 0.85;
+            opacity: 0.9;
         }
 
+        /* Обложка книги */
         .cover {
             background: #270f04 url('https://www.transparenttextures.com/patterns/leather.png');
             color: #deb66c;
@@ -401,19 +392,31 @@ font-family: 'Caveat', cursive;
         }
         .cover .page-btn { color: #deb66c; }
         .cover .page-btn:active { color: #fff; background: rgba(255,255,255,0.08); }
+
+        .btn-open-book {
+            background: linear-gradient(180deg, #572d11 0%, #2e1405 100%);
+            color: #fcefd6;
+            border: 2px solid #cf9e3d;
+            padding: 12px 32px;
+            font-size: 26px;
+            font-family: 'Caveat', cursive;
+            cursor: pointer;
+            border-radius: 8px;
+            box-shadow: 0 0 20px rgba(212, 160, 23, 0.35);
+            margin-top: 30px;
+            transition: all 0.2s ease;
+            outline: none;
+        }
+        .btn-open-book:active { transform: scale(0.95); }
     </style>
 </head>
 <body>
 
-    <!-- Стартовый экран -->
-    <div id="start-screen">
-        <h2 style="font-size: 40px; border:none; margin-bottom: 12px; font-family: 'Marck Script', cursive;">Библиотека Арканума</h2>
-        <p style="font-size: 21px; color: #d6be95;">Позвольте огню рассеять тьму древних страниц...</p>
-        <button id="start-btn" type="button" onclick="openBook(event)">Открыть Фолиант</button>
-    </div>
+    <!-- Переключатель звука -->
+    <button id="audio-toggle-btn" title="Звуки фолианта">🔊</button>
 
     <div id="book-wrapper">
-        <!-- Аниме-свеча -->
+        <!-- Аниме-свеча с частицами и ореолом -->
         <div class="candle-rig">
             <div class="flame-halo"></div>
             <div class="anime-flame-container">
@@ -433,10 +436,10 @@ font-family: 'Caveat', cursive;
             </div>
         </div>
 
-        <!-- Книга и страницы -->
+        <!-- Книга со всеми страницами -->
         <div id="book-stage">
             
-            <!-- Векторные капли чернил -->
+            <!-- Векторные чернильные кляксы -->
             <svg style="display: none;">
                 <defs>
                     <g id="ink-drop-svg">
@@ -455,15 +458,15 @@ font-family: 'Caveat', cursive;
 
             <!-- Стр 1: Обложка -->
             <div class="page cover active">
-
-<div class="page-content" style="display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center;">
-                    <h1 style="font-family: 'Marck Script', cursive; font-size: 42px;">Летопись Аурхейма</h1>
+                <div class="page-content" style="display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center;">
+                    <h1 style="font-family: 'Marck Script', cursive; font-size: 44px; margin-top: 0;">Летопись Аурхейма</h1>
                     <h2 style="margin-top: 15px; font-size: 24px;">Расы, Локации и Бестиарий</h2>
+                    <button class="btn-open-book" onclick="nextPage()">Раскрыть Фолиант ❯</button>
                 </div>
                 <div class="page-footer">
                     <button class="page-btn btn-prev" disabled>❮ Назад</button>
                     <span class="page-counter">1 / 23</span>
-                    <button class="page-btn btn-next">Вперёд ❯</button>
+                    <button class="page-btn btn-next" onclick="nextPage()">Вперёд ❯</button>
                 </div>
             </div>
 
@@ -477,9 +480,9 @@ font-family: 'Caveat', cursive;
                     <p><b>Доступные стихии:</b> Люди не привязаны к Эфиру биологически и изучают его как точную науку. При сотворении персонаж избирает <b>ОДИН</b> базовый элемент (Огонь, Вода, Воздух или Земля). Лишь высокое признание в Академии Арканума открывает родственную грань.</p>
                 </div>
                 <div class="page-footer">
-                    <button class="page-btn btn-prev">❮ Назад</button>
+                    <button class="page-btn btn-prev" onclick="prevPage()">❮ Назад</button>
                     <span class="page-counter">2 / 23</span>
-                    <button class="page-btn btn-next">Вперёд ❯</button>
+                    <button class="page-btn btn-next" onclick="nextPage()">Вперёд ❯</button>
                 </div>
             </div>
 
@@ -493,9 +496,9 @@ font-family: 'Caveat', cursive;
                     <p><b>Активный навык — «Резонанс Группы»[span_3](start_span)[span_3](end_span):</b> Мощнейший катализатор уз[span_4](start_span)[span_4](end_span). В присутствии иных рас их пассивные природные дары удваивают мощь на 3 хода[span_5](start_span)[span_5](end_span).</p>
                 </div>
                 <div class="page-footer">
-                    <button class="page-btn btn-prev">❮ Назад</button>
+                    <button class="page-btn btn-prev" onclick="prevPage()">❮ Назад</button>
                     <span class="page-counter">3 / 23</span>
-                    <button class="page-btn btn-next">Вперёд ❯</button>
+                    <button class="page-btn btn-next" onclick="nextPage()">Вперёд ❯</button>
                 </div>
             </div>
 
@@ -510,13 +513,13 @@ font-family: 'Caveat', cursive;
                     <p><b>Полный запрет:</b> Огонь, Свет, Жизнь, Воздух, Земля, Вода.</p>
                 </div>
                 <div class="page-footer">
-                    <button class="page-btn btn-prev">❮ Назад</button>
+                    <button class="page-btn btn-prev" onclick="prevPage()">❮ Назад</button>
                     <span class="page-counter">4 / 23</span>
-                    <button class="page-btn btn-next">Вперёд ❯</button>
+                    <button class="page-btn btn-next" onclick="nextPage()">Вперёд ❯</button>
                 </div>
             </div>
 
-<!-- Стр 5: Тёмные эльфы: Механики -->
+            <!-- Стр 5: Тёмные эльфы: Механики -->
             <div class="page">
                 <div class="page-content">
                     <h2>Тёмные эльфы (Навыки)</h2>
@@ -525,9 +528,9 @@ font-family: 'Caveat', cursive;
                     <p><b>Активный навык — «Теневой Шаг»[span_9](start_span)[span_9](end_span):</b> Мгновенное смещение сквозь мрак за спину цели, парирующее направленный удар и наделяющее следующий выпад абсолютным критическим уроном[span_10](start_span)[span_10](end_span).</p>
                 </div>
                 <div class="page-footer">
-                    <button class="page-btn btn-prev">❮ Назад</button>
+                    <button class="page-btn btn-prev" onclick="prevPage()">❮ Назад</button>
                     <span class="page-counter">5 / 23</span>
-                    <button class="page-btn btn-next">Вперёд ❯</button>
+                    <button class="page-btn btn-next" onclick="nextPage()">Вперёд ❯</button>
                 </div>
             </div>
 
@@ -542,9 +545,9 @@ font-family: 'Caveat', cursive;
                     <p><b>Полный запрет:</b> Огонь, Тьма, Смерть, Лёд, Молния. Магия Жизни строжайше табуирована из-за трагедии Эарлина[span_11](start_span)[span_11](end_span)[span_12](start_span)[span_12](end_span).</p>
                 </div>
                 <div class="page-footer">
-                    <button class="page-btn btn-prev">❮ Назад</button>
+                    <button class="page-btn btn-prev" onclick="prevPage()">❮ Назад</button>
                     <span class="page-counter">6 / 23</span>
-                    <button class="page-btn btn-next">Вперёд ❯</button>
+                    <button class="page-btn btn-next" onclick="nextPage()">Вперёд ❯</button>
                 </div>
             </div>
 
@@ -557,9 +560,9 @@ font-family: 'Caveat', cursive;
                     <p><b>Активный навык — «Живые Путы»[span_15](start_span)[span_15](end_span):</b> Побеги сковывают цель на 1 ход, срезая защиту от природных стихий и накладывая запрет на передвижение и атаки[span_16](start_span)[span_16](end_span).</p>
                 </div>
                 <div class="page-footer">
-                    <button class="page-btn btn-prev">❮ Назад</button>
+                    <button class="page-btn btn-prev" onclick="prevPage()">❮ Назад</button>
                     <span class="page-counter">7 / 23</span>
-                    <button class="page-btn btn-next">Вперёд ❯</button>
+                    <button class="page-btn btn-next" onclick="nextPage()">Вперёд ❯</button>
                 </div>
             </div>
 
@@ -568,16 +571,15 @@ font-family: 'Caveat', cursive;
                 <svg class="ink-blot blot-top-right" viewBox="0 0 35 35"><use href="#ink-drop-svg"/></svg>
                 <div class="page-content">
                     <h2>Зверолюды (Шаманизм крови)</h2>
-
-<img src="IMG_20260830_171207.jpg" class="lore-img" alt="Зверолюды" onerror="this.style.display='none'">
+                    <img src="IMG_20260830_171207.jpg" class="lore-img" alt="Зверолюды" onerror="this.style.display='none'">
                     <p><b>Стиль игры:</b> Ловкачи, Адепты затяжных маневров, Охотники.</p>
                     <p><b>Доступные стихии:</b> Воздух (молниеносные прыжки), Земля (крепость когтей и шкуры).</p>
                     <p><b>Полный запрет:</b> Свет, Тьма, Смерть, Лёд, Огонь.</p>
                 </div>
                 <div class="page-footer">
-                    <button class="page-btn btn-prev">❮ Назад</button>
+                    <button class="page-btn btn-prev" onclick="prevPage()">❮ Назад</button>
                     <span class="page-counter">8 / 23</span>
-                    <button class="page-btn btn-next">Вперёд ❯</button>
+                    <button class="page-btn btn-next" onclick="nextPage()">Вперёд ❯</button>
                 </div>
             </div>
 
@@ -590,9 +592,9 @@ font-family: 'Caveat', cursive;
                     <p><b>Активный навык — «Охотничий Раж»:</b> Полный сброс эффектов контроля (стана, заморозки, опутавших пут) с мгновенным нанесением серии из трех молниеносных ударов.</p>
                 </div>
                 <div class="page-footer">
-                    <button class="page-btn btn-prev">❮ Назад</button>
+                    <button class="page-btn btn-prev" onclick="prevPage()">❮ Назад</button>
                     <span class="page-counter">9 / 23</span>
-                    <button class="page-btn btn-next">Вперёд ❯</button>
+                    <button class="page-btn btn-next" onclick="nextPage()">Вперёд ❯</button>
                 </div>
             </div>
 
@@ -607,9 +609,9 @@ font-family: 'Caveat', cursive;
                     <p><b>Полный запрет:</b> Вода, Лёд, Тьма, Свет, Жизнь, Смерть.</p>
                 </div>
                 <div class="page-footer">
-                    <button class="page-btn btn-prev">❮ Назад</button>
+                    <button class="page-btn btn-prev" onclick="prevPage()">❮ Назад</button>
                     <span class="page-counter">10 / 23</span>
-                    <button class="page-btn btn-next">Вперёд ❯</button>
+                    <button class="page-btn btn-next" onclick="nextPage()">Вперёд ❯</button>
                 </div>
             </div>
 
@@ -622,13 +624,13 @@ font-family: 'Caveat', cursive;
                     <p><b>Активный навык — «Истинная Ярость»[span_20](start_span)[span_20](end_span):</b> Чем глубже раны воина, тем чудовищнее его натиск[span_21](start_span)[span_21](end_span). При остатке менее 20% HP удары игнорируют тяжелые доспехи недругов[span_22](start_span)[span_22](end_span).</p>
                 </div>
                 <div class="page-footer">
-                    <button class="page-btn btn-prev">❮ Назад</button>
+                    <button class="page-btn btn-prev" onclick="prevPage()">❮ Назад</button>
                     <span class="page-counter">11 / 23</span>
-                    <button class="page-btn btn-next">Вперёд ❯</button>
+                    <button class="page-btn btn-next" onclick="nextPage()">Вперёд ❯</button>
                 </div>
             </div>
 
-<!-- Стр 12: Локации: Элизия и Порт -->
+            <!-- Стр 12: Локации: Элизия и Порт -->
             <div class="page">
                 <svg class="ink-blot blot-top-right" viewBox="0 0 35 35"><use href="#ink-drop-svg"/></svg>
                 <div class="page-content">
@@ -639,9 +641,9 @@ font-family: 'Caveat', cursive;
                     <p>Приют контрабандистов и пиратских гильдий. Пирсы из остовов разбитых судов, где в пещерах прилива процветает нелегальный Рынок Утопленника.</p>
                 </div>
                 <div class="page-footer">
-                    <button class="page-btn btn-prev">❮ Назад</button>
+                    <button class="page-btn btn-prev" onclick="prevPage()">❮ Назад</button>
                     <span class="page-counter">12 / 23</span>
-                    <button class="page-btn btn-next">Вперёд ❯</button>
+                    <button class="page-btn btn-next" onclick="nextPage()">Вперёд ❯</button>
                 </div>
             </div>
 
@@ -658,9 +660,9 @@ font-family: 'Caveat', cursive;
                     <p>Оплот Тёмных эльфов в колоссальном тектоническом разломе. Стеклянные мосты и ледяные чертоги освещены лишь спорами синих грибов.</p>
                 </div>
                 <div class="page-footer">
-                    <button class="page-btn btn-prev">❮ Назад</button>
+                    <button class="page-btn btn-prev" onclick="prevPage()">❮ Назад</button>
                     <span class="page-counter">13 / 23</span>
-                    <button class="page-btn btn-next">Вперёд ❯</button>
+                    <button class="page-btn btn-next" onclick="nextPage()">Вперёд ❯</button>
                 </div>
             </div>
 
@@ -676,9 +678,9 @@ font-family: 'Caveat', cursive;
                     <p>Хрустальные сады над Озером Миражей. В Павильонах Исцеления недуги лечат за концептуальную плату — осколки памяти или искры удачи.</p>
                 </div>
                 <div class="page-footer">
-                    <button class="page-btn btn-prev">❮ Назад</button>
+                    <button class="page-btn btn-prev" onclick="prevPage()">❮ Назад</button>
                     <span class="page-counter">14 / 23</span>
-                    <button class="page-btn btn-next">Вперёд ❯</button>
+                    <button class="page-btn btn-next" onclick="nextPage()">Вперёд ❯</button>
                 </div>
             </div>
 
@@ -688,8 +690,7 @@ font-family: 'Caveat', cursive;
                 <div class="page-content">
                     <h2>Аэтерон — Расколотое Небо</h2>
                     <p>Дрейфующая жемчужина над бездной Ока Эфира.</p>
-
-<ul>
+                    <ul>
                         <li><b>Хрустальный Атриум:</b> Стеклянный амфитеатр, где души Странников раскрываются в бутонах эфирных лотосов.</li>
                         <li><b>Кольцо Золотого Ветра:</b> Парящие шелковые шатры базара, звенящие сотнями ветряных колокольчиков.</li>
                         <li><b>Венец Гармонии:</b> Посольские шпили пяти великих народов.</li>
@@ -697,9 +698,9 @@ font-family: 'Caveat', cursive;
                     </ul>
                 </div>
                 <div class="page-footer">
-                    <button class="page-btn btn-prev">❮ Назад</button>
+                    <button class="page-btn btn-prev" onclick="prevPage()">❮ Назад</button>
                     <span class="page-counter">15 / 23</span>
-                    <button class="page-btn btn-next">Вперёд ❯</button>
+                    <button class="page-btn btn-next" onclick="nextPage()">Вперёд ❯</button>
                 </div>
             </div>
 
@@ -718,9 +719,9 @@ font-family: 'Caveat', cursive;
                     💀 <b>Босс: Никселия (Ур. 60, Слож. 85)[span_42](start_span)[span_42](end_span):</b> Тень королевы с вайп-криком Банши[span_43](start_span)[span_43](end_span).</p>
                 </div>
                 <div class="page-footer">
-                    <button class="page-btn btn-prev">❮ Назад</button>
+                    <button class="page-btn btn-prev" onclick="prevPage()">❮ Назад</button>
                     <span class="page-counter">16 / 23</span>
-                    <button class="page-btn btn-next">Вперёд ❯</button>
+                    <button class="page-btn btn-next" onclick="nextPage()">Вперёд ❯</button>
                 </div>
             </div>
 
@@ -733,14 +734,13 @@ font-family: 'Caveat', cursive;
                     <p>Пепельные Дрейки[span_46](start_span)[span_46](end_span), Магматические Големы[span_47](start_span)[span_47](end_span), Искрящиеся Элементали[span_48](start_span)[span_48](end_span).<br>
                     💀 <b>Босс: Кор-Вош (Ур. 80, Слож. 95)[span_49](start_span)[span_49](end_span):</b> Громочешуйный Змей[span_50](start_span)[span_50](end_span). Смертоносный плазменный луч разрезает колонны укрытий[span_51](start_span)[span_51](end_span).</p>
                     <h3>Подземелья Элизии (Ур. 5–25)[span_52](start_span)[span_52](end_span)</h3>
-
-<p>Чумные Крысы[span_53](start_span)[span_53](end_span), Кислотные Слизни[span_54](start_span)[span_54](end_span), Гомункулы-Отступники[span_55](start_span)[span_55](end_span).<br>
+                    <p>Чумные Крысы[span_53](start_span)[span_53](end_span), Кислотные Слизни[span_54](start_span)[span_54](end_span), Гомункулы-Отступники[span_55](start_span)[span_55](end_span).<br>
                     💀 <b>Босс: Амальгама (Ур. 25, Слож. 40)[span_56](start_span)[span_56](end_span):</b> Пожиратель зелий и костей, распадающийся на фрагменты[span_57](start_span)[span_57](end_span).</p>
                 </div>
                 <div class="page-footer">
-                    <button class="page-btn btn-prev">❮ Назад</button>
+                    <button class="page-btn btn-prev" onclick="prevPage()">❮ Назад</button>
                     <span class="page-counter">17 / 23</span>
-                    <button class="page-btn btn-next">Вперёд ❯</button>
+                    <button class="page-btn btn-next" onclick="nextPage()">Вперёд ❯</button>
                 </div>
             </div>
 
@@ -757,9 +757,9 @@ font-family: 'Caveat', cursive;
                     💀 <b>Босс: Капитан Моргрим (Ур. 70, Слож. 85)[span_69](start_span)[span_69](end_span):</b> Призрачный залп и ядовитый прилив[span_70](start_span)[span_70](end_span).</p>
                 </div>
                 <div class="page-footer">
-                    <button class="page-btn btn-prev">❮ Назад</button>
+                    <button class="page-btn btn-prev" onclick="prevPage()">❮ Назад</button>
                     <span class="page-counter">18 / 23</span>
-                    <button class="page-btn btn-next">Вперёд ❯</button>
+                    <button class="page-btn btn-next" onclick="nextPage()">Вперёд ❯</button>
                 </div>
             </div>
 
@@ -775,13 +775,13 @@ font-family: 'Caveat', cursive;
                     🦇 <b>Мини-боссы[span_82](start_span)[span_82](end_span):</b> Кровавый Палач (Ур. 60)[span_83](start_span)[span_83](end_span) и Ткач Пустоты (Ур. 75, блокирующий телепортацию)[span_84](start_span)[span_84](end_span).</p>
                 </div>
                 <div class="page-footer">
-                    <button class="page-btn btn-prev">❮ Назад</button>
+                    <button class="page-btn btn-prev" onclick="prevPage()">❮ Назад</button>
                     <span class="page-counter">19 / 23</span>
-                    <button class="page-btn btn-next">Вперёд ❯</button>
+                    <button class="page-btn btn-next" onclick="nextPage()">Вперёд ❯</button>
                 </div>
             </div>
 
-<!-- Стр 20: Бестиарий: Лед и Каверны -->
+            <!-- Стр 20: Бестиарий: Лед и Каверны -->
             <div class="page">
                 <svg class="ink-blot blot-top-right" viewBox="0 0 35 35"><use href="#ink-drop-svg"/></svg>
                 <div class="page-content">
@@ -794,9 +794,9 @@ font-family: 'Caveat', cursive;
                     💀 <b>Босс: Эйлон (Ур. 85, Слож. 90)[span_96](start_span)[span_96](end_span):</b> Зеркальный страж, дублирующий бойцов отряда[span_97](start_span)[span_97](end_span).</p>
                 </div>
                 <div class="page-footer">
-                    <button class="page-btn btn-prev">❮ Назад</button>
+                    <button class="page-btn btn-prev" onclick="prevPage()">❮ Назад</button>
                     <span class="page-counter">20 / 23</span>
-                    <button class="page-btn btn-next">Вперёд ❯</button>
+                    <button class="page-btn btn-next" onclick="nextPage()">Вперёд ❯</button>
                 </div>
             </div>
 
@@ -813,9 +813,9 @@ font-family: 'Caveat', cursive;
                     💀 <b>Рейдовый Босс: Мор'Гур (Ур. 100, Слож. 100)[span_109](start_span)[span_109](end_span):</b> Древний Кракен[span_110](start_span)[span_110](end_span). Слепое око поражается направленным лучом Света[span_111](start_span)[span_111](end_span).</p>
                 </div>
                 <div class="page-footer">
-                    <button class="page-btn btn-prev">❮ Назад</button>
+                    <button class="page-btn btn-prev" onclick="prevPage()">❮ Назад</button>
                     <span class="page-counter">21 / 23</span>
-                    <button class="page-btn btn-next">Вперёд ❯</button>
+                    <button class="page-btn btn-next" onclick="nextPage()">Вперёд ❯</button>
                 </div>
             </div>
 
@@ -826,25 +826,24 @@ font-family: 'Caveat', cursive;
                     <h2>Глобальный Владыка Аномалий[span_112](start_span)[span_112](end_span)</h2>
                     <h3>Исказитель Пространства (Ур. 100)[span_113](start_span)[span_113](end_span)</h3>
                     <p>Сбой первичных Врат Континента, восстающий раз в лунный месяц[span_114](start_span)[span_114](end_span). Иммунен к оковам, меняет уязвимости каждые полминуты[span_115](start_span)[span_115](end_span).</p>
-
-<p><b>Искажение реальности[span_116](start_span)[span_116](end_span):</b> Целебные чары обращаются ранами, огонь сковывает льдом, а погибшие владыки восстают призраками[span_117](start_span)[span_117](end_span).</p>
+                    <p><b>Искажение реальности[span_116](start_span)[span_116](end_span):</b> Целебные чары обращаются ранами, огонь сковывает льдом, а погибшие владыки восстают призраками[span_117](start_span)[span_117](end_span).</p>
                     <p><b>Дар победы[span_118](start_span)[span_118](end_span):</b> «Осколки Эфира», дарующие право закладки родовых замков и влияния на корону[span_119](start_span)[span_119](end_span).</p>
                 </div>
                 <div class="page-footer">
-                    <button class="page-btn btn-prev">❮ Назад</button>
+                    <button class="page-btn btn-prev" onclick="prevPage()">❮ Назад</button>
                     <span class="page-counter">22 / 23</span>
-                    <button class="page-btn btn-next">Вперёд ❯</button>
+                    <button class="page-btn btn-next" onclick="nextPage()">Вперёд ❯</button>
                 </div>
             </div>
 
             <!-- Стр 23: Финал -->
             <div class="page cover">
                 <div class="page-content" style="display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center;">
-                    <h1 style="font-family: 'Marck Script', cursive; font-size: 38px;">Конец Летописи</h1>
+                    <h1 style="font-family: 'Marck Script', cursive; font-size: 40px; margin-top: 0;">Конец Летописи</h1>
                     <p style="color: #deb66c; font-size: 21px; margin-top: 25px;">Да сохранит Эфир ваши шаги на трактах Аурхейма...</p>
                 </div>
                 <div class="page-footer">
-                    <button class="page-btn btn-prev">❮ Назад</button>
+                    <button class="page-btn btn-prev" onclick="prevPage()">❮ Назад</button>
                     <span class="page-counter">23 / 23</span>
                     <button class="page-btn btn-next" disabled>Вперёд ❯</button>
                 </div>
@@ -852,12 +851,8 @@ font-family: 'Caveat', cursive;
         </div>
     </div>
 
-    <!-- Аудиоэффекты -->
-    <audio id="audio-flip" src="https://upload.wikimedia.org/wikipedia/commons/f/f6/Page_turn.ogg" preload="none"></audio>
-    <audio id="audio-ambient" src="https://upload.wikimedia.org/wikipedia/commons/4/41/Fire_01.ogg" loop preload="none"></audio>
-
     <script>
-        // Инициализация Telegram WebApp
+        // Интеграция Telegram WebApp
         try {
             if (window.Telegram && window.Telegram.WebApp) {
                 window.Telegram.WebApp.ready();
@@ -865,19 +860,110 @@ font-family: 'Caveat', cursive;
             }
         } catch (e) {}
 
-        const startScreen = document.getElementById('start-screen');
-        const bookWrapper = document.getElementById('book-wrapper');
-        const bookStage = document.getElementById('book-stage');
-        const flipAudio = document.getElementById('audio-flip');
-        const ambientAudio = document.getElementById('audio-ambient');
-
-        try {
-            if (ambientAudio) ambientAudio.volume = 0.25;
-        } catch (e) {}
-
         const pages = Array.from(document.querySelectorAll('#book-stage .page'));
         let currentIndex = 0;
 
+        // ====================================================
+        // === ПРОЦЕДУРНЫЙ АУДИОДВИЖОК (БЕЗ ВНЕШНИХ ФАЙЛОВ) ===
+        // ====================================================
+        let audioCtx = null;
+        let isMuted = false;
+        let ambientGain = null;
+
+        function getAudioContext() {
+            if (!audioCtx) {
+                const AudioContext = window.AudioContext || window.webkitAudioContext;
+                if (AudioContext) {
+                    audioCtx = new AudioContext();
+                    startProceduralFire();
+                }
+            }
+            if (audioCtx && audioCtx.state === 'suspended') {
+                audioCtx.resume();
+            }
+            return audioCtx;
+        }
+
+        // Синтез шелеста пергамента при перелистывании
+        function playFlipSound() {
+            if (isMuted) return;
+            const ctx = getAudioContext();
+            if (!ctx) return;
+
+            const bufferSize = ctx.sampleRate * 0.16;
+            const buffer = ctx.createBuffer(1, bufferSize, ctx.sampleRate);
+            const data = buffer.getChannelData(0);
+            for (let i = 0; i < bufferSize; i++) {
+                data[i] = Math.random() * 2 - 1;
+            }
+
+            const noise = ctx.createBufferSource();
+            noise.buffer = buffer;
+
+            const filter = ctx.createBiquadFilter();
+            filter.type = 'bandpass';
+            filter.frequency.setValueAtTime(950, ctx.currentTime);
+            filter.Q.setValueAtTime(2.5, ctx.currentTime);
+
+            const gain = ctx.createGain();
+            gain.gain.setValueAtTime(0.3, ctx.currentTime);
+            gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.16);
+
+            noise.connect(filter);
+            filter.connect(gain);
+            gain.connect(ctx.destination);
+
+            noise.start();
+        }
+
+        // Синтез теплого потрескивания огня свечи
+        function startProceduralFire() {
+            if (!audioCtx) return;
+            const bufferSize = audioCtx.sampleRate * 2;
+            const buffer = audioCtx.createBuffer(1, bufferSize, audioCtx.sampleRate);
+            const data = buffer.getChannelData(0);
+            let b0 = 0, b1 = 0, b2 = 0;
+
+            for (let i = 0; i < bufferSize; i++) {
+                const white = Math.random() * 2 - 1;
+                b0 = 0.99 * b0 + white * 0.05;
+                b1 = 0.96 * b1 + white * 0.12;
+                b2 = 0.86 * b2 + white * 0.25;
+                data[i] = (b0 + b1 + b2) * 0.08;
+                if (Math.random() < 0.002) data[i] += (Math.random() * 2 - 1) * 0.6; // микро-треск искры
+            }
+
+            const fire = audioCtx.createBufferSource();
+            fire.buffer = buffer;
+            fire.loop = true;
+
+            const filter = audioCtx.createBiquadFilter();
+            filter.type = 'lowpass';
+            filter.frequency.value = 550;
+
+            ambientGain = audioCtx.createGain();
+            ambientGain.gain.value = 0.18;
+
+            fire.connect(filter);
+            filter.connect(ambientGain);
+            ambientGain.connect(audioCtx.destination);
+
+            fire.start();
+        }
+
+        // Переключатель звука
+        const audioToggleBtn = document.getElementById('audio-toggle-btn');
+        audioToggleBtn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            getAudioContext();
+            isMuted = !isMuted;
+            if (ambientGain) {
+                ambientGain.gain.value = isMuted ? 0 : 0.18;
+            }
+            audioToggleBtn.textContent = isMuted ? '🔇' : '🔊';
+        });
+
+        // Тактильный отклик Telegram
         function triggerHaptic() {
             try {
                 if (window.Telegram && window.Telegram.WebApp && window.Telegram.WebApp.HapticFeedback) {
@@ -886,82 +972,68 @@ font-family: 'Caveat', cursive;
             } catch (e) {}
         }
 
-        function playSound(audio) {
-            if (!audio) return;
-            try {
-                audio.currentTime = 0;
-                const p = audio.play();
-                if (p && typeof p.catch === 'function') {
-                    p.catch(() => {});
-                }
-            } catch (e) {}
-        }
+        // ====================================================
+        // === ЛОГИКА НАВИГАЦИИ СТРАНИЦ ===
+        // ====================================================
+        function goToPage(newIdx) {
+            if (newIdx < 0 || newIdx >= pages.length || newIdx === currentIndex) return;
 
-        function updatePages(newIdx) {
-            if (newIdx < 0  newIdx >= pages.length  newIdx === currentIndex) return;
-            
             pages[currentIndex].classList.remove('active');
             pages[newIdx].classList.add('active');
             currentIndex = newIdx;
-            
+
             const content = pages[newIdx].querySelector('.page-content');
             if (content) content.scrollTop = 0;
 
-            playSound(flipAudio);
+            playFlipSound();
             triggerHaptic();
         }
 
-        // Глобальная функция открытия книги (срабатывает всегда и на всех платформах)
-window.openBook = function(e) {
-            if (e) e.stopPropagation();
-            if (startScreen) startScreen.style.display = 'none';
-            if (bookWrapper) bookWrapper.style.display = 'flex';
-            playSound(ambientAudio);
-            triggerHaptic();
+        window.nextPage = function() {
+            goToPage(currentIndex + 1);
         };
 
-        // Делегирование кликов по кнопкам навигации
-        if (bookWrapper) {
-            bookWrapper.addEventListener('click', (e) => {
-                const target = e.target.closest('.page-btn');
-                if (!target) return;
+        window.prevPage = function() {
+            goToPage(currentIndex - 1);
+        };
 
-                if (target.classList.contains('btn-next')) {
-                    updatePages(currentIndex + 1);
-                } else if (target.classList.contains('btn-prev')) {
-                    updatePages(currentIndex - 1);
-                }
-            });
-        }
+        // Клавиатура ПК
+        window.addEventListener('keydown', (e) => {
+            if (e.key === 'ArrowRight' || e.key === ' ') {
+                nextPage();
+            } else if (e.key === 'ArrowLeft') {
+                prevPage();
+            }
+        });
 
-        // Свайпы для сенсорных экранов
+        // Свайпы для телефонов
+        const bookStage = document.getElementById('book-stage');
         let touchStartX = 0;
         let touchStartY = 0;
         let touchStartTime = 0;
 
-        if (bookStage) {
-            bookStage.addEventListener('touchstart', (e) => {
-                touchStartX = e.touches[0].clientX;
-                touchStartY = e.touches[0].clientY;
-                touchStartTime = Date.now();
-            }, { passive: true });
+        bookStage.addEventListener('touchstart', (e) => {
+            getAudioContext(); // активируем аудиоконтекст первым касанием
+            touchStartX = e.touches[0].clientX;
+            touchStartY = e.touches[0].clientY;
+            touchStartTime = Date.now();
+        }, { passive: true });
 
-            bookStage.addEventListener('touchend', (e) => {
-                if (bookWrapper.style.display !== 'flex') return;
-                
-                const diffX = e.changedTouches[0].clientX - touchStartX;
-                const diffY = e.changedTouches[0].clientY - touchStartY;
-                const timeDiff = Date.now() - touchStartTime;
+        bookStage.addEventListener('touchend', (e) => {
+            const diffX = e.changedTouches[0].clientX - touchStartX;
+            const diffY = e.changedTouches[0].clientY - touchStartY;
+            const timeDiff = Date.now() - touchStartTime;
 
-                if (Math.abs(diffX) > 40 && Math.abs(diffX) > Math.abs(diffY) * 1.3 && timeDiff < 600) {
-                    if (diffX < 0) {
-                        updatePages(currentIndex + 1);
-                    } else {
-                        updatePages(currentIndex - 1);
-                    }
+            // Если горизонтальный жест длиннее вертикального — листаем
+            if (Math.abs(diffX) > 40 && Math.abs(diffX) > Math.abs(diffY) * 1.3 && timeDiff < 600) {
+                if (diffX < 0) {
+                    nextPage();
+                } else {
+                    prevPage();
                 }
-            }, { passive: true });
-        }
+            }
+        }, { passive: true });
     </script>
 </body>
 </html>
+
