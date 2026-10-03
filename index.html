@@ -34,9 +34,7 @@
             -webkit-user-select: none;
         }
 
-        /* ===================================================
-           === КНОПКА ЗВУКА ===================================
-           =================================================== */
+        /* Кнопка звука */
         #sound-btn {
             position: fixed;
             top: max(14px, env(safe-area-inset-top));
@@ -48,7 +46,6 @@
             border-radius: 50%;
             width: 42px;
             height: 42px;
-            font-size: 19px;
             cursor: pointer;
             display: flex;
             justify-content: center;
@@ -58,6 +55,7 @@
             transition: transform 0.15s;
         }
         #sound-btn:active { transform: scale(0.9); }
+        #sound-btn svg { width: 22px; height: 22px; fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
 
         #book-wrapper {
             display: flex;
@@ -68,21 +66,17 @@
             align-items: center;
         }
 
-        /* ===================================================
-           === 🕯️ НОВАЯ АНИМЕ-СВЕЧА (GHIBLI STYLE) ============
-           =================================================== */
+        /* Аниме-свеча */
         .candle-scene {
             position: fixed;
             left: 0;
             bottom: 0;
             z-index: 30;
             pointer-events: none;
-            /* Внутренние отступы — чтобы свеча не обрезалась */
             padding: 60px 60px 20px 20px;
             transform-origin: left bottom;
         }
 
-        /* Тёплое свечение, падающее на книгу */
         .candle-glow {
             position: absolute;
             left: 0;
@@ -104,7 +98,6 @@
             50%      { transform: scale(1.06); opacity: 1; }
         }
 
-        /* Корпус свечи */
         .candle-body-wrap {
             position: relative;
             display: flex;
@@ -113,7 +106,6 @@
             filter: drop-shadow(0 6px 10px rgba(0,0,0,0.6));
         }
 
-        /* Пламя */
         .anime-flame {
             position: relative;
             width: 34px;
@@ -122,7 +114,6 @@
             z-index: 2;
         }
 
-        /* Внешнее свечение пламени */
         .flame-glow {
             position: absolute;
             left: 50%;
@@ -145,7 +136,6 @@
             50%      { transform: translateX(-50%) scale(1.08); opacity: 1; }
         }
 
-        /* Основное пламя — форма капли */
         .flame-outer {
             position: absolute;
             left: 50%;
@@ -166,7 +156,6 @@
                         0 0 40px rgba(255, 90, 0, 0.55);
         }
 
-        /* Средний слой пламени (жёлтый) */
         .flame-middle {
             position: absolute;
             left: 50%;
@@ -184,7 +173,6 @@
             transform-origin: 50% 100%;
         }
 
-        /* Внутреннее ядро (белое) */
         .flame-core {
             position: absolute;
             left: 50%;
@@ -201,7 +189,6 @@
             opacity: 0.95;
         }
 
-        /* Синее основание (пламя у фитиля) */
         .flame-blue-base {
             position: absolute;
             left: 50%;
@@ -223,7 +210,6 @@
             100% { transform: translateX(-50%) rotate(2.5deg) scale(1.05, 0.96); }
         }
 
-        /* Фитиль */
         .anime-wick {
             width: 3px;
             height: 12px;
@@ -235,7 +221,6 @@
             top: 1px;
         }
 
-        /* Тело свечи */
         .anime-candle-stick {
             position: relative;
             width: 30px;
@@ -255,7 +240,6 @@
             z-index: 2;
         }
 
-        /* Верхняя лужица воска */
         .anime-candle-stick::before {
             content: '';
             position: absolute;
@@ -269,7 +253,6 @@
             z-index: 3;
         }
 
-        /* Подтёк воска слева */
         .anime-drip-left {
             position: absolute;
             top: 4px;
@@ -283,7 +266,6 @@
             z-index: 1;
         }
 
-        /* Подтёк воска справа */
         .anime-drip-right {
             position: absolute;
             top: 10px;
@@ -297,7 +279,6 @@
             z-index: 1;
         }
 
-        /* Винтажная подставка */
         .anime-saucer {
             position: relative;
             width: 62px;
@@ -323,7 +304,6 @@
             z-index: 0;
         }
 
-        /* Искры */
         .spark {
             position: absolute;
             background: radial-gradient(circle, #fff8b0 0%, #ffb400 60%, transparent 100%);
@@ -343,21 +323,14 @@
             100% { transform: translate(-14px, -85px) scale(0.2); opacity: 0; }
         }
 
-        /* Адаптация под маленькие экраны */
         @media (max-width: 600px) {
-            .candle-scene {
-                transform: scale(0.7);
-            }
+            .candle-scene { transform: scale(0.7); }
         }
         @media (max-height: 640px) {
-            .candle-scene {
-                transform: scale(0.6);
-            }
+            .candle-scene { transform: scale(0.6); }
         }
 
-        /* ===================================================
-           === КНИГА И ПЕРГАМЕНТНЫЕ СТРАНИЦЫ =================
-           =================================================== */
+        /* Книга и страницы */
         #book-stage {
             position: relative;
             width: min(95vw, 440px);
@@ -404,7 +377,7 @@
             transform: rotateY(0deg) scale(1);
         }
 
-        /* Чернильные кляксы */
+        /* Чернильные пятна */
         .ink-blot {
             position: absolute;
             pointer-events: none;
@@ -416,7 +389,6 @@
         .blot-bottom-left { bottom: 58px; left: 14px; width: 26px; height: 26px; opacity: 0.22; }
         .blot-splatter    { bottom: 62px; right: 25px; width: 24px; height: 24px; opacity: 0.25; }
 
-        /* Контейнер прокрутки текста */
         .page-content {
             flex: 1 1 auto;
             overflow-y: auto;
@@ -471,6 +443,52 @@
             display: block;
         }
 
+        /* Стили для Оглавления */
+        .toc-section-title {
+            font-family: 'Caveat', cursive;
+            font-size: 20px;
+            font-weight: 700;
+            color: #3b1704;
+            margin-top: 12px;
+            margin-bottom: 4px;
+            border-bottom: 1px dashed rgba(110, 60, 20, 0.35);
+            padding-bottom: 2px;
+        }
+
+        .toc-item {
+            display: flex;
+            align-items: baseline;
+            justify-content: space-between;
+            padding: 4px 2px;
+            cursor: pointer;
+            transition: all 0.15s ease;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        .toc-item:active {
+            color: #b86200;
+            transform: translateX(4px);
+        }
+
+        .toc-name {
+            font-size: 16.5px;
+            white-space: nowrap;
+        }
+
+        .toc-dots {
+            flex-grow: 1;
+            margin: 0 6px;
+            border-bottom: 1px dotted rgba(85, 45, 18, 0.55);
+            height: 1px;
+        }
+
+        .toc-page-num {
+            font-family: 'Caveat', cursive;
+            font-size: 18px;
+            font-weight: 700;
+            color: #552709;
+        }
+
         /* Навигация */
         .page-footer {
             flex: 0 0 48px;
@@ -522,6 +540,7 @@
             font-size: 19px;
             font-weight: 600;
             opacity: 0.9;
+            cursor: pointer;
         }
 
         /* Обложки */
@@ -567,9 +586,12 @@
 </head>
 <body>
 
-    <button id="sound-btn" title="Звуки фолианта">🔊</button>
+    <button id="sound-btn" title="Звуки фолианта">
+        <svg id="sound-icon-on" viewBox="0 0 24 24"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon><path d="M15.54 8.46a5 5 0 0 1 0 7.07"></path><path d="M19.07 4.93a10 10 0 0 1 0 14.14"></path></svg>
+        <svg id="sound-icon-off" style="display:none;" viewBox="0 0 24 24"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon><line x1="23" y1="9" x2="17" y2="15"></line><line x1="17" y1="9" x2="23" y2="15"></line></svg>
+    </button>
 
-    <!-- 🕯️ Новая аниме-свеча -->
+    <!-- Аниме-свеча -->
     <div class="candle-scene">
         <div class="candle-glow"></div>
         <div class="candle-body-wrap">
@@ -579,7 +601,6 @@
                 <div class="flame-middle"></div>
                 <div class="flame-core"></div>
                 <div class="flame-blue-base"></div>
-                <!-- Искры -->
                 <div class="spark s1"></div>
                 <div class="spark s2"></div>
                 <div class="spark s3"></div>
@@ -623,12 +644,118 @@
                 </div>
                 <div class="page-footer">
                     <button class="page-btn btn-prev" disabled>❮ Назад</button>
-                    <span class="page-counter">1 / 27</span>
+                    <span class="page-counter">1 / 29</span>
                     <button class="page-btn btn-next" onclick="nextPage()">Вперёд ❯</button>
                 </div>
             </div>
 
-            <!-- Стр 2: Люди: Арт -->
+            <!-- Стр 2: Пролог (Нулевая страница) -->
+            <div class="page">
+                <svg class="ink-blot blot-top-right" viewBox="0 0 35 35"><use href="#ink-drop-svg"/></svg>
+                <div class="page-content">
+                    <h2>Пролог: Дыхание Эфира</h2>
+                    <p>Континент Аурхейм покоится на зыбких потоках Первозданного Эфира — великой субстанции, породившей сущее, стихии и саму материю. Веками народы черпали эту мощь, созидая великие твердыни, парящие города и тайные ордена магии.</p>
+                    <p>Однако хрупкое равновесие раскололось. Древние Врата содрогнулись, девиантные школы чар исказили плоть и разум, а в сумрачных каньонах и забытых руинах пробудились создания, не ведающие пощады.</p>
+                    <p>Перед тобой — Великий Фолиант, священная летопись искателей приключений и ученых Академии Арканума. На этих ветхих листах собраны сокровенные знания о пяти великих расах, атлас неизведанных земель и бестиарий ужасающих созданий, подстерегающих Странников.</p>
+                    <p>Вглядись в пламя свечи, переверни страницу и ступай по трактам Аурхейма с открытым сердцем и обнаженным клинком.</p>
+                </div>
+                <div class="page-footer">
+                    <button class="page-btn btn-prev" onclick="prevPage()">❮ Назад</button>
+                    <span class="page-counter" onclick="goToPage(2)">2 / 29</span>
+                    <button class="page-btn btn-next" onclick="nextPage()">Вперёд ❯</button>
+                </div>
+            </div>
+
+            <!-- Стр 3: Оглавление -->
+            <div class="page">
+                <svg class="ink-blot blot-bottom-left" viewBox="0 0 35 35"><use href="#ink-splatter-svg"/></svg>
+                <div class="page-content">
+                    <h2>Оглавление Фолианта</h2>
+
+                    <div class="toc-section-title">Раздел I. Расы и Наследие</div>
+                    <div class="toc-item" onclick="goToPage(3)">
+                        <span class="toc-name">Люди (Империя Аквилон)</span>
+                        <span class="toc-dots"></span>
+                        <span class="toc-page-num">Стр. 4</span>
+                    </div>
+                    <div class="toc-item" onclick="goToPage(5)">
+                        <span class="toc-name">Тёмные эльфы (Умбрарас)</span>
+                        <span class="toc-dots"></span>
+                        <span class="toc-page-num">Стр. 6</span>
+                    </div>
+                    <div class="toc-item" onclick="goToPage(7)">
+                        <span class="toc-name">Эльфы (Домен Элдоран)</span>
+                        <span class="toc-dots"></span>
+                        <span class="toc-page-num">Стр. 8</span>
+                    </div>
+                    <div class="toc-item" onclick="goToPage(9)">
+                        <span class="toc-name">Зверолюды (Шаманизм)</span>
+                        <span class="toc-dots"></span>
+                        <span class="toc-page-num">Стр. 10</span>
+                    </div>
+                    <div class="toc-item" onclick="goToPage(11)">
+                        <span class="toc-name">Дракониты (Кланы Игниса)</span>
+                        <span class="toc-dots"></span>
+                        <span class="toc-page-num">Стр. 12</span>
+                    </div>
+
+                    <div class="toc-section-title">Раздел II. Атлас Континента</div>
+                    <div class="toc-item" onclick="goToPage(13)">
+                        <span class="toc-name">Элизия и Порт-Байлесс</span>
+                        <span class="toc-dots"></span>
+                        <span class="toc-page-num">Стр. 14</span>
+                    </div>
+                    <div class="toc-item" onclick="goToPage(15)">
+                        <span class="toc-name">Сильванар и Руины Эарлин</span>
+                        <span class="toc-dots"></span>
+                        <span class="toc-page-num">Стр. 16</span>
+                    </div>
+                    <div class="toc-item" onclick="goToPage(17)">
+                        <span class="toc-name">Ноктюрн, Кар-Орот, Ущелье</span>
+                        <span class="toc-dots"></span>
+                        <span class="toc-page-num">Стр. 18</span>
+                    </div>
+                    <div class="toc-item" onclick="goToPage(19)">
+                        <span class="toc-name">Ауралия (Мерцающий Двор)</span>
+                        <span class="toc-dots"></span>
+                        <span class="toc-page-num">Стр. 20</span>
+                    </div>
+                    <div class="toc-item" onclick="goToPage(20)">
+                        <span class="toc-name">Аэтерон — Расколотое Небо</span>
+                        <span class="toc-dots"></span>
+                        <span class="toc-page-num">Стр. 21</span>
+                    </div>
+
+                    <div class="toc-section-title">Раздел III. Бестиарий и Владыки</div>
+                    <div class="toc-item" onclick="goToPage(23)">
+                        <span class="toc-name">Руины, Пещеры, Пустоши</span>
+                        <span class="toc-dots"></span>
+                        <span class="toc-page-num">Стр. 24</span>
+                    </div>
+                    <div class="toc-item" onclick="goToPage(25)">
+                        <span class="toc-name">Степи, Воды, Топи и Тракты</span>
+                        <span class="toc-dots"></span>
+                        <span class="toc-page-num">Стр. 26</span>
+                    </div>
+                    <div class="toc-item" onclick="goToPage(27)">
+                        <span class="toc-name">Владыки Бездны и Мировой Босс</span>
+                        <span class="toc-dots"></span>
+                        <span class="toc-page-num">Стр. 28</span>
+                    </div>
+                    <div class="toc-item" onclick="goToPage(28)">
+                        <span class="toc-name">Конец Летописи</span>
+                        <span class="toc-dots"></span>
+                        <span class="toc-page-num">Стр. 29</span>
+                    </div>
+                </div>
+                <div class="page-footer">
+                    <button class="page-btn btn-prev" onclick="prevPage()">❮ Назад</button>
+                    <span class="page-counter" onclick="goToPage(2)">3 / 29</span>
+                    <button class="page-btn btn-next" onclick="nextPage()">Вперёд ❯</button>
+                </div>
+            </div>
+
+            <!-- Стр 4: Люди: Арт -->
             <div class="page">
                 <svg class="ink-blot blot-top-right" viewBox="0 0 35 35"><use href="#ink-drop-svg"/></svg>
                 <div class="page-content">
@@ -639,12 +766,12 @@
                 </div>
                 <div class="page-footer">
                     <button class="page-btn btn-prev" onclick="prevPage()">❮ Назад</button>
-                    <span class="page-counter">2 / 27</span>
+                    <span class="page-counter" onclick="goToPage(2)">4 / 29</span>
                     <button class="page-btn btn-next" onclick="nextPage()">Вперёд ❯</button>
                 </div>
             </div>
 
-            <!-- Стр 3: Люди: Механики -->
+            <!-- Стр 5: Люди: Механики -->
             <div class="page">
                 <svg class="ink-blot blot-bottom-left" viewBox="0 0 35 35"><use href="#ink-splatter-svg"/></svg>
                 <div class="page-content">
@@ -655,12 +782,12 @@
                 </div>
                 <div class="page-footer">
                     <button class="page-btn btn-prev" onclick="prevPage()">❮ Назад</button>
-                    <span class="page-counter">3 / 27</span>
+                    <span class="page-counter" onclick="goToPage(2)">5 / 29</span>
                     <button class="page-btn btn-next" onclick="nextPage()">Вперёд ❯</button>
                 </div>
             </div>
 
-            <!-- Стр 4: Тёмные эльфы: Арт -->
+            <!-- Стр 6: Тёмные эльфы: Арт -->
             <div class="page">
                 <svg class="ink-blot blot-top-right" viewBox="0 0 35 35"><use href="#ink-splatter-svg"/></svg>
                 <div class="page-content">
@@ -672,12 +799,12 @@
                 </div>
                 <div class="page-footer">
                     <button class="page-btn btn-prev" onclick="prevPage()">❮ Назад</button>
-                    <span class="page-counter">4 / 27</span>
+                    <span class="page-counter" onclick="goToPage(2)">6 / 29</span>
                     <button class="page-btn btn-next" onclick="nextPage()">Вперёд ❯</button>
                 </div>
             </div>
 
-            <!-- Стр 5: Тёмные эльфы: Механики -->
+            <!-- Стр 7: Тёмные эльфы: Механики -->
             <div class="page">
                 <div class="page-content">
                     <h2>Тёмные эльфы (Навыки)</h2>
@@ -687,12 +814,12 @@
                 </div>
                 <div class="page-footer">
                     <button class="page-btn btn-prev" onclick="prevPage()">❮ Назад</button>
-                    <span class="page-counter">5 / 27</span>
+                    <span class="page-counter" onclick="goToPage(2)">7 / 29</span>
                     <button class="page-btn btn-next" onclick="nextPage()">Вперёд ❯</button>
                 </div>
             </div>
 
-            <!-- Стр 6: Эльфы: Арт -->
+            <!-- Стр 8: Эльфы: Арт -->
             <div class="page">
                 <svg class="ink-blot blot-bottom-left" viewBox="0 0 35 35"><use href="#ink-drop-svg"/></svg>
                 <div class="page-content">
@@ -704,12 +831,12 @@
                 </div>
                 <div class="page-footer">
                     <button class="page-btn btn-prev" onclick="prevPage()">❮ Назад</button>
-                    <span class="page-counter">6 / 27</span>
+                    <span class="page-counter" onclick="goToPage(2)">8 / 29</span>
                     <button class="page-btn btn-next" onclick="nextPage()">Вперёд ❯</button>
                 </div>
             </div>
 
-            <!-- Стр 7: Эльфы: Навыки -->
+            <!-- Стр 9: Эльфы: Навыки -->
             <div class="page">
                 <div class="page-content">
                     <h2>Эльфы (Симбиоз)</h2>
@@ -719,12 +846,12 @@
                 </div>
                 <div class="page-footer">
                     <button class="page-btn btn-prev" onclick="prevPage()">❮ Назад</button>
-                    <span class="page-counter">7 / 27</span>
+                    <span class="page-counter" onclick="goToPage(2)">9 / 29</span>
                     <button class="page-btn btn-next" onclick="nextPage()">Вперёд ❯</button>
                 </div>
             </div>
 
-            <!-- Стр 8: Зверолюды: Арт -->
+            <!-- Стр 10: Зверолюды: Арт -->
             <div class="page">
                 <svg class="ink-blot blot-top-right" viewBox="0 0 35 35"><use href="#ink-drop-svg"/></svg>
                 <div class="page-content">
@@ -736,12 +863,12 @@
                 </div>
                 <div class="page-footer">
                     <button class="page-btn btn-prev" onclick="prevPage()">❮ Назад</button>
-                    <span class="page-counter">8 / 27</span>
+                    <span class="page-counter" onclick="goToPage(2)">10 / 29</span>
                     <button class="page-btn btn-next" onclick="nextPage()">Вперёд ❯</button>
                 </div>
             </div>
 
-            <!-- Стр 9: Зверолюды: Суть -->
+            <!-- Стр 11: Зверолюды: Суть -->
             <div class="page">
                 <div class="page-content">
                     <h2>Зверолюды (Инстинкты)</h2>
@@ -751,12 +878,12 @@
                 </div>
                 <div class="page-footer">
                     <button class="page-btn btn-prev" onclick="prevPage()">❮ Назад</button>
-                    <span class="page-counter">9 / 27</span>
+                    <span class="page-counter" onclick="goToPage(2)">11 / 29</span>
                     <button class="page-btn btn-next" onclick="nextPage()">Вперёд ❯</button>
                 </div>
             </div>
 
-            <!-- Стр 10: Дракониты: Арт -->
+            <!-- Стр 12: Дракониты: Арт -->
             <div class="page">
                 <svg class="ink-blot blot-bottom-left" viewBox="0 0 35 35"><use href="#ink-splatter-svg"/></svg>
                 <div class="page-content">
@@ -768,12 +895,12 @@
                 </div>
                 <div class="page-footer">
                     <button class="page-btn btn-prev" onclick="prevPage()">❮ Назад</button>
-                    <span class="page-counter">10 / 27</span>
+                    <span class="page-counter" onclick="goToPage(2)">12 / 29</span>
                     <button class="page-btn btn-next" onclick="nextPage()">Вперёд ❯</button>
                 </div>
             </div>
 
-            <!-- Стр 11: Дракониты: Навыки -->
+            <!-- Стр 13: Дракониты: Навыки -->
             <div class="page">
                 <div class="page-content">
                     <h2>Дракониты (Ярость)</h2>
@@ -783,16 +910,16 @@
                 </div>
                 <div class="page-footer">
                     <button class="page-btn btn-prev" onclick="prevPage()">❮ Назад</button>
-                    <span class="page-counter">11 / 27</span>
+                    <span class="page-counter" onclick="goToPage(2)">13 / 29</span>
                     <button class="page-btn btn-next" onclick="nextPage()">Вперёд ❯</button>
                 </div>
             </div>
 
-            <!-- Стр 12: Империя Аквилон -->
+            <!-- Стр 14: Империя Аквилон -->
             <div class="page">
                 <svg class="ink-blot blot-top-right" viewBox="0 0 35 35"><use href="#ink-drop-svg"/></svg>
                 <div class="page-content">
-                    <h2>🏛️ Империя Аквилон (Люди)</h2>
+                    <h2>Империя Аквилон (Люди)</h2>
                     <h3>1. Элизия — Белокаменная Столица</h3>
                     <p>• <b>Суть локации:</b> Сердце Империи. Город-монумент, разделенный на три гигантских яруса на склонах искусственной горы, призванный подавлять своим величием.</p>
                     <p>• <b>Архитектура и атмосфера:</b> Белый мрамор и золото. Воздух пропитан запахом озоном (от постоянного колдовства) и храмовыми благовониями. Небо рассекают парящие на потоках воздуха курьеры-маги.</p>
@@ -803,16 +930,16 @@
                 </div>
                 <div class="page-footer">
                     <button class="page-btn btn-prev" onclick="prevPage()">❮ Назад</button>
-                    <span class="page-counter">12 / 27</span>
+                    <span class="page-counter" onclick="goToPage(2)">14 / 29</span>
                     <button class="page-btn btn-next" onclick="nextPage()">Вперёд ❯</button>
                 </div>
             </div>
 
-            <!-- Стр 13: Порт-Байлесс -->
+            <!-- Стр 15: Порт-Байлесс -->
             <div class="page">
                 <svg class="ink-blot blot-bottom-left" viewBox="0 0 35 35"><use href="#ink-splatter-svg"/></svg>
                 <div class="page-content">
-                    <h2>🏛️ Морские Врата Империи</h2>
+                    <h2>Морские Врата Империи</h2>
                     <h3>2. Порт-Байлесс (Глубоководная Гавань)</h3>
                     <p>• <b>Суть локации:</b> Главный морской узел Империи, где официальные законы столицы работают только на бумаге.</p>
                     <p>• <b>Архитектура и атмосфера:</b> Километры деревянных пирсов. Таверны и бордели построены из перевернутых корпусов старых кораблей. Пахнет солью, гниющей рыбой и ромом. Туманы искусственно разгоняются магами Воды и Воздуха.</p>
@@ -822,16 +949,16 @@
                 </div>
                 <div class="page-footer">
                     <button class="page-btn btn-prev" onclick="prevPage()">❮ Назад</button>
-                    <span class="page-counter">13 / 27</span>
+                    <span class="page-counter" onclick="goToPage(2)">15 / 29</span>
                     <button class="page-btn btn-next" onclick="nextPage()">Вперёд ❯</button>
                 </div>
             </div>
 
-            <!-- Стр 14: Лесной Домен Элдоран -->
+            <!-- Стр 16: Лесной Домен Элдоран -->
             <div class="page">
                 <svg class="ink-blot blot-top-right" viewBox="0 0 35 35"><use href="#ink-drop-svg"/></svg>
                 <div class="page-content">
-                    <h2>🌲 Домен Элдоран (Эльфы)</h2>
+                    <h2>Домен Элдоран (Эльфы)</h2>
                     <h3>3. Сильванар — Сердце Леса</h3>
                     <p>• <b>Суть локации:</b> Столица эльфов, которая была не построена, а выращена с помощью вековой магии Земли и Воды из гигантских Железных Деревьев.</p>
                     <p>• <b>Архитектура и атмосфера:</b> Отсутствие углов, только плавные природные линии. Мягкий зеленый свет днем и биолюминесценция ночью. Густой, влажный воздух с ароматами древности, хвои и меда.</p>
@@ -841,15 +968,15 @@
                 </div>
                 <div class="page-footer">
                     <button class="page-btn btn-prev" onclick="prevPage()">❮ Назад</button>
-                    <span class="page-counter">14 / 27</span>
+                    <span class="page-counter" onclick="goToPage(2)">16 / 29</span>
                     <button class="page-btn btn-next" onclick="nextPage()">Вперёд ❯</button>
                 </div>
             </div>
 
-            <!-- Стр 15: Руины Эарлин -->
+            <!-- Стр 17: Руины Эарлин -->
             <div class="page">
                 <div class="page-content">
-                    <h2>🌲 Запретные Земли</h2>
+                    <h2>Запретные Земли</h2>
                     <h3>4. Руины Эарлин</h3>
                     <p>• <b>Суть локации:</b> Бывший город-сателлит эльфов, ставший смертоносным памятником вышедшей из-под контроля девиантной магии Жизни.</p>
                     <p>• <b>Архитектура и атмосфера:</b> Безумно разросшаяся флора. Кровоточащие едкой смолой деревья и орхидеи, выделяющие споры паралича и галлюцинаций.</p>
@@ -859,16 +986,16 @@
                 </div>
                 <div class="page-footer">
                     <button class="page-btn btn-prev" onclick="prevPage()">❮ Назад</button>
-                    <span class="page-counter">15 / 27</span>
+                    <span class="page-counter" onclick="goToPage(2)">17 / 29</span>
                     <button class="page-btn btn-next" onclick="nextPage()">Вперёд ❯</button>
                 </div>
             </div>
 
-            <!-- Стр 16: Ноктюрн -->
+            <!-- Стр 18: Ноктюрн -->
             <div class="page">
                 <svg class="ink-blot blot-top-right" viewBox="0 0 35 35"><use href="#ink-splatter-svg"/></svg>
                 <div class="page-content">
-                    <h2>🌑 Синдикат Умбрарас</h2>
+                    <h2>Синдикат Умбрарас</h2>
                     <h3>5. Ноктюрн — Город над Бездной</h3>
                     <p>• <b>Суть локации:</b> Мрачный шедевр архитектуры тёмных эльфов, высеченный прямо в стенах колоссального вертикального разлома, дно которого скрыто во тьме.</p>
                     <p>• <b>Архитектура и атмосфера:</b> Здания цепляются за скалы и растут вниз, как сталактиты. Пробирающий до костей холод и густой ледяной туман. Скудное освещение дают лишь фиолетовые грибы и синие кристаллы Льда. Хрупкие на вид ледяные мосты-нити соединяют кварталы.</p>
@@ -878,15 +1005,15 @@
                 </div>
                 <div class="page-footer">
                     <button class="page-btn btn-prev" onclick="prevPage()">❮ Назад</button>
-                    <span class="page-counter">16 / 27</span>
+                    <span class="page-counter" onclick="goToPage(2)">18 / 29</span>
                     <button class="page-btn btn-next" onclick="nextPage()">Вперёд ❯</button>
                 </div>
             </div>
 
-            <!-- Стр 17: Кланы Игниса -->
+            <!-- Стр 19: Кланы Игниса -->
             <div class="page">
                 <div class="page-content">
-                    <h2>🌋 Кланы Игниса (Дракониты)</h2>
+                    <h2>Кланы Игниса (Дракониты)</h2>
                     <h3>6. Вулканическая Цитадель Кар-Орот</h3>
                     <p>• <b>Суть:</b> Город-кузница, монументально выдолбленный внутри огромного спящего вулкана.</p>
                     <p>• <b>Архитектура и быт:</b> Грубые здания из черного обсидиана и базальта. Невыносимая жара, запах серы и раскаленного металла. Потоки магмы служат печами для ковки. Военизированное общество, споры решаются поединками.</p>
@@ -897,16 +1024,16 @@
                 </div>
                 <div class="page-footer">
                     <button class="page-btn btn-prev" onclick="prevPage()">❮ Назад</button>
-                    <span class="page-counter">17 / 27</span>
+                    <span class="page-counter" onclick="goToPage(2)">19 / 29</span>
                     <button class="page-btn btn-next" onclick="nextPage()">Вперёд ❯</button>
                 </div>
             </div>
 
-            <!-- Стр 18: Ауралия -->
+            <!-- Стр 20: Ауралия -->
             <div class="page">
                 <svg class="ink-blot blot-bottom-left" viewBox="0 0 35 35"><use href="#ink-drop-svg"/></svg>
                 <div class="page-content">
-                    <h2>✨ Мерцающий Двор (Феи)</h2>
+                    <h2>Мерцающий Двор (Феи)</h2>
                     <h3>8. Ауралия — Парящие Острова</h3>
                     <p>• <b>Суть локации:</b> Сюрреалистичное место, состоящее из кусков земли с цветущими садами, парящих в небесах над зеркально гладким Озером Миражей.</p>
                     <p>• <b>Архитектура и атмосфера:</b> Вечная радужная дымка от водопадов, испаряющихся в воздухе. Здания не имеют заборов и стен — они сотканы из света, прочных перламутровых паутин и хрусталя. Атмосфера абсолютной умиротворенности.</p>
@@ -916,34 +1043,34 @@
                 </div>
                 <div class="page-footer">
                     <button class="page-btn btn-prev" onclick="prevPage()">❮ Назад</button>
-                    <span class="page-counter">18 / 27</span>
+                    <span class="page-counter" onclick="goToPage(2)">20 / 29</span>
                     <button class="page-btn btn-next" onclick="nextPage()">Вперёд ❯</button>
                 </div>
             </div>
 
-            <!-- Стр 19: Аэтерон -->
+            <!-- Стр 21: Аэтерон -->
             <div class="page">
                 <svg class="ink-blot blot-top-right" viewBox="0 0 35 35"><use href="#ink-drop-svg"/></svg>
                 <div class="page-content">
-                    <h2>☁️ Аэтерон — Расколотое Небо</h2>
+                    <h2>Аэтерон — Расколотое Небо</h2>
                     <p>Аэтерон не просто парит в небесах — он плывет по течениям невидимых эфирных рек, медленно вращаясь над гигантским <b>Оком Эфира</b> (кратером в центре Аурхейма). Построен из белого и золотого пористого камня, который почти ничего не весит, а сквозь фундамент прорастают лозы светящихся растений. С краев города непрерывно срываются водопады, чьи струи на лету превращаются в искрящийся туман и радуги.</p>
-                    <h3>✨ Хрустальный Атриум Звездопада</h3>
+                    <h3>Хрустальный Атриум Звездопада</h3>
                     <p><i>Зал Пробуждения:</i> Здесь открывают глаза Странники. Колоссальный амфитеатр из полупрозрачного стекла на высшем ярусе под вечно звездным небом. Пол укрыт тонким слоем теплой воды. Повсюду распускаются эфирные лотосы размером с человека, выпускающие души новоприбывших.</p>
                 </div>
                 <div class="page-footer">
                     <button class="page-btn btn-prev" onclick="prevPage()">❮ Назад</button>
-                    <span class="page-counter">19 / 27</span>
+                    <span class="page-counter" onclick="goToPage(2)">21 / 29</span>
                     <button class="page-btn btn-next" onclick="nextPage()">Вперёд ❯</button>
                 </div>
             </div>
 
-            <!-- Стр 20: Кварталы Аэтерона -->
+            <!-- Стр 22: Кварталы Аэтерона -->
             <div class="page">
                 <div class="page-content">
-                    <h2>☁️ Кварталы Аэтерона</h2>
-                    <h3>🎐 Кольцо Золотого Ветра (Великий Базар)</h3>
+                    <h2>Кварталы Аэтерона</h2>
+                    <h3>Кольцо Золотого Ветра (Великий Базар)</h3>
                     <p>Многоуровневые террасы, парящие шелковые шатры и ажурные мостики. Товары левитируют на бархатных подушках: сияющие клинки, жидкие звезды фей, шкатулки эльфов. Улицы освещены фонарями-бабочками, звенят сотни колокольчиков ветра, пахнет корицей и каштанами.</p>
-                    <h3>🏛️ Венец Гармонии (Посольский Район)</h3>
+                    <h3>Венец Гармонии (Посольский Район)</h3>
                     <p>• <b>Шпиль Людей (Аквилон):</b> Цельный белый мрамор, золотые часы с потоками магии вместо стрелок.<br>
                     • <b>Древо Элдорана (Эльфы):</b> Сплетенная гигантская ива с изумрудными листьями-кристаллами и ручьями.<br>
                     • <b>Осколок Умбрараса (Тёмные эльфы):</b> Башня из нетающего черного льда с мерцающими сапфирами.<br>
@@ -952,30 +1079,30 @@
                 </div>
                 <div class="page-footer">
                     <button class="page-btn btn-prev" onclick="prevPage()">❮ Назад</button>
-                    <span class="page-counter">20 / 27</span>
+                    <span class="page-counter" onclick="goToPage(2)">22 / 29</span>
                     <button class="page-btn btn-next" onclick="nextPage()">Вперёд ❯</button>
                 </div>
             </div>
 
-            <!-- Стр 21: Обители Аэтерона -->
+            <!-- Стр 23: Обители Аэтерона -->
             <div class="page">
                 <svg class="ink-blot blot-bottom-left" viewBox="0 0 35 35"><use href="#ink-splatter-svg"/></svg>
                 <div class="page-content">
-                    <h2>☁️ Обители Аэтерона</h2>
-                    <h3>🍷 Таверна «Дыхание Эфира»</h3>
+                    <h2>Обители Аэтерона</h2>
+                    <h3>Таверна «Дыхание Эфира»</h3>
                     <p>• <b>Визуал:</b> Вырезана в теле массивного летающего острова-спутника, пришвартованного к городу серебряными цепями. Резные балконы нависают прямо над бездной континента.</p>
                     <p>• <b>Атмосфера:</b> Уютные очаги с магическим пламенем, меняющим цвет от настроения гостей. В бокалах сияют биолюминесцентные ягоды. Скрипка барда-иллюзиониста рисует в воздухе живые картины былых сражений.</p>
-                    <h3>🌀 Архипелаг Поющих Врат</h3>
+                    <h3>Архипелаг Поющих Врат</h3>
                     <p>Транспортный узел из россыпи парящих островков со стеклянными дорожками. Арки Врат Пути выкованы из лунного серебра, а порталы внутри них выглядят как спокойная, идеальная гладь жидкого зеркала.</p>
                 </div>
                 <div class="page-footer">
                     <button class="page-btn btn-prev" onclick="prevPage()">❮ Назад</button>
-                    <span class="page-counter">21 / 27</span>
+                    <span class="page-counter" onclick="goToPage(2)">23 / 29</span>
                     <button class="page-btn btn-next" onclick="nextPage()">Вперёд ❯</button>
                 </div>
             </div>
 
-            <!-- Стр 22: Бестиарий 1 -->
+            <!-- Стр 24: Бестиарий 1 -->
             <div class="page">
                 <svg class="ink-blot blot-splatter" viewBox="0 0 35 35"><use href="#ink-splatter-svg"/></svg>
                 <div class="page-content">
@@ -984,97 +1111,97 @@
                     <p>• <b>Шипастый Богомол (Слож. 20):</b> Волк среди насекомых. Игнорирует легкую броню. Слабость: Пламя.<br>
                     • <b>Костяной Волк (Слож. 35):</b> Наружный скелет-панцирь, быстрая регенерация.<br>
                     • <b>Узловатый Споровик (Слож. 45):</b> Ядовитое удушье.<br>
-                    💀 <b>Босс: Ива’Тар (Ур. 40, Слож. 75):</b> Древесный исполин. Неподвижные корни сменяются рывком и уязвимостью Эфирного Ядра.</p>
+                    <b>Босс: Ива’Тар (Ур. 40, Слож. 75):</b> Древесный исполин. Неподвижные корни сменяются рывком и уязвимостью Эфирного Ядра.</p>
                     <h3>Шепчущие Пещеры (Ур. 30–55)</h3>
                     <p>Теневые Ползуны, Слепые Кристаллоиды и Эхо Умбрарас.<br>
-                    💀 <b>Босс: Никселия (Ур. 60, Слож. 85):</b> Тень королевы с вайп-криком Банши.</p>
+                    <b>Босс: Никселия (Ур. 60, Слож. 85):</b> Тень королевы с вайп-криком Банши.</p>
                 </div>
                 <div class="page-footer">
                     <button class="page-btn btn-prev" onclick="prevPage()">❮ Назад</button>
-                    <span class="page-counter">22 / 27</span>
+                    <span class="page-counter" onclick="goToPage(2)">24 / 29</span>
                     <button class="page-btn btn-next" onclick="nextPage()">Вперёд ❯</button>
                 </div>
             </div>
 
-            <!-- Стр 23: Бестиарий 2 -->
+            <!-- Стр 25: Бестиарий 2 -->
             <div class="page">
                 <svg class="ink-blot blot-top-right" viewBox="0 0 35 35"><use href="#ink-drop-svg"/></svg>
                 <div class="page-content">
                     <h2>Бестиарий: Пустоши и Стоки</h2>
                     <h3>Ущелье Драконьего Клыка (Ур. 50–75)</h3>
                     <p>Пепельные Дрейки, Магматические Големы, Искрящиеся Элементали.<br>
-                    💀 <b>Босс: Кор-Вош (Ур. 80, Слож. 95):</b> Громочешуйный Змей. Смертоносный плазменный луч разрезает колонны укрытий.</p>
+                    <b>Босс: Кор-Вош (Ур. 80, Слож. 95):</b> Громочешуйный Змей. Смертоносный плазменный луч разрезает колонны укрытий.</p>
                     <h3>Подземелья Элизии (Ур. 5–25)</h3>
                     <p>Чумные Крысы, Кислотные Слизни, Гомункулы-Отступники.<br>
-                    💀 <b>Босс: Амальгама (Ур. 25, Слож. 40):</b> Пожиратель зелий и костей, распадающийся на фрагменты.</p>
+                    <b>Босс: Амальгама (Ур. 25, Слож. 40):</b> Пожиратель зелий и костей, распадающийся на фрагменты.</p>
                 </div>
                 <div class="page-footer">
                     <button class="page-btn btn-prev" onclick="prevPage()">❮ Назад</button>
-                    <span class="page-counter">23 / 27</span>
+                    <span class="page-counter" onclick="goToPage(2)">25 / 29</span>
                     <button class="page-btn btn-next" onclick="nextPage()">Вперёд ❯</button>
                 </div>
             </div>
 
-            <!-- Стр 24: Бестиарий 3 -->
+            <!-- Стр 26: Бестиарий 3 -->
             <div class="page">
                 <svg class="ink-blot blot-bottom-left" viewBox="0 0 35 35"><use href="#ink-drop-svg"/></svg>
                 <div class="page-content">
                     <h2>Бестиарий: Степи и Воды</h2>
                     <h3>Пепельные Степи (Ур. 35–50)</h3>
                     <p>Степные Вазилиски (окаменение), Пылевые Демоны, Террадоны.<br>
-                    💀 <b>Босс: Куарот (Ур. 55, Слож. 75):</b> Подземный червь с едкой кислотой.</p>
+                    <b>Босс: Куарот (Ур. 55, Слож. 75):</b> Подземный червь с едкой кислотой.</p>
                     <h3>Абиссальные Отмели (Ур. 45–65)</h3>
                     <p>Утопленники с цепями, Кошмарные Удильщики, Шипастые Сирены.<br>
-                    💀 <b>Босс: Капитан Моргрим (Ур. 70, Слож. 85):</b> Призрачный залп и ядовитый прилив.</p>
+                    <b>Босс: Капитан Моргрим (Ур. 70, Слож. 85):</b> Призрачный залп и ядовитый прилив.</p>
                 </div>
                 <div class="page-footer">
                     <button class="page-btn btn-prev" onclick="prevPage()">❮ Назад</button>
-                    <span class="page-counter">24 / 27</span>
+                    <span class="page-counter" onclick="goToPage(2)">26 / 29</span>
                     <button class="page-btn btn-next" onclick="nextPage()">Вперёд ❯</button>
                 </div>
             </div>
 
-            <!-- Стр 25: Бестиарий 4 -->
+            <!-- Стр 27: Бестиарий 4 -->
             <div class="page">
                 <div class="page-content">
                     <h2>Бестиарий: Иллюзии и Дороги</h2>
                     <h3>Иллюзорные Топи (Ур. 65–85)</h3>
                     <p>Фэй-Пантеры, Кристальные Мимики, Плакальщицы Тумана.<br>
-                    💀 <b>Босс: Люминекс (Ур. 90, Слож. 95):</b> Падший Свет с гибельным стаком Святого Пламени.</p>
+                    <b>Босс: Люминекс (Ур. 90, Слож. 95):</b> Падший Свет с гибельным стаком Святого Пламени.</p>
                     <h3>Имперские Тракты и Элита</h3>
                     <p>Эфирные разбойники, Грифоны, Осколки Разлома.<br>
-                    🦇 <b>Мини-боссы:</b> Кровавый Палач (Ур. 60) и Ткач Пустоты (Ур. 75, блокирующий телепортацию).</p>
+                    <b>Мини-боссы:</b> Кровавый Палач (Ур. 60) и Ткач Пустоты (Ур. 75, блокирующий телепортацию).</p>
                 </div>
                 <div class="page-footer">
                     <button class="page-btn btn-prev" onclick="prevPage()">❮ Назад</button>
-                    <span class="page-counter">25 / 27</span>
+                    <span class="page-counter" onclick="goToPage(2)">27 / 29</span>
                     <button class="page-btn btn-next" onclick="nextPage()">Вперёд ❯</button>
                 </div>
             </div>
 
-            <!-- Стр 26: Бестиарий 5 -->
+            <!-- Стр 28: Бестиарий 5 -->
             <div class="page">
                 <svg class="ink-blot blot-top-right" viewBox="0 0 35 35"><use href="#ink-drop-svg"/></svg>
                 <div class="page-content">
                     <h2>Владыки Разломов и Бездны</h2>
                     <h3>Ледяной Предел и Каверны</h3>
-                    <p>Упыри окоченения, Горгульи. 💀 <b>Фаргос (Ур. 60)</b> и Зеркальный страж <b>Эйлон (Ур. 85)</b>.</p>
+                    <p>Упыри окоченения, Горгульи. <b>Босс: Фаргос (Ур. 60)</b> и Зеркальный страж <b>Эйлон (Ур. 85)</b>.</p>
                     <h3>Запретный Полигон и Океан</h3>
-                    <p>💀 <b>Магистр Валериус (Ур. 45):</b> Слово Смерти.<br>
-                    💀 <b>Рейд: Мор’Гур (Ур. 100, Слож. 100):</b> Древний Кракен Бездны Левиафана.</p>
+                    <p><b>Босс: Магистр Валериус (Ур. 45):</b> Слово Смерти.<br>
+                    <b>Рейдовый Босс: Мор’Гур (Ур. 100, Слож. 100):</b> Древний Кракен Бездны Левиафана.</p>
                     <h3>Глобальный Владыка Аномалий</h3>
-                    <p>💀 <b>Исказитель Пространства (Ур. 100):</b> Сбой Врат Континента (раз в лунный месяц).</p>
+                    <p><b>Исказитель Пространства (Ур. 100):</b> Сбой Врат Континента (раз в лунный месяц).</p>
                     <p>• <b>Искажение реальности:</b> Исцеление ранит, огонь морозит.<br>
                     • <b>Награда:</b> «Осколки Эфира» на закладку родовых замков.</p>
                 </div>
                 <div class="page-footer">
                     <button class="page-btn btn-prev" onclick="prevPage()">❮ Назад</button>
-                    <span class="page-counter">26 / 27</span>
+                    <span class="page-counter" onclick="goToPage(2)">28 / 29</span>
                     <button class="page-btn btn-next" onclick="nextPage()">Вперёд ❯</button>
                 </div>
             </div>
 
-            <!-- Стр 27: Финал -->
+            <!-- Стр 29: Финал -->
             <div class="page cover">
                 <div class="page-content" style="display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center;">
                     <h1 style="font-family: 'Marck Script', cursive; font-size: 40px; margin-top: 0;">Конец Летописи</h1>
@@ -1082,7 +1209,7 @@
                 </div>
                 <div class="page-footer">
                     <button class="page-btn btn-prev" onclick="prevPage()">❮ Назад</button>
-                    <span class="page-counter">27 / 27</span>
+                    <span class="page-counter" onclick="goToPage(2)">29 / 29</span>
                     <button class="page-btn btn-next" disabled>Вперёд ❯</button>
                 </div>
             </div>
@@ -1101,15 +1228,13 @@
         const pages = Array.from(document.querySelectorAll('#book-stage .page'));
         let currentIndex = 0;
 
-        // Обновление счётчиков на всех страницах
+        // Синхронизация нумерации на всех страницах
         pages.forEach((p, idx) => {
             const counter = p.querySelector('.page-counter');
             if (counter) counter.textContent = `${idx + 1} / ${pages.length}`;
         });
 
-        // =========================================================
-        // === АУДИО: шелест бумаги + потрескивание огня ===
-        // =========================================================
+        // Аудиодвижок
         let audioCtx = null;
         let isMuted = false;
         let ambientGain = null;
@@ -1208,6 +1333,9 @@
         }
 
         const soundBtn = document.getElementById('sound-btn');
+        const iconOn = document.getElementById('sound-icon-on');
+        const iconOff = document.getElementById('sound-icon-off');
+
         soundBtn.addEventListener('click', (e) => {
             e.stopPropagation();
             getAudioContext();
@@ -1215,7 +1343,8 @@
             if (ambientGain) {
                 ambientGain.gain.value = isMuted ? 0 : 0.18;
             }
-            soundBtn.textContent = isMuted ? '🔇' : '🔊';
+            iconOn.style.display = isMuted ? 'none' : 'block';
+            iconOff.style.display = isMuted ? 'block' : 'none';
         });
 
         function triggerHaptic() {
@@ -1226,9 +1355,7 @@
             } catch (e) {}
         }
 
-        // =========================================================
-        // === НАВИГАЦИЯ ===
-        // =========================================================
+        // Перемещение по страницам
         function goToPage(newIdx) {
             if (newIdx < 0 || newIdx >= pages.length || newIdx === currentIndex) return;
 
@@ -1243,18 +1370,16 @@
             triggerHaptic();
         }
 
+        window.goToPage = goToPage;
         window.nextPage = function() { goToPage(currentIndex + 1); };
         window.prevPage = function() { goToPage(currentIndex - 1); };
 
-        // Клавиатура
         window.addEventListener('keydown', (e) => {
             if (e.key === 'ArrowRight' || e.key === ' ') nextPage();
             else if (e.key === 'ArrowLeft') prevPage();
         });
 
-        // =========================================================
-        // === СВАЙПЫ (не конфликтуют со скроллом текста) ===
-        // =========================================================
+        // Свайпы без конфликта со скроллом
         const bookStage = document.getElementById('book-stage');
         let startTouchX = 0;
         let startTouchY = 0;
@@ -1267,7 +1392,6 @@
             startTouchY = e.touches[0].clientY;
             startTouchTime = Date.now();
 
-            // Разрешаем свайп, только если тап НЕ по скроллируемому контенту
             const target = e.target;
             const content = target.closest('.page-content');
             if (content && content.scrollHeight > content.clientHeight) {
@@ -1292,3 +1416,4 @@
     </script>
 </body>
 </html>
+
