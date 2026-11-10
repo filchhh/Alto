@@ -1,0 +1,1659 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Великий Фолиант Аурхейма 3D</title>
+
+    <script src="https://telegram.org/js/telegram-web-app.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Bad+Script&family=Caveat:wght@600;700&family=Marck+Script&display=swap" rel="stylesheet">
+
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+
+        html, body {
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            background-color: #030201;
+            font-family: 'Bad Script', cursive, serif;
+            user-select: none;
+            -webkit-user-select: none;
+            touch-action: manipulation;
+        }
+
+        /* 3D Сцена */
+        #webgl-container {
+            position: fixed;
+            top: 0; left: 0;
+            width: 100vw;
+            height: 100vh;
+            height: 100dvh;
+            z-index: 1;
+        }
+
+        /* Подсказка над закрытой книгой */
+        #table-hint {
+            position: fixed;
+            bottom: 11%;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 10;
+            color: #f3d497;
+            font-family: 'Caveat', cursive;
+            font-size: 27px;
+            text-align: center;
+            text-shadow: 0 2px 10px #000, 0 0 22px rgba(255, 140, 20, 0.75);
+            pointer-events: none;
+            animation: hintPulse 2.5s infinite ease-in-out;
+            transition: opacity 0.4s ease;
+            width: 90%;
+        }
+
+        @keyframes hintPulse {
+            0%, 100% { opacity: 0.55; transform: translateX(-50%) translateY(0); }
+            50% { opacity: 1; transform: translateX(-50%) translateY(-6px); }
+        }
+
+        /* Верхняя панель управления */
+        .top-bar {
+            position: fixed;
+            top: max(14px, env(safe-area-inset-top));
+            right: max(14px, env(safe-area-inset-right));
+            left: max(14px, env(safe-area-inset-left));
+            z-index: 100;
+            display: flex;
+            justify-content: space-between;
+            pointer-events: none;
+        }
+
+        .ui-btn {
+            pointer-events: auto;
+            background: rgba(24, 11, 4, 0.9);
+            border: 2px solid #c4912c;
+            color: #e8c47c;
+            border-radius: 24px;
+            height: 42px;
+            padding: 0 16px;
+            font-family: 'Caveat', cursive;
+            font-size: 21px;
+            cursor: pointer;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 8px;
+            box-shadow: 0 4px 16px rgba(0,0,0,0.9), inset 0 0 8px rgba(255, 190, 70, 0.15);
+            outline: none;
+            transition: all 0.2s ease;
+            -webkit-tap-highlight-color: transparent;
+        }
+        .ui-btn:active { transform: scale(0.92); }
+        .ui-btn svg { width: 20px; height: 20px; stroke: currentColor; fill: none; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+
+        #close-book-btn {
+            opacity: 0;
+            visibility: hidden;
+            transform: translateY(-10px);
+        }
+        #close-book-btn.visible {
+            opacity: 1;
+            visibility: visible;
+            transform: translateY(0);
+        }
+
+        /* ===================================================
+           === РАСКРЫТЫЙ ФОЛИАНТ В 3D-ПРОСТРАНСТВЕ ===========
+           =================================================== */
+        #book-reader-overlay {
+            position: fixed;
+            top: 0; left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 25;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            pointer-events: none;
+            perspective: 1600px;
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.55s ease 0.2s, visibility 0.55s;
+        }
+
+        #book-reader-overlay.open {
+            opacity: 1;
+            visibility: visible;
+            pointer-events: auto;
+        }
+
+        #book-stage {
+            position: relative;
+            width: min(94vw, 440px);
+            height: min(84vh, 685px);
+            max-height: calc(100dvh - 75px);
+            margin-top: 24px;
+            transform-style: preserve-3d;
+            transform: rotateX(24deg) translateY(55px) scale(0.84);
+            transition: transform 0.65s cubic-bezier(0.2, 0.85, 0.25, 1);
+            box-shadow: 
+                -10px 0 0 #230e03,
+                -14px 0 0 #9b6c1b,
+                0 25px 65px rgba(0, 0, 0, 0.96),
+                0 0 85px rgba(255, 145, 25, 0.2);
+            border-radius: 4px 12px 12px 4px;
+        }
+
+        #book-reader-overlay.open #book-stage {
+            transform: rotateX(0deg) translateY(0) scale(1);
+        }
+
+        .page {
+            position: absolute;
+            top: 0; left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: #dfceaa;
+            background-image:
+                radial-gradient(circle at 25% 55%, rgba(255, 225, 170, 0.28), transparent 70%),
+                radial-gradient(ellipse at center, transparent 55%, rgba(58, 28, 8, 0.52) 100%),
+                url('https://www.transparenttextures.com/patterns/aged-paper.png');
+            box-shadow:
+                inset 18px 0 32px rgba(42, 18, 4, 0.55),
+                inset 0 0 45px rgba(58, 28, 8, 0.6);
+            border: 1px solid #542f13;
+            border-radius: 4px 12px 12px 4px;
+            display: flex;
+            flex-direction: column;
+            opacity: 0;
+            visibility: hidden;
+            pointer-events: none;
+            overflow: hidden;
+            transform-origin: left center;
+            transform: rotateY(-25deg);
+            transition:
+                transform 0.42s cubic-bezier(0.22, 0.8, 0.28, 1),
+                opacity 0.32s ease,
+                visibility 0.32s;
+        }
+
+        .page.active {
+            opacity: 1;
+            visibility: visible;
+            pointer-events: auto;
+            z-index: 5;
+            transform: rotateY(0deg);
+        }
+
+        /* Капли чернил */
+        .ink-blot {
+            position: absolute;
+            pointer-events: none;
+            z-index: 1;
+            opacity: 0.26;
+            filter: drop-shadow(0 1px 1px rgba(0,0,0,0.15));
+        }
+        .blot-top-right   { top: 12px; right: 16px; width: 32px; height: 32px; }
+        .blot-bottom-left { bottom: 58px; left: 14px; width: 26px; height: 26px; opacity: 0.22; }
+        .blot-splatter    { bottom: 62px; right: 25px; width: 24px; height: 24px; opacity: 0.24; }
+
+        /* Скролл-контейнер текста */
+        .page-content {
+            flex: 1 1 auto;
+            overflow-y: auto;
+            overflow-x: hidden;
+            padding: 18px 16px 20px 22px;
+            position: relative;
+            z-index: 2;
+            -webkit-overflow-scrolling: touch;
+        }
+
+        .page-content::-webkit-scrollbar { width: 4px; }
+        .page-content::-webkit-scrollbar-thumb {
+            background: rgba(85, 45, 18, 0.45);
+            border-radius: 4px;
+        }
+
+        h1, h2, h3, h4 {
+            font-family: 'Caveat', cursive;
+            color: #240d02;
+            text-align: center;
+            line-height: 1.15;
+            margin-bottom: 8px;
+            border-bottom: 1px solid rgba(120, 65, 20, 0.35);
+            padding-bottom: 3px;
+            text-shadow: 0 1px 1px rgba(255, 255, 255, 0.2);
+        }
+
+        h1 { font-size: 34px; margin-top: 25%; }
+        h2 { font-size: 25px; margin-top: 4px; }
+        h3 { font-size: 21px; color: #4a1f06; margin-top: 10px; border-bottom: none; text-align: left; }
+
+        p, li {
+            font-size: 17.5px;
+            line-height: 1.38;
+            margin-bottom: 8px;
+            color: #231207;
+            text-shadow: 0 0 1px rgba(35, 18, 7, 0.2);
+        }
+
+        ul { padding-left: 20px; margin-bottom: 10px; }
+
+        .lore-img {
+            width: 100%;
+            max-height: 185px;
+            object-fit: cover;
+            border-radius: 5px;
+            margin: 8px 0 12px;
+            border: 1px solid rgba(80, 40, 15, 0.65);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.35);
+            filter: sepia(0.2) contrast(1.05);
+            display: block;
+        }
+
+        /* Оглавление */
+        .toc-section-title {
+            font-family: 'Caveat', cursive;
+            font-size: 20px;
+            font-weight: 700;
+            color: #3b1704;
+            margin-top: 12px;
+            margin-bottom: 4px;
+            border-bottom: 1px dashed rgba(110, 60, 20, 0.35);
+            padding-bottom: 2px;
+        }
+
+        .toc-item {
+            display: flex;
+            align-items: baseline;
+            justify-content: space-between;
+            padding: 4px 2px;
+            cursor: pointer;
+            transition: all 0.15s ease;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        .toc-item:active, .toc-item:hover {
+            color: #b86200;
+            transform: translateX(4px);
+        }
+
+        .toc-name { font-size: 16.5px; white-space: nowrap; }
+        .toc-dots {
+            flex-grow: 1;
+            margin: 0 6px;
+            border-bottom: 1px dotted rgba(85, 45, 18, 0.55);
+            height: 1px;
+        }
+        .toc-page-num {
+            font-family: 'Caveat', cursive;
+            font-size: 18px;
+            font-weight: 700;
+            color: #552709;
+        }
+
+        /* Нижняя панель навигации */
+        .page-footer {
+            flex: 0 0 48px;
+            height: 48px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-family: 'Caveat', cursive;
+            font-size: 21px;
+            color: #552709;
+            z-index: 10;
+            border-top: 1px dashed rgba(110, 60, 20, 0.35);
+            padding: 0 14px;
+            background: rgba(223, 206, 170, 0.82);
+            backdrop-filter: blur(2px);
+        }
+
+        .page-btn {
+            background: none;
+            border: none;
+            color: #4a1f05;
+            font-family: 'Caveat', cursive;
+            font-size: 22px;
+            font-weight: 700;
+            cursor: pointer;
+            padding: 6px 14px;
+            outline: none;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            border-radius: 6px;
+            transition: all 0.15s ease;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        .page-btn:hover { color: #a36200; }
+        .page-btn:active {
+            color: #a36200;
+            transform: scale(0.92);
+            background: rgba(110, 60, 20, 0.1);
+        }
+        .page-btn[disabled] { visibility: hidden; pointer-events: none; }
+
+        .page-counter {
+            font-size: 19px;
+            font-weight: 600;
+            opacity: 0.9;
+            cursor: pointer;
+            padding: 4px 8px;
+            border-radius: 4px;
+        }
+        .page-counter:active { background: rgba(110, 60, 20, 0.12); }
+
+        .cover {
+            background: #270f04 url('https://www.transparenttextures.com/patterns/leather.png');
+            color: #deb66c;
+            border: 4px double #b8860b;
+            box-shadow: inset 0 0 65px #000;
+        }
+        .cover h1, .cover h2 { color: #deb66c; border: none; text-shadow: 2px 2px 8px #000; }
+        .cover .page-footer { background: transparent; border-top: 1px dashed rgba(222, 182, 108, 0.3); color: #deb66c; }
+        .cover .page-btn { color: #deb66c; }
+    </style>
+</head>
+<body>
+
+    <div id="webgl-container"></div>
+    <div id="table-hint">Коснитесь фолианта на столе, чтобы раскрыть летопись</div>
+
+    <div class="top-bar">
+        <button id="close-book-btn" class="ui-btn" onclick="closeBookToTable()">
+            ❮ Закрыть фолиант
+        </button>
+        <div style="flex:1"></div>
+        <button id="sound-btn" class="ui-btn" title="Звуки комнаты">
+            <svg id="sound-icon-on" viewBox="0 0 24 24"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon><path d="M15.54 8.46a5 5 0 0 1 0 7.07"></path><path d="M19.07 4.93a10 10 0 0 1 0 14.14"></path></svg>
+            <svg id="sound-icon-off" style="display:none;" viewBox="0 0 24 24"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon><line x1="23" y1="9" x2="17" y2="15"></line><line x1="17" y1="9" x2="23" y2="15"></line></svg>
+        </button>
+    </div>
+
+    <div id="book-reader-overlay">
+        <div id="book-stage">
+
+            <svg style="display: none;" aria-hidden="true">
+                <defs>
+                    <g id="ink-drop-svg">
+                        <path fill="#221105" d="M15,2 C15,2 25,12 25,20 C25,26.6 19.6,32 13,32 C6.4,32 1,26.6 1,20 C1,12 11,2 15,2 Z" />
+                        <circle fill="#221105" cx="26" cy="7" r="2.5" />
+                        <circle fill="#221105" cx="4" cy="9" r="1.8" />
+                    </g>
+                    <g id="ink-splatter-svg">
+                        <path fill="#221105" d="M12,12 C16,4 21,9 25,12 C28,15 34,13 32,18 C30,22 35,26 30,28 C25,30 24,35 19,32 C14,29 9,33 8,28 C7,23 2,21 6,17 C10,13 7,7 12,12 Z" />
+                        <circle fill="#221105" cx="33" cy="8" r="2" />
+                        <circle fill="#221105" cx="5" cy="33" r="1.5" />
+                    </g>
+                </defs>
+            </svg>
+
+            <!-- Стр 1: Пролог -->
+            <div class="page active">
+                <svg class="ink-blot blot-top-right" viewBox="0 0 35 35"><use href="#ink-drop-svg"/></svg>
+                <div class="page-content">
+                    <h2>Пролог: Дыхание Эфира</h2>
+                    <p>Континент Аурхейм покоится на зыбких потоках Первозданного Эфира — великой субстанции, породившей сущее, стихии и саму материю. Веками народы черпали эту мощь, созидая великие твердыни, парящие города и тайные ордена магии.</p>
+                    <p>Однако хрупкое равновесие раскололось. Древние Врата содрогнулись, девиантные школы чар исказили плоть и разум, а в сумрачных каньонах и забытых руинах пробудились создания, не ведающие пощады.</p>
+                    <p>Перед тобой — Великий Фолиант, священная летопись искателей приключений и ученых Академии Арканума. На этих ветхих листах собраны сокровенные знания о пяти великих расах, атлас неизведанных земель и бестиарий ужасающих созданий, подстерегающих Странников.</p>
+                    <p>Вглядись в пламя свечи, переверни страницу и ступай по трактам Аурхейма с открытым сердцем и обнаженным клинком.</p>
+                </div>
+                <div class="page-footer">
+                    <button class="page-btn btn-prev" disabled>❮ Назад</button>
+                    <span class="page-counter" title="К оглавлению" onclick="goToPage(1)">1 / 28</span>
+                    <button class="page-btn btn-next" onclick="nextPage()">Вперёд ❯</button>
+                </div>
+            </div>
+
+            <!-- Стр 2: Оглавление -->
+            <div class="page">
+                <svg class="ink-blot blot-bottom-left" viewBox="0 0 35 35"><use href="#ink-splatter-svg"/></svg>
+                <div class="page-content">
+                    <h2>Оглавление Фолианта</h2>
+
+                    <div class="toc-section-title">Раздел I. Расы и Наследие</div>
+                    <div class="toc-item" onclick="goToPage(2)"><span class="toc-name">Люди (Империя Аквилон)</span><span class="toc-dots"></span><span class="toc-page-num">Стр. 3</span></div>
+                    <div class="toc-item" onclick="goToPage(4)"><span class="toc-name">Тёмные эльфы (Умбрарас)</span><span class="toc-dots"></span><span class="toc-page-num">Стр. 5</span></div>
+                    <div class="toc-item" onclick="goToPage(6)"><span class="toc-name">Эльфы (Домен Элдоран)</span><span class="toc-dots"></span><span class="toc-page-num">Стр. 7</span></div>
+                    <div class="toc-item" onclick="goToPage(8)"><span class="toc-name">Зверолюды (Шаманизм)</span><span class="toc-dots"></span><span class="toc-page-num">Стр. 9</span></div>
+                    <div class="toc-item" onclick="goToPage(10)"><span class="toc-name">Дракониты (Кланы Игниса)</span><span class="toc-dots"></span><span class="toc-page-num">Стр. 11</span></div>
+
+                    <div class="toc-section-title">Раздел II. Атлас Континента</div>
+                    <div class="toc-item" onclick="goToPage(12)"><span class="toc-name">Элизия и Порт-Байлесс</span><span class="toc-dots"></span><span class="toc-page-num">Стр. 13</span></div>
+                    <div class="toc-item" onclick="goToPage(14)"><span class="toc-name">Сильванар и Руины Эарлин</span><span class="toc-dots"></span><span class="toc-page-num">Стр. 15</span></div>
+                    <div class="toc-item" onclick="goToPage(16)"><span class="toc-name">Ноктюрн, Кар-Орот, Ущелье</span><span class="toc-dots"></span><span class="toc-page-num">Стр. 17</span></div>
+                    <div class="toc-item" onclick="goToPage(18)"><span class="toc-name">Ауралия (Мерцающий Двор)</span><span class="toc-dots"></span><span class="toc-page-num">Стр. 19</span></div>
+                    <div class="toc-item" onclick="goToPage(19)"><span class="toc-name">Аэтерон — Расколотое Небо</span><span class="toc-dots"></span><span class="toc-page-num">Стр. 20</span></div>
+
+                    <div class="toc-section-title">Раздел III. Бестиарий и Владыки</div>
+                    <div class="toc-item" onclick="goToPage(22)"><span class="toc-name">Руины, Пещеры, Пустоши</span><span class="toc-dots"></span><span class="toc-page-num">Стр. 23</span></div>
+                    <div class="toc-item" onclick="goToPage(24)"><span class="toc-name">Степи, Воды, Топи и Тракты</span><span class="toc-dots"></span><span class="toc-page-num">Стр. 25</span></div>
+                    <div class="toc-item" onclick="goToPage(26)"><span class="toc-name">Владыки Бездны и Мировой Босс</span><span class="toc-dots"></span><span class="toc-page-num">Стр. 27</span></div>
+                    <div class="toc-item" onclick="goToPage(27)"><span class="toc-name">Конец Летописи</span><span class="toc-dots"></span><span class="toc-page-num">Стр. 28</span></div>
+                </div>
+                <div class="page-footer">
+                    <button class="page-btn btn-prev" onclick="prevPage()">❮ Назад</button>
+                    <span class="page-counter" onclick="goToPage(1)">2 / 28</span>
+                    <button class="page-btn btn-next" onclick="nextPage()">Вперёд ❯</button>
+                </div>
+            </div>
+
+            <!-- Стр 3: Люди: Арт -->
+            <div class="page">
+                <svg class="ink-blot blot-top-right" viewBox="0 0 35 35"><use href="#ink-drop-svg"/></svg>
+                <div class="page-content">
+                    <h2>Люди (Империя Аквилон)</h2>
+                    <img src="IMG_20260830_171117.jpg" class="lore-img" alt="Люди" onerror="this.style.display='none'">
+                    <p><b>Стиль игры:</b> Универсалы, Маги-артиллеристы, Паладины.</p>
+                    <p><b>Доступные стихии:</b> Люди не привязаны к Эфиру биологически и изучают его как точную науку. При сотворении персонаж избирает <b>ОДИН</b> базовый элемент (Огонь, Вода, Воздух или Земля). Лишь высокое признание в Академии Арканума открывает родственную грань.</p>
+                </div>
+                <div class="page-footer">
+                    <button class="page-btn btn-prev" onclick="prevPage()">❮ Назад</button>
+                    <span class="page-counter" title="К оглавлению" onclick="goToPage(1)">3 / 28</span>
+                    <button class="page-btn btn-next" onclick="nextPage()">Вперёд ❯</button>
+                </div>
+            </div>
+
+            <!-- Стр 4: Люди: Механики -->
+            <div class="page">
+                <svg class="ink-blot blot-bottom-left" viewBox="0 0 35 35"><use href="#ink-splatter-svg"/></svg>
+                <div class="page-content">
+                    <h2>Люди (Особенности)</h2>
+                    <p><b>Полный запрет (Официально):</b> Тьма и Смерть. Отступники преследуются имперскими инквизиторами без пощады.</p>
+                    <p><b>Пассивный бонус — «Адаптивность»:</b> Награда золотом и боевым опытом увеличена на 5% за любые сражения. Доступен дополнительный слот под кольцо или древний артефакт.</p>
+                    <p><b>Активный навык — «Резонанс Группы»:</b> Мощнейший катализатор уз. В присутствии иных рас их пассивные природные дары удваивают мощь на 3 хода.</p>
+                </div>
+                <div class="page-footer">
+                    <button class="page-btn btn-prev" onclick="prevPage()">❮ Назад</button>
+                    <span class="page-counter" title="К оглавлению" onclick="goToPage(1)">4 / 28</span>
+                    <button class="page-btn btn-next" onclick="nextPage()">Вперёд ❯</button>
+                </div>
+            </div>
+
+            <!-- Стр 5: Тёмные эльфы: Арт -->
+            <div class="page">
+                <svg class="ink-blot blot-top-right" viewBox="0 0 35 35"><use href="#ink-splatter-svg"/></svg>
+                <div class="page-content">
+                    <h2>Тёмные эльфы (Умбрарас)</h2>
+                    <img src="IMG_20260830_171126.jpg" class="lore-img" alt="Тёмные эльфы" onerror="this.style.display='none'">
+                    <p><b>Стиль игры:</b> Скрытность, Убийцы (Ассасины), Дебаффы.</p>
+                    <p><b>Доступные стихии:</b> Лёд (Основная), Тьма (Девиантная).</p>
+                    <p><b>Полный запрет:</b> Огонь, Свет, Жизнь, Воздух, Земля, Вода.</p>
+                </div>
+                <div class="page-footer">
+                    <button class="page-btn btn-prev" onclick="prevPage()">❮ Назад</button>
+                    <span class="page-counter" title="К оглавлению" onclick="goToPage(1)">5 / 28</span>
+                    <button class="page-btn btn-next" onclick="nextPage()">Вперёд ❯</button>
+                </div>
+            </div>
+
+            <!-- Стр 6: Тёмные эльфы: Механики -->
+            <div class="page">
+                <div class="page-content">
+                    <h2>Тёмные эльфы (Навыки)</h2>
+                    <p><b>Механика:</b> Магия Тьмы терзает плоть кровотечениями и слепотой, тогда как Лёд сковывает поступь жертвы. Удары наносятся из засады с колоссальной разрушительной силой.</p>
+                    <p><b>Пассивный бонус — «Покров Ночи»:</b> Базовый шанс критического удара увеличен на 10%. Тьма пещер и ночная пора кратно умножают уклонение.</p>
+                    <p><b>Активный навык — «Теневой Шаг»:</b> Мгновенное смещение сквозь мрак за спину цели, парирующее направленный удар и наделяющее следующий выпад абсолютным критическим уроном.</p>
+                </div>
+                <div class="page-footer">
+                    <button class="page-btn btn-prev" onclick="prevPage()">❮ Назад</button>
+                    <span class="page-counter" title="К оглавлению" onclick="goToPage(1)">6 / 28</span>
+                    <button class="page-btn btn-next" onclick="nextPage()">Вперёд ❯</button>
+                </div>
+            </div>
+
+            <!-- Стр 7: Эльфы: Арт -->
+            <div class="page">
+                <svg class="ink-blot blot-bottom-left" viewBox="0 0 35 35"><use href="#ink-drop-svg"/></svg>
+                <div class="page-content">
+                    <h2>Эльфы (Домен Элдоран)</h2>
+                    <img src="IMG_20260830_171149.jpg" class="lore-img" alt="Эльфы" onerror="this.style.display='none'">
+                    <p><b>Стиль игры:</b> Контроль поля, постепенный урон (Доты), Баффы.</p>
+                    <p><b>Доступные стихии:</b> Земля (Основная), Вода (Основная), Воздух (Вспомогательная).</p>
+                    <p><b>Полный запрет:</b> Огонь, Тьма, Смерть, Лёд, Молния. Магия Жизни строжайше табуирована из-за трагедии Эарлина.</p>
+                </div>
+                <div class="page-footer">
+                    <button class="page-btn btn-prev" onclick="prevPage()">❮ Назад</button>
+                    <span class="page-counter" title="К оглавлению" onclick="goToPage(1)">7 / 28</span>
+                    <button class="page-btn btn-next" onclick="nextPage()">Вперёд ❯</button>
+                </div>
+            </div>
+
+            <!-- Стр 8: Эльфы: Навыки -->
+            <div class="page">
+                <div class="page-content">
+                    <h2>Эльфы (Симбиоз)</h2>
+                    <p><b>Механика:</b> Высочайшая гармония первостихий. Враг омывается потоками Воды, а следом сковывается корнями Земли. Мана расходуется бережно и быстро.</p>
+                    <p><b>Пассивный бонус — «Эфирный Симбиоз»:</b> Естественное исцеление ран и восстановление маны каждый ход при отсутствии входящих ранений.</p>
+                    <p><b>Активный навык — «Живые Путы»:</b> Побеги сковывают цель на 1 ход, срезая защиту от природных стихий и накладывая запрет на передвижение и атаки.</p>
+                </div>
+                <div class="page-footer">
+                    <button class="page-btn btn-prev" onclick="prevPage()">❮ Назад</button>
+                    <span class="page-counter" title="К оглавлению" onclick="goToPage(1)">8 / 28</span>
+                    <button class="page-btn btn-next" onclick="nextPage()">Вперёд ❯</button>
+                </div>
+            </div>
+
+            <!-- Стр 9: Зверолюды: Арт -->
+            <div class="page">
+                <svg class="ink-blot blot-top-right" viewBox="0 0 35 35"><use href="#ink-drop-svg"/></svg>
+                <div class="page-content">
+                    <h2>Зверолюды (Шаманизм крови)</h2>
+                    <img src="IMG_20260830_171207.jpg" class="lore-img" alt="Зверолюды" onerror="this.style.display='none'">
+                    <p><b>Стиль игры:</b> Ловкачи, Адепты затяжных маневров, Охотники.</p>
+                    <p><b>Доступные стихии:</b> Воздух (молниеносные прыжки), Земля (крепость когтей и шкуры).</p>
+                    <p><b>Полный запрет:</b> Свет, Тьма, Смерть, Лёд, Огонь.</p>
+                </div>
+                <div class="page-footer">
+                    <button class="page-btn btn-prev" onclick="prevPage()">❮ Назад</button>
+                    <span class="page-counter" title="К оглавлению" onclick="goToPage(1)">9 / 28</span>
+                    <button class="page-btn btn-next" onclick="nextPage()">Вперёд ❯</button>
+                </div>
+            </div>
+
+            <!-- Стр 10: Зверолюды: Суть -->
+            <div class="page">
+                <div class="page-content">
+                    <h2>Зверолюды (Инстинкты)</h2>
+                    <p><b>Механика:</b> Эфир направляется внутрь тела в виде селф-баффов. Чары вроде «Поступи Ветра» не бьют на расстоянии, но наделяют 50% шансом увернуться и провести двойной выпад.</p>
+                    <p><b>Пассивный бонус — «Животный Инстинкт»:</b> Базовый шанс уклонения +15%. Успешный уворот обеспечивает контратаку с наложением эффекта «Рваная рана».</p>
+                    <p><b>Активный навык — «Охотничий Раж»:</b> Полный сброс эффектов контроля (стана, заморозки, опутавших пут) с мгновенным нанесением серии из трех молниеносных ударов.</p>
+                </div>
+                <div class="page-footer">
+                    <button class="page-btn btn-prev" onclick="prevPage()">❮ Назад</button>
+                    <span class="page-counter" title="К оглавлению" onclick="goToPage(1)">10 / 28</span>
+                    <button class="page-btn btn-next" onclick="nextPage()">Вперёд ❯</button>
+                </div>
+            </div>
+
+            <!-- Стр 11: Дракониты: Арт -->
+            <div class="page">
+                <svg class="ink-blot blot-bottom-left" viewBox="0 0 35 35"><use href="#ink-splatter-svg"/></svg>
+                <div class="page-content">
+                    <h2>Дракониты (Кланы Игниса)</h2>
+                    <img src="IMG_20260830_171224.jpg" class="lore-img" alt="Дракониты" onerror="this.style.display='none'">
+                    <p><b>Стиль игры:</b> Передовая, Сокрушающий Бурст, Тяжелые Танки.</p>
+                    <p><b>Доступные стихии:</b> Огонь (База), Молния (Высшие круги), Земля (Твердь).</p>
+                    <p><b>Полный запрет:</b> Вода, Лёд, Тьма, Свет, Жизнь, Смерть.</p>
+                </div>
+                <div class="page-footer">
+                    <button class="page-btn btn-prev" onclick="prevPage()">❮ Назад</button>
+                    <span class="page-counter" title="К оглавлению" onclick="goToPage(1)">11 / 28</span>
+                    <button class="page-btn btn-next" onclick="nextPage()">Вперёд ❯</button>
+                </div>
+            </div>
+
+            <!-- Стр 12: Дракониты: Навыки -->
+            <div class="page">
+                <div class="page-content">
+                    <h2>Дракониты (Ярость)</h2>
+                    <p><b>Механика:</b> Пламя высвобождается непосредственно через взмахи секир и клинков. Энергия маны крайне мала, но расходуется расчетливо.</p>
+                    <p><b>Пассивный бонус — «Драконья Чешуя»:</b> Врожденное поглощение физического урона на 15% выше нормы. Абсолютный иммунитет к пламени и горению.</p>
+                    <p><b>Активный навык — «Истинная Ярость»:</b> Чем глубже раны воина, тем чудовищнее его натиск. При остатке менее 20% HP удары игнорируют тяжелые доспехи недругов.</p>
+                </div>
+                <div class="page-footer">
+                    <button class="page-btn btn-prev" onclick="prevPage()">❮ Назад</button>
+                    <span class="page-counter" title="К оглавлению" onclick="goToPage(1)">12 / 28</span>
+                    <button class="page-btn btn-next" onclick="nextPage()">Вперёд ❯</button>
+                </div>
+            </div>
+
+            <!-- Стр 13: Империя Аквилон -->
+            <div class="page">
+                <svg class="ink-blot blot-top-right" viewBox="0 0 35 35"><use href="#ink-drop-svg"/></svg>
+                <div class="page-content">
+                    <h2>Империя Аквилон (Люди)</h2>
+                    <h3>1. Элизия — Белокаменная Столица</h3>
+                    <p>• <b>Суть локации:</b> Сердце Империи. Город-монумент, разделенный на три гигантских яруса на склонах искусственной горы, призванный подавлять своим величием.</p>
+                    <p>• <b>Архитектура и атмосфера:</b> Белый мрамор и золото. Воздух пропитан запахом озоном (от постоянного колдовства) и храмовыми благовониями. Небо рассекают парящие на потоках воздуха курьеры-маги.</p>
+                    <p>• <b>Общество и быт:</b> Строгое разделение слоев. На верхних ярусах царит закон и порядок, в то время как на самом дне, в Трущобах Пепла, куда не доходит свет фонарей, процветает криминал, обитают беглые преступники и шарлатаны.</p>
+                    <p>• <b>Ключевые объекты:</b><br>
+                    - <i>Площадь Главных Врат:</i> Колоссальная платформа с крупнейшими телепортами, которые сейчас искрят пугающими фиолетовыми разрядами.<br>
+                    - <i>Шпиль Арканума:</i> Парящая башня Академии, нарушающая законы физики, с алхимическими лабораториями и тайными темницами для магов Тьмы.</p>
+                </div>
+                <div class="page-footer">
+                    <button class="page-btn btn-prev" onclick="prevPage()">❮ Назад</button>
+                    <span class="page-counter" title="К оглавлению" onclick="goToPage(1)">13 / 28</span>
+                    <button class="page-btn btn-next" onclick="nextPage()">Вперёд ❯</button>
+                </div>
+            </div>
+
+            <!-- Стр 14: Порт-Байлесс -->
+            <div class="page">
+                <svg class="ink-blot blot-bottom-left" viewBox="0 0 35 35"><use href="#ink-splatter-svg"/></svg>
+                <div class="page-content">
+                    <h2>Морские Врата Империи</h2>
+                    <h3>2. Порт-Байлесс (Глубоководная Гавань)</h3>
+                    <p>• <b>Суть локации:</b> Главный морской узел Империи, где официальные законы столицы работают только на бумаге.</p>
+                    <p>• <b>Архитектура и атмосфера:</b> Километры деревянных пирсов. Таверны и бордели построены из перевернутых корпусов старых кораблей. Пахнет солью, гниющей рыбой и ромом. Туманы искусственно разгоняются магами Воды и Воздуха.</p>
+                    <p>• <b>Общество и быт:</b> Город абсолютной свободы, наемников и контрабандистов. Реальная власть принадлежит негласному совету пиратских баронов и коррумпированных адмиралов.</p>
+                    <p>• <b>Ключевые объекты:</b><br>
+                    - <i>Рынок Утопленника:</i> Черный рынок, скрытый в затопленных пещерах под портом, где идет торговля нелегальными мана-кристаллами и ядами тёмных эльфов.</p>
+                </div>
+                <div class="page-footer">
+                    <button class="page-btn btn-prev" onclick="prevPage()">❮ Назад</button>
+                    <span class="page-counter" title="К оглавлению" onclick="goToPage(1)">14 / 28</span>
+                    <button class="page-btn btn-next" onclick="nextPage()">Вперёд ❯</button>
+                </div>
+            </div>
+
+            <!-- Стр 15: Лесной Домен Элдоран -->
+            <div class="page">
+                <svg class="ink-blot blot-top-right" viewBox="0 0 35 35"><use href="#ink-drop-svg"/></svg>
+                <div class="page-content">
+                    <h2>Домен Элдоран (Эльфы)</h2>
+                    <h3>3. Сильванар — Сердце Леса</h3>
+                    <p>• <b>Суть локации:</b> Столица эльфов, которая была не построена, а выращена с помощью вековой магии Земли и Воды из гигантских Железных Деревьев.</p>
+                    <p>• <b>Архитектура и атмосфера:</b> Отсутствие углов, только плавные природные линии. Мягкий зеленый свет днем и биолюминесценция ночью. Густой, влажный воздух с ароматами древности, хвои и меда.</p>
+                    <p>• <b>Общество и быт:</b> Полная гармония с природой. Эльфы передвигаются по канатным дорогам из живых лиан или на лодочках по кристальным ручьям, текущим прямо по широким ветвям деревьев.</p>
+                    <p>• <b>Ключевые объекты:</b><br>
+                    - <i>Древо Жизни:</i> Толстые корни старейшего дерева плотно обвивают Врата Пути, фильтруя энергию и защищая лес от технологического осквернения.</p>
+                </div>
+                <div class="page-footer">
+                    <button class="page-btn btn-prev" onclick="prevPage()">❮ Назад</button>
+                    <span class="page-counter" title="К оглавлению" onclick="goToPage(1)">15 / 28</span>
+                    <button class="page-btn btn-next" onclick="nextPage()">Вперёд ❯</button>
+                </div>
+            </div>
+
+            <!-- Стр 16: Руины Эарлин -->
+            <div class="page">
+                <div class="page-content">
+                    <h2>Запретные Земли</h2>
+                    <h3>4. Руины Эарлин</h3>
+                    <p>• <b>Суть локации:</b> Бывший город-сателлит эльфов, ставший смертоносным памятником вышедшей из-под контроля девиантной магии Жизни.</p>
+                    <p>• <b>Архитектура и атмосфера:</b> Безумно разросшаяся флора. Кровоточащие едкой смолой деревья и орхидеи, выделяющие споры паралича и галлюцинаций.</p>
+                    <p>• <b>Общество и быт:</b> Постоянного населения нет. Зону посещают только отряды отчаянных наемников ради добычи ценных ресурсов. Любая рана здесь заживает неправильно, обрастая опухолями.</p>
+                    <p>• <b>Ключевые объекты:</b><br>
+                    - <i>Клубок Артерий:</i> Эпицентр руин, где можно добыть чистейшую, но крайне нестабильную эссенцию Эфира. Местные звери (волки с костяными наростами, хищные богомолы) сильно мутировали.</p>
+                </div>
+                <div class="page-footer">
+                    <button class="page-btn btn-prev" onclick="prevPage()">❮ Назад</button>
+                    <span class="page-counter" title="К оглавлению" onclick="goToPage(1)">16 / 28</span>
+                    <button class="page-btn btn-next" onclick="nextPage()">Вперёд ❯</button>
+                </div>
+            </div>
+
+            <!-- Стр 17: Ноктюрн -->
+            <div class="page">
+                <svg class="ink-blot blot-top-right" viewBox="0 0 35 35"><use href="#ink-splatter-svg"/></svg>
+                <div class="page-content">
+                    <h2>Синдикат Умбрарас</h2>
+                    <h3>5. Ноктюрн — Город над Бездной</h3>
+                    <p>• <b>Суть локации:</b> Мрачный шедевр архитектуры тёмных эльфов, высеченный прямо в стенах колоссального вертикального разлома, дно которого скрыто во тьме.</p>
+                    <p>• <b>Архитектура и атмосфера:</b> Здания цепляются за скалы и растут вниз, как сталактиты. Пробирающий до костей холод и густой ледяной туман. Скудное освещение дают лишь фиолетовые грибы и синие кристаллы Льда. Хрупкие на вид ледяные мосты-нити соединяют кварталы.</p>
+                    <p>• <b>Общество и быт:</b> Культ тишины и скрытности. Шумные рынки отсутствуют. Доступ к товарам и услугам осуществляется через закрытые Аукционные Дома, куда пускают только по рекомендациям.</p>
+                    <p>• <b>Ключевые объекты:</b><br>
+                    - <i>Платформа Врат Пути:</i> Висит в самом центре бездны. К ней ведет единственный ледяной мост, который стража может мгновенно растаять по щелчку пальцев, сбрасывая врагов в пустоту. Торговля ведется секретами и заказными убийствами.</p>
+                </div>
+                <div class="page-footer">
+                    <button class="page-btn btn-prev" onclick="prevPage()">❮ Назад</button>
+                    <span class="page-counter" title="К оглавлению" onclick="goToPage(1)">17 / 28</span>
+                    <button class="page-btn btn-next" onclick="nextPage()">Вперёд ❯</button>
+                </div>
+            </div>
+
+            <!-- Стр 18: Кланы Игниса -->
+            <div class="page">
+                <div class="page-content">
+                    <h2>Кланы Игниса (Дракониты)</h2>
+                    <h3>6. Вулканическая Цитадель Кар-Орот</h3>
+                    <p>• <b>Суть:</b> Город-кузница, монументально выдолбленный внутри огромного спящего вулкана.</p>
+                    <p>• <b>Архитектура и быт:</b> Грубые здания из черного обсидиана и базальта. Невыносимая жара, запах серы и раскаленного металла. Потоки магмы служат печами для ковки. Военизированное общество, споры решаются поединками.</p>
+                    <p>• <i>Арена Пепла:</i> Огромный кратер в центре города для испытаний оружия и боев на магии Огня и Молний.</p>
+                    <h3>7. Ущелье Драконьего Клыка</h3>
+                    <p>• <b>Суть:</b> Единственный наземный путь в неприступные земли драконитов. Узкий каньон, вой ветра, земля усеяна пеплом и костями непрошеных гостей.</p>
+                    <p>• <i>Оборонительные рубежи:</i> Стены плотно усеяны баллистами и рунами взрыва.</p>
+                </div>
+                <div class="page-footer">
+                    <button class="page-btn btn-prev" onclick="prevPage()">❮ Назад</button>
+                    <span class="page-counter" title="К оглавлению" onclick="goToPage(1)">18 / 28</span>
+                    <button class="page-btn btn-next" onclick="nextPage()">Вперёд ❯</button>
+                </div>
+            </div>
+
+            <!-- Стр 19: Ауралия -->
+            <div class="page">
+                <svg class="ink-blot blot-bottom-left" viewBox="0 0 35 35"><use href="#ink-drop-svg"/></svg>
+                <div class="page-content">
+                    <h2>Мерцающий Двор (Феи)</h2>
+                    <h3>8. Ауралия — Парящие Острова</h3>
+                    <p>• <b>Суть локации:</b> Сюрреалистичное место, состоящее из кусков земли с цветущими садами, парящих в небесах над зеркально гладким Озером Миражей.</p>
+                    <p>• <b>Архитектура и атмосфера:</b> Вечная радужная дымка от водопадов, испаряющихся в воздухе. Здания не имеют заборов и стен — они сотканы из света, прочных перламутровых паутин и хрусталя. Атмосфера абсолютной умиротворенности.</p>
+                    <p>• <b>Общество и быт:</b> Феи, кажущиеся беспечными, скрывают за своим смехом (похожим на перезвон колокольчиков) древний интеллект. Передвигаются исключительно на мерцающих крыльях.</p>
+                    <p>• <b>Ключевые объекты:</b><br>
+                    - <i>Павильоны Исцеления:</i> Уникальные центры девиантной магии Света, куда приносят проклятых и безнадежно больных. Оплата за чудеса исцеления взимается не золотом, а концептуальными вещами (самый счастливый день детства, искра удачи, способность различать цвета).</p>
+                </div>
+                <div class="page-footer">
+                    <button class="page-btn btn-prev" onclick="prevPage()">❮ Назад</button>
+                    <span class="page-counter" title="К оглавлению" onclick="goToPage(1)">19 / 28</span>
+                    <button class="page-btn btn-next" onclick="nextPage()">Вперёд ❯</button>
+                </div>
+            </div>
+
+            <!-- Стр 20: Аэтерон -->
+            <div class="page">
+                <svg class="ink-blot blot-top-right" viewBox="0 0 35 35"><use href="#ink-drop-svg"/></svg>
+                <div class="page-content">
+                    <h2>Аэтерон — Расколотое Небо</h2>
+                    <p>Аэтерон не просто парит в небесах — он плывет по течениям невидимых эфирных рек, медленно вращаясь над гигантским <b>Оком Эфира</b> (кратером в центре Аурхейма). Построен из белого и золотого пористого камня, который почти ничего не весит, а сквозь фундамент прорастают лозы светящихся растений. С краев города непрерывно срываются водопады, чьи струи на лету превращаются в искрящийся туман и радуги.</p>
+                    <h3>Хрустальный Атриум Звездопада</h3>
+                    <p><i>Зал Пробуждения:</i> Здесь открывают глаза Странники. Колоссальный амфитеатр из полупрозрачного стекла на высшем ярусе под вечно звездным небом. Пол укрыт тонким слоем теплой воды. Повсюду распускаются эфирные лотосы размером с человека, выпускающие души новоприбывших.</p>
+                </div>
+                <div class="page-footer">
+                    <button class="page-btn btn-prev" onclick="prevPage()">❮ Назад</button>
+                    <span class="page-counter" title="К оглавлению" onclick="goToPage(1)">20 / 28</span>
+                    <button class="page-btn btn-next" onclick="nextPage()">Вперёд ❯</button>
+                </div>
+            </div>
+
+            <!-- Стр 21: Кварталы Аэтерона -->
+            <div class="page">
+                <div class="page-content">
+                    <h2>Кварталы Аэтерона</h2>
+                    <h3>Кольцо Золотого Ветра (Великий Базар)</h3>
+                    <p>Многоуровневые террасы, парящие шелковые шатры и ажурные мостики. Товары левитируют на бархатных подушках: сияющие клинки, жидкие звезды фей, шкатулки эльфов. Улицы освещены фонарями-бабочками, звенят сотни колокольчиков ветра, пахнет корицей и каштанами.</p>
+                    <h3>Венец Гармонии (Посольский Район)</h3>
+                    <p>• <b>Шпиль Людей (Аквилон):</b> Цельный белый мрамор, золотые часы с потоками магии вместо стрелок.<br>
+                    • <b>Древо Элдорана (Эльфы):</b> Сплетенная гигантская ива с изумрудными листьями-кристаллами и ручьями.<br>
+                    • <b>Осколок Умбрараса (Тёмные эльфы):</b> Башня из нетающего черного льда с мерцающими сапфирами.<br>
+                    • <b>Очаг Игниса (Дракониты):</b> Обсидиановый купол с негасимым теплым Вечным Огнем.<br>
+                    • <b>Каскад Фей (Мерцающий Двор):</b> Башня из струй воды и радужного света без глухих стен.</p>
+                </div>
+                <div class="page-footer">
+                    <button class="page-btn btn-prev" onclick="prevPage()">❮ Назад</button>
+                    <span class="page-counter" title="К оглавлению" onclick="goToPage(1)">21 / 28</span>
+                    <button class="page-btn btn-next" onclick="nextPage()">Вперёд ❯</button>
+                </div>
+            </div>
+
+            <!-- Стр 22: Обители Аэтерона -->
+            <div class="page">
+                <svg class="ink-blot blot-bottom-left" viewBox="0 0 35 35"><use href="#ink-splatter-svg"/></svg>
+                <div class="page-content">
+                    <h2>Обители Аэтерона</h2>
+                    <h3>Таверна «Дыхание Эфира»</h3>
+                    <p>• <b>Визуал:</b> Вырезана в теле массивного летающего острова-спутника, пришвартованного к городу серебряными цепями. Резные балконы нависают прямо над бездной континента.</p>
+                    <p>• <b>Атмосфера:</b> Уютные очаги с магическим пламенем, меняющим цвет от настроения гостей. В бокалах сияют биолюминесцентные ягоды. Скрипка барда-иллюзиониста рисует в воздухе живые картины былых сражений.</p>
+                    <h3>Архипелаг Поющих Врат</h3>
+                    <p>Транспортный узел из россыпи парящих островков со стеклянными дорожками. Арки Врат Пути выкованы из лунного серебра, а порталы внутри них выглядят как спокойная, идеальная гладь жидкого зеркала.</p>
+                </div>
+                <div class="page-footer">
+                    <button class="page-btn btn-prev" onclick="prevPage()">❮ Назад</button>
+                    <span class="page-counter" title="К оглавлению" onclick="goToPage(1)">22 / 28</span>
+                    <button class="page-btn btn-next" onclick="nextPage()">Вперёд ❯</button>
+                </div>
+            </div>
+
+            <!-- Стр 23: Бестиарий 1 -->
+            <div class="page">
+                <svg class="ink-blot blot-splatter" viewBox="0 0 35 35"><use href="#ink-splatter-svg"/></svg>
+                <div class="page-content">
+                    <h2>Бестиарий: Руины и Пещеры</h2>
+                    <h3>Руины Эарлин (Ур. 15–35)</h3>
+                    <p>• <b>Шипастый Богомол (Слож. 20):</b> Волк среди насекомых. Игнорирует легкую броню. Слабость: Пламя.<br>
+                    • <b>Костяной Волк (Слож. 35):</b> Наружный скелет-панцирь, быстрая регенерация.<br>
+                    • <b>Узловатый Споровик (Слож. 45):</b> Ядовитое удушье.<br>
+                    <b>Босс: Ива’Тар (Ур. 40, Слож. 75):</b> Древесный исполин. Неподвижные корни сменяются рывком и уязвимостью Эфирного Ядра.</p>
+                    <h3>Шепчущие Пещеры (Ур. 30–55)</h3>
+                    <p>Теневые Ползуны, Слепые Кристаллоиды и Эхо Умбрарас.<br>
+                    <b>Босс: Никселия (Ур. 60, Слож. 85):</b> Тень королевы с вайп-криком Банши.</p>
+                </div>
+                <div class="page-footer">
+                    <button class="page-btn btn-prev" onclick="prevPage()">❮ Назад</button>
+                    <span class="page-counter" title="К оглавлению" onclick="goToPage(1)">23 / 28</span>
+                    <button class="page-btn btn-next" onclick="nextPage()">Вперёд ❯</button>
+                </div>
+            </div>
+
+            <!-- Стр 24: Бестиарий 2 -->
+            <div class="page">
+                <svg class="ink-blot blot-top-right" viewBox="0 0 35 35"><use href="#ink-drop-svg"/></svg>
+                <div class="page-content">
+                    <h2>Бестиарий: Пустоши и Стоки</h2>
+                    <h3>Ущелье Драконьего Клыка (Ур. 50–75)</h3>
+                    <p>Пепельные Дрейки, Магматические Големы, Искрящиеся Элементали.<br>
+                    <b>Босс: Кор-Вош (Ур. 80, Слож. 95):</b> Громочешуйный Змей. Смертоносный плазменный луч разрезает колонны укрытий.</p>
+                    <h3>Подземелья Элизии (Ур. 5–25)</h3>
+                    <p>Чумные Крысы, Кислотные Слизни, Гомункулы-Отступники.<br>
+                    <b>Босс: Амальгама (Ур. 25, Слож. 40):</b> Пожиратель зелий и костей, распадающийся на фрагменты.</p>
+                </div>
+                <div class="page-footer">
+                    <button class="page-btn btn-prev" onclick="prevPage()">❮ Назад</button>
+                    <span class="page-counter" title="К оглавлению" onclick="goToPage(1)">24 / 28</span>
+                    <button class="page-btn btn-next" onclick="nextPage()">Вперёд ❯</button>
+                </div>
+            </div>
+
+            <!-- Стр 25: Бестиарий 3 -->
+            <div class="page">
+                <svg class="ink-blot blot-bottom-left" viewBox="0 0 35 35"><use href="#ink-drop-svg"/></svg>
+                <div class="page-content">
+                    <h2>Бестиарий: Степи и Воды</h2>
+                    <h3>Пепельные Степи (Ур. 35–50)</h3>
+                    <p>Степные Вазилиски (окаменение), Пылевые Демоны, Террадоны.<br>
+                    <b>Босс: Куарот (Ур. 55, Слож. 75):</b> Подземный червь с едкой кислотой.</p>
+                    <h3>Абиссальные Отмели (Ур. 45–65)</h3>
+                    <p>Утопленники с цепями, Кошмарные Удильщики, Шипастые Сирены.<br>
+                    <b>Босс: Капитан Моргрим (Ур. 70, Слож. 85):</b> Призрачный залп и ядовитый прилив.</p>
+                </div>
+                <div class="page-footer">
+                    <button class="page-btn btn-prev" onclick="prevPage()">❮ Назад</button>
+                    <span class="page-counter" title="К оглавлению" onclick="goToPage(1)">25 / 28</span>
+                    <button class="page-btn btn-next" onclick="nextPage()">Вперёд ❯</button>
+                </div>
+            </div>
+
+            <!-- Стр 26: Бестиарий 4 -->
+            <div class="page">
+                <div class="page-content">
+                    <h2>Бестиарий: Иллюзии и Дороги</h2>
+                    <h3>Иллюзорные Топи (Ур. 65–85)</h3>
+                    <p>Фэй-Пантеры, Кристальные Мимики, Плакальщицы Тумана.<br>
+                    <b>Босс: Люминекс (Ур. 90, Слож. 95):</b> Падший Свет с гибельным стаком Святого Пламени.</p>
+                    <h3>Имперские Тракты и Элита</h3>
+                    <p>Эфирные разбойники, Грифоны, Осколки Разлома.<br>
+                    <b>Мини-боссы:</b> Кровавый Палач (Ур. 60) и Ткач Пустоты (Ур. 75, блокирующий телепортацию).</p>
+                </div>
+                <div class="page-footer">
+                    <button class="page-btn btn-prev" onclick="prevPage()">❮ Назад</button>
+                    <span class="page-counter" title="К оглавлению" onclick="goToPage(1)">26 / 28</span>
+                    <button class="page-btn btn-next" onclick="nextPage()">Вперёд ❯</button>
+                </div>
+            </div>
+
+            <!-- Стр 27: Бестиарий 5 -->
+            <div class="page">
+                <svg class="ink-blot blot-top-right" viewBox="0 0 35 35"><use href="#ink-drop-svg"/></svg>
+                <div class="page-content">
+                    <h2>Владыки Разломов и Бездны</h2>
+                    <h3>Ледяной Предел и Каверны</h3>
+                    <p>Упыри окоченения, Горгульи. <b>Босс: Фаргос (Ур. 60)</b> и Зеркальный страж <b>Эйлон (Ур. 85)</b>.</p>
+                    <h3>Запретный Полигон и Океан</h3>
+                    <p><b>Босс: Магистр Валериус (Ур. 45):</b> Слово Смерти.<br>
+                    <b>Рейдовый Босс: Мор’Гур (Ур. 100, Слож. 100):</b> Древний Кракен Бездны Левиафана.</p>
+                    <h3>Глобальный Владыка Аномалий</h3>
+                    <p><b>Исказитель Пространства (Ур. 100):</b> Сбой Врат Континента (раз в лунный месяц).</p>
+                    <p>• <b>Искажение реальности:</b> Исцеление ранит, огонь морозит.<br>
+                    • <b>Награда:</b> «Осколки Эфира» на закладку родовых замков.</p>
+                </div>
+                <div class="page-footer">
+                    <button class="page-btn btn-prev" onclick="prevPage()">❮ Назад</button>
+                    <span class="page-counter" title="К оглавлению" onclick="goToPage(1)">27 / 28</span>
+                    <button class="page-btn btn-next" onclick="nextPage()">Вперёд ❯</button>
+                </div>
+            </div>
+
+            <!-- Стр 28: Финал -->
+            <div class="page cover">
+                <div class="page-content" style="display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center;">
+                    <h1 style="font-family: 'Marck Script', cursive; font-size: 40px; margin-top: 0;">Конец Летописи</h1>
+                    <p style="color: #deb66c; font-size: 21px; margin-top: 25px;">Да сохранит Эфир ваши шаги на трактах Аурхейма...</p>
+                </div>
+                <div class="page-footer">
+                    <button class="page-btn btn-prev" onclick="prevPage()">❮ Назад</button>
+                    <span class="page-counter" title="К оглавлению" onclick="goToPage(1)">28 / 28</span>
+                    <button class="page-btn btn-next" disabled>Вперёд ❯</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        try {
+            if (window.Telegram && window.Telegram.WebApp) {
+                window.Telegram.WebApp.ready();
+                window.Telegram.WebApp.expand();
+            }
+        } catch (e) {}
+
+        // =========================================================
+        // === УЛУЧШЕННЫЙ ЗВУКОВОЙ ДВИЖОК (ОГОНЬ СВЕЧИ И ПЕРГАМЕНТ) ===
+        // =========================================================
+        let audioCtx = null;
+        let isMuted = false;
+        let ambientGain = null;
+        let crackleInterval = null;
+
+        function ensureAudioReady() {
+            if (!audioCtx) {
+                const AudioContext = window.AudioContext || window.webkitAudioContext;
+                if (AudioContext) {
+                    audioCtx = new AudioContext();
+                    setupCandleAmbience();
+                }
+            }
+            if (audioCtx && audioCtx.state === 'suspended') {
+                audioCtx.resume();
+            }
+            return audioCtx;
+        }
+
+        // Реалистичный трехфазный шелест переворачивания страницы
+        function playPageTurnSound() {
+            if (isMuted) return;
+            const ctx = ensureAudioReady();
+            if (!ctx) return;
+
+            const now = ctx.currentTime;
+            const duration = 0.44 + Math.random() * 0.06;
+            const len = Math.floor(ctx.sampleRate * duration);
+            const buffer = ctx.createBuffer(1, len, ctx.sampleRate);
+            const data = buffer.getChannelData(0);
+
+            // Текстурированный шум волокон старого пергамента
+            let b0 = 0, b1 = 0;
+            for (let i = 0; i < len; i++) {
+                const env = Math.sin((i / len) * Math.PI);
+                const w = Math.random() * 2 - 1;
+                b0 = 0.96 * b0 + w * 0.18;
+                b1 = 0.85 * b1 + b0 * 0.25;
+                data[i] = b1 * env;
+                // Сухие микро-хрусты сгибаемой бумаги
+                if (Math.random() < 0.009) {
+                    data[i] += (Math.random() * 2 - 1) * 0.35 * env;
+                }
+            }
+
+            const src = ctx.createBufferSource();
+            src.buffer = buffer;
+
+            // Формантный фильтр, имитирующий движение руки по листу
+            const filter = ctx.createBiquadFilter();
+            filter.type = 'bandpass';
+            filter.Q.setValueAtTime(1.4, now);
+            filter.frequency.setValueAtTime(420 + Math.random() * 80, now);
+            filter.frequency.exponentialRampToValueAtTime(1450, now + duration * 0.42);
+            filter.frequency.exponentialRampToValueAtTime(380, now + duration);
+
+            const lowpass = ctx.createBiquadFilter();
+            lowpass.type = 'lowpass';
+            lowpass.frequency.setValueAtTime(2800, now);
+
+            const gain = ctx.createGain();
+            gain.gain.setValueAtTime(0.001, now);
+            gain.gain.linearRampToValueAtTime(0.45, now + 0.06);
+            gain.gain.exponentialRampToValueAtTime(0.001, now + duration);
+
+            src.connect(filter);
+            filter.connect(lowpass);
+            lowpass.connect(gain);
+            gain.connect(ctx.destination);
+            src.start(now);
+        }
+
+        // Глубокий звук тяжелой кожаной обложки при открытии/закрытии книги
+        function playHeavyCoverSound() {
+            if (isMuted) return;
+            const ctx = ensureAudioReady();
+            if (!ctx) return;
+
+            const now = ctx.currentTime;
+            // Низкий бархатный удар переплета о стол
+            const osc = ctx.createOscillator();
+            const gain = ctx.createGain();
+            osc.type = 'sine';
+            osc.frequency.setValueAtTime(115, now);
+            osc.frequency.exponentialRampToValueAtTime(38, now + 0.22);
+
+            gain.gain.setValueAtTime(0.32, now);
+            gain.gain.exponentialRampToValueAtTime(0.001, now + 0.24);
+
+            osc.connect(gain);
+            gain.connect(ctx.destination);
+            osc.start(now);
+            osc.stop(now + 0.25);
+
+            // Плюс шелест первого разворота
+            setTimeout(() => playPageTurnSound(), 90);
+        }
+
+        // Живое потрескивание свечи на фоне
+        function setupCandleAmbience() {
+            if (!audioCtx) return;
+            const bufferSize = audioCtx.sampleRate * 3;
+            const buffer = audioCtx.createBuffer(1, bufferSize, audioCtx.sampleRate);
+            const data = buffer.getChannelData(0);
+
+            let last = 0;
+            for (let i = 0; i < bufferSize; i++) {
+                const white = Math.random() * 2 - 1;
+                last = (last + 0.02 * white) / 1.02;
+                data[i] = last * 0.25;
+            }
+
+            const noise = audioCtx.createBufferSource();
+            noise.buffer = buffer;
+            noise.loop = true;
+
+            const filter = audioCtx.createBiquadFilter();
+            filter.type = 'lowpass';
+            filter.frequency.value = 340;
+
+            ambientGain = audioCtx.createGain();
+            ambientGain.gain.value = isMuted ? 0 : 0.22;
+
+            noise.connect(filter);
+            filter.connect(ambientGain);
+            ambientGain.connect(audioCtx.destination);
+            noise.start();
+
+            // Случайные мягкие микро-щелчки воска и фитиля
+            if (!crackleInterval) {
+                crackleInterval = setInterval(() => {
+                    if (isMuted || !audioCtx || audioCtx.state !== 'running') return;
+                    if (Math.random() < 0.55) {
+                        const now = audioCtx.currentTime;
+                        const cLen = Math.floor(audioCtx.sampleRate * 0.025);
+                        const cBuf = audioCtx.createBuffer(1, cLen, audioCtx.sampleRate);
+                        const cData = cBuf.getChannelData(0);
+                        for (let j = 0; j < cLen; j++) {
+                            cData[j] = (Math.random() * 2 - 1) * Math.exp(-j / (cLen * 0.3));
+                        }
+                        const cSrc = audioCtx.createBufferSource();
+                        cSrc.buffer = cBuf;
+
+                        const cFilter = audioCtx.createBiquadFilter();
+                        cFilter.type = 'bandpass';
+                        cFilter.frequency.value = 1800 + Math.random() * 1400;
+                        cFilter.Q.value = 3.0;
+
+                        const cGain = audioCtx.createGain();
+                        cGain.gain.value = 0.05 + Math.random() * 0.06;
+
+                        cSrc.connect(cFilter);
+                        cFilter.connect(cGain);
+                        cGain.connect(audioCtx.destination);
+                        cSrc.start(now);
+                    }
+                }, 420);
+            }
+        }
+
+        const soundBtn = document.getElementById('sound-btn');
+        const iconOn = document.getElementById('sound-icon-on');
+        const iconOff = document.getElementById('sound-icon-off');
+
+        soundBtn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            ensureAudioReady();
+            isMuted = !isMuted;
+            if (ambientGain && audioCtx) {
+                ambientGain.gain.setTargetAtTime(isMuted ? 0 : 0.22, audioCtx.currentTime, 0.1);
+            }
+            iconOn.style.display = isMuted ? 'none' : 'block';
+            iconOff.style.display = isMuted ? 'block' : 'none';
+        });
+
+        function triggerHaptic() {
+            try {
+                if (window.Telegram && window.Telegram.WebApp && window.Telegram.WebApp.HapticFeedback) {
+                    window.Telegram.WebApp.HapticFeedback.impactOccurred('light');
+                }
+            } catch (e) {}
+        }
+
+        // =========================================================
+        // === 3D КОМНАТА, СТОЛ, СВЕЧА И ДЕТАЛИЗИРОВАННЫЙ ФОЛИАНТ ===
+        // =========================================================
+        const container = document.getElementById('webgl-container');
+        const scene = new THREE.Scene();
+        scene.fog = new THREE.FogExp2(0x050201, 0.058);
+
+        const camera = new THREE.PerspectiveCamera(44, window.innerWidth / window.innerHeight, 0.1, 100);
+        const camClosedPos = new THREE.Vector3(0, 5.0, 6.1);
+        const camOpenPos = new THREE.Vector3(0, 3.7, 3.0);
+        const lookAtClosed = new THREE.Vector3(0, 0.35, -0.2);
+        const lookAtOpen = new THREE.Vector3(0, 0.4, 0.2);
+
+        camera.position.copy(camClosedPos);
+        camera.lookAt(lookAtClosed);
+
+        const renderer = new THREE.WebGLRenderer({ antialias: true, powerPreference: "high-performance" });
+        renderer.setSize(window.innerWidth, window.innerHeight);
+        renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+        renderer.shadowMap.enabled = true;
+        renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+        container.appendChild(renderer.domElement);
+
+        // Освещение 3D-комнаты
+        const ambientLight = new THREE.AmbientLight(0x2a160c, 0.65);
+        scene.add(ambientLight);
+
+        // Холодный лунный отсвет из глубины комнаты
+        const moonLight = new THREE.DirectionalLight(0x3a5588, 0.28);
+        moonLight.position.set(5, 8, -5);
+        scene.add(moonLight);
+
+        // Главный тёплый свет от свечи
+        const candleLight = new THREE.PointLight(0xff8c24, 2.7, 19, 1.45);
+        candleLight.position.set(-2.1, 2.38, -0.75);
+        candleLight.castShadow = true;
+        candleLight.shadow.mapSize.width = 1024;
+        candleLight.shadow.mapSize.height = 1024;
+        candleLight.shadow.bias = -0.001;
+        scene.add(candleLight);
+
+        // Процедурная текстура дубового стола
+        function createWoodTexture() {
+            const c = document.createElement('canvas');
+            c.width = 512; c.height = 512;
+            const ctx = c.getContext('2d');
+            ctx.fillStyle = '#221005';
+            ctx.fillRect(0, 0, 512, 512);
+            for (let i = 0; i < 450; i++) {
+                ctx.fillStyle = i % 2 === 0 ? 'rgba(14, 5, 1, 0.38)' : 'rgba(65, 32, 12, 0.22)';
+                ctx.fillRect(0, Math.random() * 512, 512, 1 + Math.random() * 4);
+            }
+            // Стыки досок
+            ctx.fillStyle = 'rgba(8, 3, 0, 0.75)';
+            for (let y = 128; y < 512; y += 128) {
+                ctx.fillRect(0, y, 512, 3);
+            }
+            const tex = new THREE.CanvasTexture(c);
+            tex.wrapS = THREE.RepeatWrapping;
+            tex.wrapT = THREE.RepeatWrapping;
+            tex.repeat.set(3, 3);
+            return tex;
+        }
+
+        // Текстура каменной стены комнаты
+        function createStoneWallTexture() {
+            const c = document.createElement('canvas');
+            c.width = 512; c.height = 512;
+            const ctx = c.getContext('2d');
+            ctx.fillStyle = '#120b07';
+            ctx.fillRect(0, 0, 512, 512);
+            ctx.strokeStyle = '#080402';
+            ctx.lineWidth = 5;
+            const rows = 8;
+            const h = 512 / rows;
+            for (let r = 0; r < rows; r++) {
+                const y = r * h;
+                ctx.beginPath(); ctx.moveTo(0, y); ctx.lineTo(512, y); ctx.stroke();
+                const offset = (r % 2) * 64;
+                for (let x = offset; x < 512; x += 128) {
+                    ctx.fillStyle = `rgba(38, 24, 15, ${0.15 + Math.random() * 0.2})`;
+                    ctx.fillRect(x + 4, y + 4, 120, h - 8);
+                    ctx.beginPath(); ctx.moveTo(x, y); ctx.lineTo(x, y + h); ctx.stroke();
+                }
+            }
+            const tex = new THREE.CanvasTexture(c);
+            tex.wrapS = THREE.RepeatWrapping;
+            tex.wrapT = THREE.RepeatWrapping;
+            tex.repeat.set(4, 2);
+            return tex;
+        }
+
+        // Текстура тиснёной кожаной обложки
+        function createCoverTexture() {
+            const c = document.createElement('canvas');
+            c.width = 512; c.height = 700;
+            const ctx = c.getContext('2d');
+            ctx.fillStyle = '#260d03';
+            ctx.fillRect(0, 0, 512, 700);
+
+            // Золотая двойная рамка
+            ctx.strokeStyle = '#d4a238';
+            ctx.lineWidth = 12;
+            ctx.strokeRect(30, 30, 452, 640);
+            ctx.lineWidth = 4;
+            ctx.strokeRect(48, 48, 416, 604);
+
+            // Магический круг и звезда Арканума в центре
+            ctx.save();
+            ctx.translate(256, 250);
+            ctx.strokeStyle = '#d4a238';
+            ctx.lineWidth = 6;
+            ctx.beginPath(); ctx.arc(0, 0, 88, 0, Math.PI * 2); ctx.stroke();
+            ctx.lineWidth = 3;
+            ctx.beginPath(); ctx.arc(0, 0, 72, 0, Math.PI * 2); ctx.stroke();
+            for (let i = 0; i < 2; i++) {
+                ctx.rotate(Math.PI / 4);
+                ctx.strokeRect(-52, -52, 104, 104);
+            }
+            ctx.restore();
+
+            ctx.fillStyle = '#e5be73';
+            ctx.font = 'bold 42px Georgia, serif';
+            ctx.textAlign = 'center';
+            ctx.fillText('ЛЕТОПИСЬ', 256, 485);
+            ctx.fillText('АУРХЕЙМА', 256, 540);
+            ctx.font = '22px Georgia, serif';
+            ctx.fillStyle = '#b88a32';
+            ctx.fillText('БЕСТИАРИЙ И АТЛАС', 256, 585);
+            return new THREE.CanvasTexture(c);
+        }
+
+        // Мягкое 2D-свечение для огня свечи (Sprite)
+        function createGlowTexture() {
+            const c = document.createElement('canvas');
+            c.width = 128; c.height = 128;
+            const ctx = c.getContext('2d');
+            const grad = ctx.createRadialGradient(64, 64, 2, 64, 64, 62);
+            grad.addColorStop(0, 'rgba(255, 230, 140, 1)');
+            grad.addColorStop(0.35, 'rgba(255, 130, 20, 0.55)');
+            grad.addColorStop(1, 'rgba(255, 60, 0, 0)');
+            ctx.fillStyle = grad;
+            ctx.fillRect(0, 0, 128, 128);
+            return new THREE.CanvasTexture(c);
+        }
+
+        // 1. Стол и стены комнаты
+        const woodTex = createWoodTexture();
+        const tableMesh = new THREE.Mesh(
+            new THREE.BoxGeometry(16, 0.6, 11),
+            new THREE.MeshStandardMaterial({ map: woodTex, roughness: 0.72, metalness: 0.08 })
+        );
+        tableMesh.position.y = -0.3;
+        tableMesh.receiveShadow = true;
+        scene.add(tableMesh);
+
+        const backWall = new THREE.Mesh(
+            new THREE.PlaneGeometry(24, 14),
+            new THREE.MeshStandardMaterial({ map: createStoneWallTexture(), roughness: 0.9 })
+        );
+        backWall.position.set(0, 4.5, -4.2);
+        backWall.receiveShadow = true;
+        scene.add(backWall);
+
+        // Книжная полка на заднем плане
+        const shelfGroup = new THREE.Group();
+        shelfGroup.position.set(1.6, 2.7, -3.7);
+        scene.add(shelfGroup);
+
+        const shelfPlank = new THREE.Mesh(
+            new THREE.BoxGeometry(5.5, 0.16, 0.9),
+            new THREE.MeshStandardMaterial({ map: woodTex, roughness: 0.8 })
+        );
+        shelfPlank.castShadow = true;
+        shelfPlank.receiveShadow = true;
+        shelfGroup.add(shelfPlank);
+
+        // Стопка фолиантов на дальней полке
+        const bookColors = [0x3d1408, 0x162b1e, 0x2b1d0c, 0x36101c, 0x1c2230];
+        for (let i = 0; i < 7; i++) {
+            const h = 0.75 + (i % 3) * 0.12;
+            const b = new THREE.Mesh(
+                new THREE.BoxGeometry(0.22, h, 0.65),
+                new THREE.MeshStandardMaterial({ color: bookColors[i % bookColors.length], roughness: 0.65 })
+            );
+            b.position.set(-2.1 + i * 0.26, 0.08 + h / 2, 0);
+            b.rotation.z = (i === 6) ? 0.22 : 0;
+            b.castShadow = true;
+            shelfGroup.add(b);
+        }
+
+        // Магический кристалл Эфира на полке
+        const crystalMesh = new THREE.Mesh(
+            new THREE.OctahedronGeometry(0.28, 0),
+            new THREE.MeshStandardMaterial({ color: 0x4ea8ff, emissive: 0x1b5299, roughness: 0.2, metalness: 0.3 })
+        );
+        crystalMesh.position.set(1.4, 0.45, 0);
+        shelfGroup.add(crystalMesh);
+
+        // Чернильница с пером на столе справа вверху
+        const inkwellGroup = new THREE.Group();
+        inkwellGroup.position.set(2.25, 0, -1.15);
+        scene.add(inkwellGroup);
+
+        const bottleMesh = new THREE.Mesh(
+            new THREE.CylinderGeometry(0.18, 0.26, 0.36, 16),
+            new THREE.MeshStandardMaterial({ color: 0x11161f, roughness: 0.2, metalness: 0.6 })
+        );
+        bottleMesh.position.y = 0.18;
+        bottleMesh.castShadow = true;
+        inkwellGroup.add(bottleMesh);
+
+        const quillStem = new THREE.Mesh(
+            new THREE.CylinderGeometry(0.012, 0.025, 1.15, 8),
+            new THREE.MeshStandardMaterial({ color: 0xf5ebd6, roughness: 0.6 })
+        );
+        quillStem.position.set(0.14, 0.58, 0);
+        quillStem.rotation.z = -0.35;
+        inkwellGroup.add(quillStem);
+
+        // 2. Улучшенная 3D Аниме-свеча на кованом блюдце
+        const candleGroup = new THREE.Group();
+        candleGroup.position.set(-2.1, 0, -0.75);
+        scene.add(candleGroup);
+
+        const brassMat = new THREE.MeshStandardMaterial({ color: 0xc89328, roughness: 0.32, metalness: 0.78 });
+        const saucerMesh = new THREE.Mesh(new THREE.CylinderGeometry(0.66, 0.48, 0.12, 28), brassMat);
+        saucerMesh.position.y = 0.06;
+        saucerMesh.castShadow = true;
+        saucerMesh.receiveShadow = true;
+        candleGroup.add(saucerMesh);
+
+        const saucerRim = new THREE.Mesh(new THREE.TorusGeometry(0.64, 0.045, 12, 28), brassMat);
+        saucerRim.rotation.x = Math.PI / 2;
+        saucerRim.position.y = 0.12;
+        candleGroup.add(saucerRim);
+
+        const handleMesh = new THREE.Mesh(new THREE.TorusGeometry(0.19, 0.04, 12, 24), brassMat);
+        handleMesh.position.set(-0.66, 0.18, 0);
+        candleGroup.add(handleMesh);
+
+        const waxMat = new THREE.MeshStandardMaterial({ color: 0xfbf2de, roughness: 0.38 });
+        const stickMesh = new THREE.Mesh(new THREE.CylinderGeometry(0.33, 0.36, 1.55, 28), waxMat);
+        stickMesh.position.y = 0.85;
+        stickMesh.castShadow = true;
+        candleGroup.add(stickMesh);
+
+        // Восковой валик у вершины свечи
+        const waxRim = new THREE.Mesh(new THREE.TorusGeometry(0.31, 0.045, 12, 24), waxMat);
+        waxRim.rotation.x = Math.PI / 2;
+        waxRim.position.y = 1.62;
+        candleGroup.add(waxRim);
+
+        // Живописные потеки воска
+        const dripPositions = [
+            { x: 0.31, y: 1.15, z: 0.12, h: 0.75, r: 0.055 },
+            { x: -0.28, y: 1.28, z: 0.16, h: 0.52, r: 0.048 },
+            { x: 0.08, y: 1.34, z: 0.32, h: 0.42, r: 0.045 }
+        ];
+        dripPositions.forEach(d => {
+            const cyl = new THREE.Mesh(new THREE.CylinderGeometry(d.r, d.r * 0.75, d.h, 12), waxMat);
+            cyl.position.set(d.x, d.y, d.z);
+            candleGroup.add(cyl);
+            const drop = new THREE.Mesh(new THREE.SphereGeometry(d.r * 1.15, 12, 12), waxMat);
+            drop.position.set(d.x, d.y - d.h / 2, d.z);
+            candleGroup.add(drop);
+        });
+
+        const wickMesh = new THREE.Mesh(
+            new THREE.CylinderGeometry(0.02, 0.02, 0.18, 8),
+            new THREE.MeshBasicMaterial({ color: 0x1a0c04 })
+        );
+        wickMesh.position.y = 1.68;
+        candleGroup.add(wickMesh);
+
+        // 3D Многослойное Аниме-пламя + Ореол
+        const flameGroup = new THREE.Group();
+        flameGroup.position.y = 1.75;
+        candleGroup.add(flameGroup);
+
+        const glowSprite = new THREE.Sprite(
+            new THREE.SpriteMaterial({ map: createGlowTexture(), color: 0xff9922, transparent: true, opacity: 0.75, blending: THREE.AdditiveBlending })
+        );
+        glowSprite.scale.set(2.2, 2.2, 1);
+        glowSprite.position.y = 0.32;
+        flameGroup.add(glowSprite);
+
+        const outerFlameGeo = new THREE.ConeGeometry(0.22, 0.7, 24);
+        outerFlameGeo.translate(0, 0.35, 0);
+        const outerFlame = new THREE.Mesh(
+            outerFlameGeo,
+            new THREE.MeshBasicMaterial({ color: 0xff4500, transparent: true, opacity: 0.92 })
+        );
+        flameGroup.add(outerFlame);
+
+        const midFlameGeo = new THREE.ConeGeometry(0.145, 0.48, 20);
+        midFlameGeo.translate(0, 0.25, 0);
+        const midFlame = new THREE.Mesh(midFlameGeo, new THREE.MeshBasicMaterial({ color: 0xffd400 }));
+        flameGroup.add(midFlame);
+
+        const coreFlameGeo = new THREE.SphereGeometry(0.08, 14, 14);
+        coreFlameGeo.translate(0, 0.12, 0);
+        const coreFlame = new THREE.Mesh(coreFlameGeo, new THREE.MeshBasicMaterial({ color: 0xffffff }));
+        flameGroup.add(coreFlame);
+
+        const sparks = [];
+        const sparkGeo = new THREE.SphereGeometry(0.028, 8, 8);
+        const sparkMat = new THREE.MeshBasicMaterial({ color: 0xffe875 });
+        for (let i = 0; i < 6; i++) {
+            const sp = new THREE.Mesh(sparkGeo, sparkMat);
+            sp.userData = { phase: i * 1.15, speed: 0.55 + Math.random() * 0.35 };
+            candleGroup.add(sp);
+            sparks.push(sp);
+        }
+
+        // 3. Детализированный 3D Фолиант с металлическими уголками и застежками
+        const book3D = new THREE.Group();
+        book3D.position.set(0.35, 0, 0.45);
+        book3D.rotation.y = -0.18;
+        scene.add(book3D);
+
+        const leatherMat = new THREE.MeshStandardMaterial({ color: 0x290e03, roughness: 0.58 });
+        const coverTopMat = new THREE.MeshStandardMaterial({ map: createCoverTexture(), roughness: 0.48 });
+        const paperBlockMat = new THREE.MeshStandardMaterial({ color: 0xdcc79c, roughness: 0.82 });
+
+        // Нижняя крышка
+        const backCover = new THREE.Mesh(new THREE.BoxGeometry(2.34, 0.08, 3.14), leatherMat);
+        backCover.position.y = 0.04;
+        backCover.castShadow = true;
+        backCover.receiveShadow = true;
+        book3D.add(backCover);
+
+        // Блок пергаментных страниц
+        const paperBlock = new THREE.Mesh(new THREE.BoxGeometry(2.18, 0.38, 2.98), paperBlockMat);
+        paperBlock.position.set(0.04, 0.25, 0);
+        paperBlock.castShadow = true;
+        book3D.add(paperBlock);
+
+        // Корешок с бинтами (рельефными кольцами)
+        const spine = new THREE.Mesh(new THREE.BoxGeometry(0.15, 0.50, 3.14), leatherMat);
+        spine.position.set(-1.12, 0.25, 0);
+        spine.castShadow = true;
+        book3D.add(spine);
+
+        for (let z = -1.1; z <= 1.1; z += 0.55) {
+            const rib = new THREE.Mesh(new THREE.BoxGeometry(0.18, 0.52, 0.07), brassMat);
+            rib.position.set(-1.13, 0.25, z);
+            book3D.add(rib);
+        }
+
+        // Верхняя откидная крышка с латунными уголками
+        const frontCoverPivot = new THREE.Group();
+        frontCoverPivot.position.set(-1.1, 0.46, 0);
+        book3D.add(frontCoverPivot);
+
+        const frontCover = new THREE.Mesh(
+            new THREE.BoxGeometry(2.34, 0.08, 3.14),
+            [leatherMat, leatherMat, coverTopMat, leatherMat, leatherMat, leatherMat]
+        );
+        frontCover.position.set(1.1, 0, 0);
+        frontCover.castShadow = true;
+        frontCoverPivot.add(frontCover);
+
+        // Золотые кованые уголки на верхней крышке
+        const cornerCoords = [
+            { x: 2.15, z: 1.45 },
+            { x: 2.15, z: -1.45 }
+        ];
+        cornerCoords.forEach(c => {
+            const corner = new THREE.Mesh(new THREE.BoxGeometry(0.28, 0.1, 0.28), brassMat);
+            corner.position.set(c.x, 0.005, c.z);
+            frontCoverPivot.add(corner);
+        });
+
+        // Две латунные застёжки сбоку книги
+        [-0.75, 0.75].forEach(zPos => {
+            const clasp = new THREE.Mesh(new THREE.BoxGeometry(0.16, 0.09, 0.26), brassMat);
+            clasp.position.set(2.24, -0.02, zPos);
+            frontCoverPivot.add(clasp);
+        });
+
+        // =========================================================
+        // === ВЗАИМОДЕЙСТВИЕ С 3D ФОЛИАНТОМ И ПАРАЛЛАКС КАМЕРЫ ===
+        // =========================================================
+        let isBookOpen = false;
+        let animProgress = 0;
+        let mouseParallaxX = 0;
+        let mouseParallaxY = 0;
+
+        const raycaster = new THREE.Raycaster();
+        const pointer = new THREE.Vector2();
+
+        const readerOverlay = document.getElementById('book-reader-overlay');
+        const tableHint = document.getElementById('table-hint');
+        const closeBookBtn = document.getElementById('close-book-btn');
+
+        function openBookFromTable() {
+            if (isBookOpen) return;
+            isBookOpen = true;
+            // Запускаем звук свечи и звук тяжелого переплета при открытии
+            ensureAudioReady();
+            playHeavyCoverSound();
+            triggerHaptic();
+
+            tableHint.style.opacity = '0';
+            readerOverlay.classList.add('open');
+            closeBookBtn.classList.add('visible');
+        }
+
+        window.closeBookToTable = function() {
+            if (!isBookOpen) return;
+            isBookOpen = false;
+            playHeavyCoverSound();
+            triggerHaptic();
+
+            readerOverlay.classList.remove('open');
+            closeBookBtn.classList.remove('visible');
+            setTimeout(() => {
+                if (!isBookOpen) tableHint.style.opacity = '1';
+            }, 500);
+        };
+
+        window.addEventListener('pointermove', (e) => {
+            mouseParallaxX = (e.clientX / window.innerWidth - 0.5) * 0.35;
+            mouseParallaxY = (e.clientY / window.innerHeight - 0.5) * 0.2;
+        });
+
+        window.addEventListener('pointerdown', (e) => {
+            if (isBookOpen) return;
+            if (e.target.closest('.ui-btn')) return;
+
+            pointer.x = (e.clientX / window.innerWidth) * 2 - 1;
+            pointer.y = -(e.clientY / window.innerHeight) * 2 + 1;
+
+            raycaster.setFromCamera(pointer, camera);
+            const intersects = raycaster.intersectObjects(book3D.children, true);
+            if (intersects.length > 0) {
+                openBookFromTable();
+            }
+        });
+
+        const clock = new THREE.Clock();
+        const currentCamPos = new THREE.Vector3();
+        const currentLookAt = new THREE.Vector3();
+
+        function animate3D() {
+            requestAnimationFrame(animate3D);
+            const t = clock.getElapsedTime();
+
+            // Живое колыхание аниме-огня
+            flameGroup.rotation.z = Math.sin(t * 10.5) * 0.08 + Math.cos(t * 5.8) * 0.05;
+            flameGroup.scale.y = 1 + Math.sin(t * 13) * 0.075;
+            flameGroup.scale.x = 1 - Math.sin(t * 13) * 0.04;
+            glowSprite.scale.setScalar(2.1 + Math.sin(t * 9) * 0.18);
+
+            candleLight.intensity = 2.6 + Math.sin(t * 11) * 0.24 + Math.cos(t * 21) * 0.1;
+            candleLight.position.x = -2.1 + Math.sin(t * 7) * 0.03;
+
+            // Вращение эфирного кристалла на полке
+            crystalMesh.rotation.y = t * 0.6;
+            crystalMesh.position.y = 0.45 + Math.sin(t * 2.2) * 0.05;
+
+            // Искры свечи
+            sparks.forEach((sp) => {
+                const p = ((t * sp.userData.speed + sp.userData.phase) % 1);
+                sp.position.y = 1.9 + p * 1.45;
+                sp.position.x = Math.sin(p * 6 + sp.userData.phase) * 0.15;
+                sp.scale.setScalar((1 - p) * 1.15);
+            });
+
+            // Плавная анимация раскрытия крышки фолианта и подлёта камеры
+            const targetProgress = isBookOpen ? 1 : 0;
+            animProgress += (targetProgress - animProgress) * 0.08;
+
+            frontCoverPivot.rotation.z = animProgress * Math.PI * 0.8;
+            book3D.rotation.y = -0.18 * (1 - animProgress);
+
+            currentCamPos.lerpVectors(camClosedPos, camOpenPos, animProgress);
+            // Мягкое дыхание и параллакс камеры
+            const swayFactor = 1 - animProgress * 0.7;
+            currentCamPos.x += (Math.sin(t * 0.7) * 0.08 + mouseParallaxX) * swayFactor;
+            currentCamPos.y += (Math.cos(t * 0.5) * 0.05 - mouseParallaxY) * swayFactor;
+
+            currentLookAt.lerpVectors(lookAtClosed, lookAtOpen, animProgress);
+            camera.position.copy(currentCamPos);
+            camera.lookAt(currentLookAt);
+
+            renderer.render(scene, camera);
+        }
+        animate3D();
+
+        window.addEventListener('resize', () => {
+            camera.aspect = window.innerWidth / window.innerHeight;
+            camera.updateProjectionMatrix();
+            renderer.setSize(window.innerWidth, window.innerHeight);
+        });
+
+        // =========================================================
+        // === НАВИГАЦИЯ ПО СТРАНИЦАМ И УМНЫЙ СВАЙП ================
+        // =========================================================
+        const pages = Array.from(document.querySelectorAll('#book-stage .page'));
+        let currentIndex = 0;
+
+        pages.forEach((p, idx) => {
+            const counter = p.querySelector('.page-counter');
+            if (counter) counter.textContent = `${idx + 1} / ${pages.length}`;
+        });
+
+        function goToPage(newIdx) {
+            if (newIdx < 0 || newIdx >= pages.length || newIdx === currentIndex) return;
+
+            pages[currentIndex].classList.remove('active');
+            pages[newIdx].classList.add('active');
+            currentIndex = newIdx;
+
+            const content = pages[newIdx].querySelector('.page-content');
+            if (content) content.scrollTop = 0;
+
+            playPageTurnSound();
+            triggerHaptic();
+        }
+
+        window.goToPage = goToPage;
+        window.nextPage = function() { goToPage(currentIndex + 1); };
+        window.prevPage = function() { goToPage(currentIndex - 1); };
+
+        window.addEventListener('keydown', (e) => {
+            if (!isBookOpen) return;
+            if (e.key === 'ArrowRight' || e.key === ' ') nextPage();
+            else if (e.key === 'ArrowLeft') prevPage();
+            else if (e.key === 'Escape') closeBookToTable();
+        });
+
+        // Умный свайп: работает даже на длинных страницах, отличая горизонтальный жест от вертикального скролла
+        const bookStage = document.getElementById('book-stage');
+        let startTouchX = 0;
+        let startTouchY = 0;
+        let startTouchTime = 0;
+
+        bookStage.addEventListener('touchstart', (e) => {
+            ensureAudioReady();
+            startTouchX = e.touches[0].clientX;
+            startTouchY = e.touches[0].clientY;
+            startTouchTime = Date.now();
+        }, { passive: true });
+
+        bookStage.addEventListener('touchend', (e) => {
+            const diffX = e.changedTouches[0].clientX - startTouchX;
+            const diffY = e.changedTouches[0].clientY - startTouchY;
+            const timeDiff = Date.now() - startTouchTime;
+
+            // Если горизонтальное движение выраженно сильнее вертикального — перелистываем страницу
+            if (Math.abs(diffX) > 48 && Math.abs(diffX) > Math.abs(diffY) * 1.65 && timeDiff < 550) {
+                if (diffX < 0) nextPage();
+                else prevPage();
+            }
+        }, { passive: true });
+    </script>
+</body>
+</html>
